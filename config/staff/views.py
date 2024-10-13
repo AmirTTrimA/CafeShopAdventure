@@ -1,91 +1,102 @@
-"""
-views.py
-
-This module contains the views for the staff application, including
-home, registration, login, and logout functionalities.
-"""
-
-from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from .forms import CustomUserCreationForm
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+
+from .models import Staff
+from .forms import StaffRegistrationForm
 
 
-def home(request):
+def register_view(request):
     """
-    Render the home page.
+    Handle staff registration.
+
+    If the request method is POST, it processes the registration form.
+    If valid, it saves the new staff member and redirects to the login page.
 
     Args:
         request: The HTTP request object.
 
     Returns:
-        HttpResponse: The rendered home page.
-    """
-    return render(request, "staff/home.html")
-
-
-def register(request):
-    """
-    Handle user registration.
-
-    If the request method is POST, process the registration form.
-    If the form is valid, create a new user and log them in.
-    Otherwise, display the registration form.
-
-    Args:
-        request: The HTTP request object.
-
-    Returns:
-        HttpResponse: The rendered registration page or redirect to home.
+        Rendered registration page or redirects to login on success.
     """
     if request.method == "POST":
-        form = CustomUserCreationForm(request.POST)
+        form = StaffRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect("home")
+            form.save()
+            messages.success(request, "Staff registered successfully!")
+            return redirect("login")  # Redirect to the login page or wherever you want
     else:
-        form = CustomUserCreationForm()
+        form = StaffRegistrationForm()
     return render(request, "staff/register.html", {"form": form})
 
 
 def login_view(request):
     """
-    Handle user login.
+    Handle staff login.
 
-    If the request method is POST, authenticate the user with the provided
-    credentials. If authentication is successful, log the user in.
-    Otherwise, display the login form.
+    If the request method is POST, it authenticates the user with the provided email and password.
+    If valid, it logs in the user and redirects to the home page.
 
     Args:
         request: The HTTP request object.
 
     Returns:
-        HttpResponse: The rendered login page or redirect to home.
+        Rendered login page or redirects to home on successful login.
     """
     if request.method == "POST":
-        username = request.POST["username"]
+        email = request.POST["email"]
         password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, email=email, password=password)
         if user is not None:
             login(request, user)
             return redirect("home")
         else:
-            # Return an 'invalid login' error message
-            pass
+            print(f"Failed login attempt for email: {email}")
+            messages.error(request, "Invalid email or password.")
     return render(request, "staff/login.html")
 
 
+@login_required
 def logout_view(request):
     """
-    Handle user logout.
+    Handle staff logout.
 
-    Log the user out and redirect to the home page.
+    Logs out the user and redirects to the login page.
 
     Args:
         request: The HTTP request object.
 
     Returns:
-        HttpResponse: Redirect to the home page.
+        Redirect to the login page.
     """
     logout(request)
-    return redirect("home")
+    return redirect("login")
+
+
+def home_view(request):
+    """
+    Render the home page for logged-in staff members.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        Rendered home page.
+    """
+    return render(request, "staff/home.html")
+
+
+@login_required
+def staff_view(request):
+    """
+    Display a list of all staff members.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        Rendered staff list page with all staff members.
+    """
+    staff_members = Staff.objects.all()
+    return render(request, "staff_list.html", {"staff_members": staff_members})
