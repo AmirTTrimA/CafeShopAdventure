@@ -19,7 +19,7 @@ class StaffManager(BaseUserManager):
         staff.save(using=self._db)
         return staff
     
-class Staff(models.Model,AbstractBaseUser, PermissionsMixin):
+class Staff(AbstractBaseUser, PermissionsMixin, models.Model):
     ROLE_CHOICES = (
         ('manager', 'manager'),
         ('waiter', 'waiter'),
@@ -28,17 +28,15 @@ class Staff(models.Model,AbstractBaseUser, PermissionsMixin):
         ('dish washer','dish washer'),
         ('services','services')
 
-
     )
     staff_id=models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=50)
     email = models.EmailField(max_length=100,unique=True)
-    password = models.CharField(max_length=128)
+    # password = models.CharField(max_length=128)
     role = models.CharField(max_length=40,choices=ROLE_CHOICES)
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
-    # relation_st_or=models.ForeignKey(Order,on_delete=models.CASCADE)
 
     objects = StaffManager()
 
