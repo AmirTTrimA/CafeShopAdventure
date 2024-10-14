@@ -88,3 +88,14 @@ class OrderItem(models.Model):
     def __str__(self):
         """Return a string representation of the order item."""
         return f"{self.quantity} x {self.item.name} in Order {self.order.id}"
+
+
+class Cart(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, related_name="items", on_delete=models.CASCADE)
+    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
