@@ -65,11 +65,13 @@ class Staff(AbstractBaseUser, PermissionsMixin, models.Model):
         ("services", "services"),
     )
 
-    staff_id = models.AutoField(primary_key=True)
+    # staff_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=50)
     email = models.EmailField(max_length=100, unique=True)
     role = models.CharField(max_length=40, choices=ROLE_CHOICES)
+    is_active = models.BooleanField(default=True)  
+    is_staff = models.BooleanField(default=True)  
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
 
