@@ -76,7 +76,7 @@ class Staff(AbstractBaseUser, PermissionsMixin, models.Model):
     objects = StaffManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["first_name", "last_name"]
+    REQUIRED_FIELDS = ["first_name", "last_name",'email']
 
     def __str__(self):
         """Return the full name of the staff member."""
