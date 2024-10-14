@@ -70,15 +70,15 @@ class Staff(AbstractBaseUser, PermissionsMixin, models.Model):
     last_name = models.CharField(max_length=50)
     email = models.EmailField(max_length=100, unique=True)
     role = models.CharField(max_length=40, choices=ROLE_CHOICES)
-    is_active = models.BooleanField(default=True)  
-    is_staff = models.BooleanField(default=True)  
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=True)
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
 
     objects = StaffManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["first_name", "last_name",'email']
+    REQUIRED_FIELDS = ["first_name", "last_name", "email"]
 
     def __str__(self):
         """Return the full name of the staff member."""
