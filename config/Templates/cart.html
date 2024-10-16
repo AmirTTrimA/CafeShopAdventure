@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Menu</title>
+        <title>carts</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
@@ -43,8 +43,8 @@
                 <nav id="nav-menu-container">
                     <ul class="nav-menu">
                         <li><a href="index.html">Home</a></li>
-                        <li class="menu-active"><a href="menu.html">Menu</a></li>
-                        <li><a href="cart.html">Cart</a></li>
+                        <li><a href="menu.html">Menu</a></li>
+                        <li class="menu-active"><a href="cart.html">Cart</a></li>
                         <li><a href="login.html">Login</a></li>
                         <li><a href="about.html">About</a></li>
                         <li><a href="contact.html">Contact</a></li>
@@ -54,16 +54,72 @@
         </header>
         <!-- Header End -->
 
-        <!-- Reservations Section Start -->
-        <section id="reservations">
+        <!-- Cart Section Start -->
+        <section id="cart">
             <div class="container">
                 <header class="section-header">
-                    <h3>Reservations</h3>
+                    <h3>Cart</h3>
                 </header>
                 <div class="row">
                     <div class="col-md-12">
+                        <div class="table-responsive-sm">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col">Menu</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col">Quantity</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col">Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">Lorem ipsum</th>
+                                        <td>$10</td>
+                                        <td><div class="quantity"><input type="text" value="1"></div></td>
+                                        <td>$10</td>
+                                        <td><a href=""><i class="fa fa-trash-o"></i></a></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Proin Tortor</th>
+                                        <td>$15</td>
+                                        <td><div class="quantity"><input type="text" value="2"></div></td>
+                                        <td>$30</td>
+                                        <td><a href=""><i class="fa fa-trash-o"></i></a></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Aliquam Erat</th>
+                                        <td>$20</td>
+                                        <td><div class="quantity"><input type="text" value="3"></div></td>
+                                        <td>$60</td>
+                                        <td><a href=""><i class="fa fa-trash-o"></i></a></td>
+                                    </tr>
+                                </tbody>
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col">Total</th>
+                                        <th scope="col">$45</th>
+                                        <th scope="col">-</th>
+                                        <th scope="col">$100</th>
+                                        <th scope="col">-</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Cart Section End -->
+
+        <!-- Reservations Section Start -->
+        <section id="reservations">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
                         <div class="form-row">
-                            <div class="control-group col-sm-3">
+                            <!-- <div class="control-group col-sm-3">
                                 <div class="form-group">
                                     <div class="input-group date" id="date" data-target-input="nearest">
                                         <input type="text" class="form-control datetimepicker-input" placeholder="Date" data-target="#date"/>
@@ -72,8 +128,8 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="control-group col-sm-3">
+                            </div> -->
+                            <!-- <div class="control-group col-sm-3">
                                 <div class="form-group">
                                     <div class="input-group date" id="time" data-target-input="nearest">
                                         <input type="text" class="form-control datetimepicker-input" placeholder="Time" data-target="#time"/>
@@ -82,136 +138,40 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div> -->
+                            <div class="control-group col-sm-4">
+                                <div class="form-group">
+                                    <div class="input-group" id="num" data-target-input="nearest">
+                                        <input name="Table Number" type="text" class="form-control" placeholder="Table Number"/>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="control-group col-sm-3">
+                            <div class="control-group col-sm-4">
+                                <div class="form-group">
+                                    <div class="input-group" id="num" data-target-input="nearest">
+                                        <input name="Phone Number" type="text" class="form-control" placeholder="Phone Number"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="control-group col-sm-3">
                                 <select class="custom-select">
                                     <option selected>Party Size</option>
                                     <option value="1">1 Person</option>
                                     <option value="2">2 People</option>
                                     <option value="3">3 People</option>
                                     <option value="4">4 People</option>
-                                    <option value="5">5 People</option>
-                                    <option value="6">6 People</option>
-                                    <option value="7">7 People</option>
-                                    <option value="8">8 People</option>
-                                    <option value="9">9 People</option>
-                                    <option value="10">10 People</option>
                                 </select>
+                            </div> -->
+                            <div class="control-group col-sm-4 button">
+                                <button type="submit" class="btn btn-block btn-book">Checkout</button>
                             </div>
-                            <div class="control-group col-sm-3">
-                                <button class="btn btn-block btn-book">Book Now</button>
-                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
         </section>
         <!-- Reservations Section End -->
-
-        <!-- Menu Section Start -->
-        <section id="food-menu">
-            <div class="container">
-                <header class="section-header">
-                    <h3>delicious Food Menu</h3>
-                </header>
-                <div class="row">
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-1.jpg" />
-                            <div>$20</div>
-                            <h4>Lorem ipsum</h4>
-                            <a href="order.html">Order Now</a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-2.jpg" />
-                            <div>$15</div>
-                            <h4>Curabitur Commodo</h4>
-                            <a href="order.html">Order Now</a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-3.jpg" />
-                            <div>$12</div>
-                            <h4>Proin Tortor</h4>
-                            <a href="order.html">Order Now</a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-4.jpg" />
-                            <div>$18</div>
-                            <h4>Aliquam Erat</h4>
-                            <a href="order.html">Order Now</a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-5.jpg" />
-                            <div>$25</div>
-                            <h4>Curabitur Arcu Massa</h4>
-                            <a href="order.html">Order Now</a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-6.jpg" />
-                            <div>$10</div>
-                            <h4>Vestibulum Fringilla</h4>
-                            <a href="order.html">Order Now</a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-7.jpg" />
-                            <div>$18</div>
-                            <h4>Ullamcorper Facilisis </h4>
-                            <a href="order.html">Order Now</a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-8.jpg" />
-                            <div>$14</div>
-                            <h4>Integer Ullamcorper</h4>
-                            <a href="order.html">Order Now</a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-9.jpg" />
-                            <div>$22</div>
-                            <h4>Vestibulum Posuere</h4>
-                            <a href="order.html">Order Now</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- Menu Section End-->
-            
-        <!-- Subscriber Section Start -->
-        <section id="subscriber">
-            <div class="container">
-                <div class="section-header">
-                    <h3>Get Latest Food Info</h3>
-                </div>
-                
-                <div class="row">
-                    <div class="col-12">
-                        <form class="form-inline">
-                            <div class="form-group">
-                                <input type="email" class="form-control" placeholder="Enter Your Email">
-                            </div>
-                            <button type="submit" class="btn">Submit</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- Subscriber Section end -->
 
         <!-- Footer Start -->
         <footer id="footer">

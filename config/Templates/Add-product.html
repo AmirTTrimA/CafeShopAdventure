@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Product</title>
+        <title>Add Product</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
@@ -54,58 +54,63 @@
         </header>
         <!-- Header End -->
 
-        <!-- About Section Start-->
-        <section id="product" style="background: #ffffff;">
+        <!-- Add Product Section Start -->
+        <section id="add-product">
             <div class="container">
-                <div class="row">
+                <header class="section-header">
+                    <h3>Add Product</h3>
+                </header>
+                <div class="row form">
                     <div class="col-md-6">
-                        <div class="product-col-left">></div>
-                    </div>
+                        <h4>Add Product Form</h4>
+                        <div class="form-group">
+                            <label for ="Product Name">Product Name:</label>
+                            <input name="Prodcut Name" type="text" class="form-control" placeholder="Product Name" />
+                        </div>
+                        <div class="form-group">
+                            <label for ="Product cat">Product Category:</label>
+                            <select name="Product cat" class="form-control">
+                                <option selected value="0">--</option>
+                                <option value="1">Pizza</option>
+                                <option value="2">Burger</option>
+                                <option value="3">Salad</option>
+                                <option value="4">Appetizer</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for ="Product description">Product Description:</label>
+                            <input name ="Product description" type="text" class="form-control" placeholder="Description" />
+                        </div>
+                        <div class="form-group">
+                            <label for ="Product Price">Product Price:</label>
+                            <input name ="Product Price"type="text" class="form-control" placeholder="Price" />
+                        </div>
+                        <div class="form-group">
+                            <label for ="Product Image">Product Image:</label>
+                            <input name ="Product Image" type="file" class="form-control" placeholder="Upload Image" />
+                        </div>
 
-                    <div class="col-md-6">
-                        <div class="product-col-right">
-                            <header class="section-header">
-                                <h3>Aliquam Erat</h3>
-                            </header>
-
-                            <p>
-                                Aliquam Erat dolor sit amet, consectetur adipiscing elit. Aliquam convallis quam sed tincidunt accumsan. Aliquam at tincidunt tortor, ac porta turpis. Curabitur lacinia venenatis semper.
-                            </p>
-                            <p>
-                                Aliquam ut nibh ut lacus posuere facilisis. Vestibulum ullamcorper arcu et bibendum ultrices. Suspendisse rutrum turpis vitae.
-                            </p>
-                            <p class="price">
-                               Price: $18 
-                            </p>
-                            <div class="quantity"><input type="text" value="1"></div>
-                            <a class="btn" href="#">Order Now</a>
+                        <div class="button">
+                            <button type="submit">Submit</button>
                         </div>
                     </div>
-                </div>
-            </div>
-        </section>
-        <!-- About Section End-->
+                    <div class="col-md-6">
 
-        <!-- Subscriber Section Start -->
-        <section id="subscriber">
-            <div class="container">
-                <div class="section-header">
-                    <h3>Get Latest Food Info</h3>
-                </div>
-
-                <div class="row">
-                    <div class="col-12">
-                        <form class="form-inline">
-                            <div class="form-group">
-                                <input type="email" class="form-control" placeholder="Enter Your Email">
-                            </div>
-                            <button type="submit" class="btn">Submit</button>
-                        </form>
+                        <h4>Add Category Form</h4>
+                        <div class="form-group">
+                            <label for ="Category Name">Category Name</label>
+                            <input name="Category Name" type="text" class="form-control" placeholder="Category Name" />
+                        </div>
+                        <div class="button">
+                            <button type="submit">Submit</button>
+                        </div>
+ 
                     </div>
+
                 </div>
             </div>
         </section>
-        <!-- Subscriber Section end -->
+        <!-- Add Product Section End -->
 
         <!-- Footer Start -->
         <footer id="footer">
