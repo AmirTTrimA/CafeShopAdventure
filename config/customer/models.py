@@ -6,7 +6,7 @@ including attributes related to customer information and validation.
 """
 
 from django.db import models
-from .validator import iran_phone_regex 
+from .validator import iran_phone_regex
 # from django.contrib.auth.hashers import make_password
 
 
@@ -26,7 +26,7 @@ class Customer(models.Model):
         created_at (datetime): The timestamp when the customer was created.
         updated_at (datetime): The timestamp when the customer was last updated.
     """
-  
+
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     # email = models.EmailField(unique=True)
