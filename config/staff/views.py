@@ -1,3 +1,4 @@
+"""views.py"""
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -35,7 +36,7 @@ def login_view(request):
     """
     Handle staff login.
 
-    If the request method is POST, it authenticates the user with the provided email and password.
+    If the request method is POST, it authenticates the user with the provided phone number and password.
     If valid, it logs in the user and redirects to the home page.
 
     Args:
@@ -45,15 +46,15 @@ def login_view(request):
         Rendered login page or redirects to home on successful login.
     """
     if request.method == "POST":
-        email = request.POST["email"]
+        phone_number = request.POST["phone_number"]
         password = request.POST["password"]
-        user = authenticate(request, email=email, password=password)
+        user = authenticate(request, phone_number=phone_number, password=password)
         if user is not None:
             login(request, user)
             return redirect("home")
         else:
-            print(f"Failed login attempt for email: {email}")
-            messages.error(request, "Invalid email or password.")
+            print(f"Failed login attempt for phone_number: {phone_number}")
+            messages.error(request, "Invalid phone_number or password.")
     return render(request, "staff/login.html")
 
 

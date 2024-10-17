@@ -1,3 +1,4 @@
+"""forms.py"""
 from django import forms
 from django.contrib.auth.hashers import make_password
 from .models import Staff
@@ -23,14 +24,12 @@ class StaffRegistrationForm(forms.ModelForm):
         """
 
         model = Staff
-        fields = ["email", "first_name", "last_name", "password"]
+        fields = ["phone_number", "first_name", "last_name", "password"]
 
     def save(self, commit=True):
         """Save the staff member, hashing the password before saving."""
         staff = super().save(commit=False)
-        staff.password = make_password(
-            self.cleaned_data["password"]
-        )  # Hash the password
+        staff.password = self.cleaned_data["password"]
         if commit:
             staff.save()
         return staff

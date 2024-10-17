@@ -1,6 +1,13 @@
+"""admin.py"""
+
 from django.contrib import admin
 from . import models
+from .models import Order
 
+
+class CartItemInline(admin.TabularInline):
+    model = Order.cart_items.through  # Use the through model for ManyToMany
+    extra = 1  # Number of empty forms to display
 
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
@@ -9,28 +16,42 @@ class OrderAdmin(admin.ModelAdmin):
 
     This configuration allows the admin to view and manage customer orders.
     """
-    
-    list_display = ('id', 'customer', 'staff', 'status', 'total_price', 'order_date', 'created_at', 'updated_at')
 
-    list_filter = ('status', 'order_date')
-
-    search_fields = ('customer__first_name', 'customer__last_name', 'staff__first_name', 'staff__last_name')
-
-    readonly_fields = ('total_price', 'created_at', 'updated_at')
-
-    fieldsets = (
-        (None, {
-            'fields': ('customer', 'staff', 'status')
-        }),
-        ('Price Information', {
-            'fields': ('total_price',)
-        }),
-        ('Timestamps', {
-            'fields': ('order_date', 'created_at', 'updated_at'),
-        }),
+    inlines = [CartItemInline]
+    list_display = (
+        "id",
+        "customer",
+        "staff",
+        "status",
+        "total_price",
+        "order_date",
+        "created_at",
+        "updated_at",
     )
 
-    ordering = ('-created_at',)
+    list_filter = ("status", "order_date")
+
+    search_fields = (
+        "customer__first_name",
+        "customer__last_name",
+        "staff__first_name",
+        "staff__last_name",
+    )
+
+    readonly_fields = ("total_price", "created_at", "updated_at", "order_date")
+
+    fieldsets = (
+        (None, {"fields": ("customer", "staff", "status")}),
+        ("Price Information", {"fields": ("total_price",)}),
+        (
+            "Timestamps",
+            {
+                "fields": ("order_date", "created_at", "updated_at"),
+            },
+        ),
+    )
+
+    ordering = ("-created_at",)
 
     def save_model(self, request, obj, form, change):
         """
@@ -40,35 +61,42 @@ class OrderAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
 
-@admin.register(models.OrderItem)
-class OrderItemAdmin(admin.ModelAdmin):
-    """
-    Admin interface for the OrderItem model.
+# @admin.register(models.OrderItem)
+# class OrderItemAdmin(admin.ModelAdmin):
+#     """
+#     Admin interface for the OrderItem model.
 
-    This configuration allows the admin to view and manage items in customer orders.
-    """
+#     This configuration allows the admin to view and manage items in customer orders.
+#     """
 
-    list_display = ('id', 'order', 'item', 'quantity', 'subtotal', 'created_at', 'updated_at')
+#     list_display = (
+#         "id",
+#         "order",
+#         "item",
+#         "quantity",
+#         "subtotal",
+#         "created_at",
+#         "updated_at",
+#     )
 
-    list_filter = ('order', 'item')
+#     list_filter = ("order", "item")
 
-    search_fields = ('order__id', 'item__name')
+#     search_fields = ("order__id", "item__name")
 
-    readonly_fields = ('subtotal', 'created_at', 'updated_at')
+#     readonly_fields = ("subtotal", "created_at", "updated_at")
 
-    fieldsets = (
-        (None, {
-            'fields': ('order', 'item', 'quantity')
-        }),
-        ('Subtotal Information', {
-            'fields': ('subtotal',)
-        }),
-        ('Timestamps', {
-            'fields': ('created_at', 'updated_at'),
-        }),
-    )
+#     fieldsets = (
+#         (None, {"fields": ("order", "item", "quantity")}),
+#         ("Subtotal Information", {"fields": ("subtotal",)}),
+#         (
+#             "Timestamps",
+#             {
+#                 "fields": ("created_at", "updated_at"),
+#             },
+#         ),
+#     )
 
-    ordering = ('-created_at',)
+    ordering = ("-created_at",)
 
     def save_model(self, request, obj, form, change):
         """
@@ -86,19 +114,20 @@ class CartAdmin(admin.ModelAdmin):
     This configuration allows the admin to view and manage customer carts.
     """
 
-    list_display = ('id', 'customer', 'created_at')
+    list_display = ("id", "customer", "created_at")
 
-    search_fields = ('customer__first_name', 'customer__last_name')
+    search_fields = ("customer__first_name", "customer__last_name")
 
-    readonly_fields = ('created_at',)
+    readonly_fields = ("created_at",)
 
     fieldsets = (
-        (None, {
-            'fields': ('customer',)
-        }),
-        ('Timestamps', {
-            'fields': ('created_at',),
-        }),
+        (None, {"fields": ("customer",)}),
+        (
+            "Timestamps",
+            {
+                "fields": ("created_at",),
+            },
+        ),
     )
 
 
@@ -110,16 +139,12 @@ class CartItemAdmin(admin.ModelAdmin):
     This configuration allows the admin to view and manage items in customer carts.
     """
 
-    list_display = ('id', 'cart', 'menu_item', 'quantity')
+    list_display = ("id", "cart", "menu_item", "quantity")
 
-    list_filter = ('cart', 'menu_item')
+    list_filter = ("cart", "menu_item")
 
-    search_fields = ('cart__id', 'menu_item__name')
+    search_fields = ("cart__id", "menu_item__name")
 
-    fieldsets = (
-        (None, {
-            'fields': ('cart', 'menu_item', 'quantity')
-        }),
-    )
+    fieldsets = ((None, {"fields": ("cart", "menu_item", "quantity")}),)
 
-    ordering = ('-cart__created_at',)
+    ordering = ("-cart__created_at",)

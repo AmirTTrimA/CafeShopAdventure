@@ -19,14 +19,14 @@ class StaffAdmin(admin.ModelAdmin):
         "staff_id",
         "first_name",
         "last_name",
-        "email",
+        "phone_number",
         "role",
         "is_staff",
         "is_superuser",
     )
 
     list_filter = ("role", "is_staff", "is_superuser")
-    search_fields = ("first_name", "last_name", "email")
+    search_fields = ("first_name", "last_name", "phone_number")
     ordering = ("last_name", "first_name")
     readonly_fields = ("staff_id",)  # Assuming staff_id should be read-only
 

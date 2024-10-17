@@ -12,6 +12,7 @@ from django.contrib.auth.models import (
     BaseUserManager,
     PermissionsMixin,
 )
+from .validator import iran_phone_regex
 
 
 class StaffManager(BaseUserManager):
@@ -19,25 +20,27 @@ class StaffManager(BaseUserManager):
     Custom manager for the Staff model.
 
     Methods:
-        create_user: Creates and returns a regular user with an email and password.
+        create_user: Creates and returns a regular user with a phone number and password.
         create_superuser: Creates and returns a superuser with admin privileges.
     """
 
-    def create_user(self, email, first_name, last_name, password=None):
-        """Create and return a regular user with an email and password."""
-        if not email:
-            raise ValueError("The Email field must be set")
-        email = self.normalize_email(email)
-        user = self.model(email=email, first_name=first_name, last_name=last_name)
+    def create_user(self, phone_number, first_name, last_name, password=None):
+        """Create and return a regular user with a phone number and password."""
+        if not phone_number:
+            raise ValueError("The phone number field must be set")
+        # phone_number = self.normalize_email(phone_number)
+        user = self.model(phone_number=phone_number, first_name=first_name, last_name=last_name)
         user.set_password(password)
+        user.is_staff = True
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, first_name, last_name, password=None):
+    def create_superuser(self, phone_number, first_name, last_name, password=None):
         """Create and return a superuser with admin privileges."""
-        user = self.create_user(email, first_name, last_name, password)
+        user = self.create_user(phone_number, first_name, last_name, password)
         user.is_staff = True
         user.is_superuser = True
+        user.set_password(password)
         user.save(using=self._db)
         return user
 
@@ -51,7 +54,7 @@ class Staff(AbstractBaseUser, PermissionsMixin, models.Model):
         staff_id (int): Unique identifier for the staff member.
         first_name (str): The first name of the staff member.
         last_name (str): The last name of the staff member.
-        email (str): The email address of the staff member (unique).
+        phone_number (str): The phone number of the staff member (unique).
         role (str): The role of the staff member.
         create_at (datetime): The timestamp when the staff member was created.
         update_at (datetime): The timestamp when the staff member was last updated.
@@ -72,7 +75,7 @@ class Staff(AbstractBaseUser, PermissionsMixin, models.Model):
     staff_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=50)
-    email = models.EmailField(max_length=100, unique=True)
+    phone_number = models.CharField(max_length=12, validators=[iran_phone_regex], unique=True)
     role = models.CharField(max_length=40, choices=ROLE_CHOICES)
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
@@ -89,7 +92,7 @@ class Staff(AbstractBaseUser, PermissionsMixin, models.Model):
             self.password = make_password(self.password)
         super().save(*args, **kwargs)
 
-    USERNAME_FIELD = "email"
+    USERNAME_FIELD = "phone_number"
     REQUIRED_FIELDS = ["first_name", "last_name"]
 
     def __str__(self):
