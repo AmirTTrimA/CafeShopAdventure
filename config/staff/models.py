@@ -6,7 +6,7 @@ including attributes related to staff members and their roles.
 """
 
 from django.db import models
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
@@ -61,12 +61,12 @@ class Staff(AbstractBaseUser, PermissionsMixin, models.Model):
     """
 
     ROLE_CHOICES = (
-        ("manager", "manager"),
-        ("waiter", "waiter"),
-        ("chef", "chef"),
-        ("assistant cook", "assistant cook"),
-        ("dish washer", "dish washer"),
-        ("services", "services"),
+        ("manager", "Manager"),
+        ("waiter", "Waiter"),
+        ("chef", "Chef"),
+        ("assistant cook", "Assistant Cook"),
+        ("dish washer", "Dish Washer"),
+        ("services", "Services"),
     )
 
     staff_id = models.AutoField(primary_key=True)
@@ -85,7 +85,7 @@ class Staff(AbstractBaseUser, PermissionsMixin, models.Model):
 
     def save(self, *args, **kwargs):
         """Override save method to hash the password before saving."""
-        if self.pk is None:
+        if self.pk is None and self.password:  # Only hash if creating a new user
             self.password = make_password(self.password)
         super().save(*args, **kwargs)
 
@@ -95,3 +95,7 @@ class Staff(AbstractBaseUser, PermissionsMixin, models.Model):
     def __str__(self):
         """Return the full name of the staff member."""
         return f"{self.first_name} {self.last_name}"
+
+    def check_password(self, raw_password):
+        """Check the provided password against the stored hashed password."""
+        return check_password(raw_password, self.password)

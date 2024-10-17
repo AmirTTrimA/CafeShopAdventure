@@ -6,7 +6,7 @@ including attributes related to customer information and validation.
 """
 
 from django.db import models
-from django.core.validators import RegexValidator
+from .validator import iran_phone_regex 
 # from django.contrib.auth.hashers import make_password
 
 
@@ -26,13 +26,7 @@ class Customer(models.Model):
         created_at (datetime): The timestamp when the customer was created.
         updated_at (datetime): The timestamp when the customer was last updated.
     """
-
-    # add this validator to a validator.py file in this app
-    iran_phone_regex = RegexValidator(
-        regex=r"^(\+98|0)?9\d{9}$",
-        message="Phone number must be entered in the format: '+989xxxxxxxxx' or '09xxxxxxxxx'.",
-    )
-
+  
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     # email = models.EmailField(unique=True)
