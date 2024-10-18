@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Add Product</title>
+        <title>staff</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
@@ -44,63 +44,121 @@
             <div class="container">
                 <nav id="nav-menu-container">
                     <ul class="nav-menu">
-                        <li class="menu-active"><a href="index.html">Home</a></li>
+                        <li><a href="index.html">Home</a></li>
                         <li><a href="menu.html">Menu</a></li>
                         <li><a href="cart.html">Cart</a></li>
+                        <li><a href="Analytics.html">Analytics</a></li>
                         <li><a href="login.html">Login</a></li>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="contact.html">Contact</a></li>
                     </ul>
                 </nav>
             </div>
+
         </header>
         <!-- Header End -->
+        <h1 class="st-h">Staff Panel</h1>
+        <div class="st-panel">
+            <li><a href="checkout.html">checkout</a></li>
+            <li><a href="Edit-product.html">Edit product</a></li>
+            <li><a href="Add-product.html">Add product</a></li>
+            <li><a href="Add-category.html">Add category</a></li>
+            <li><a href="Staff-Access.html">Staff Access</a></li>
 
-        <!-- Add Product Section Start -->
-        <section id="add-product">
+        </div>
+
+        <!-- Cart Section Start -->
+        <section id="staff-cart">
             <div class="container">
                 <header class="section-header">
-                    <h3>Add Product</h3>
+                    <h3 class="st-ti">Sales Analytics<span>(last month)</span></h3>
+                    
                 </header>
-                <div class="row form">
+                <div class="row">
                     <div class="col-md-12">
-                        <h4>Add Product Form</h4>
-                        <div class="form-group">
-                            <label for ="Product Name">Product Name:</label>
-                            <input name="Prodcut Name" type="text" class="form-control" placeholder="Product Name" />
-                        </div>
-                        <div class="form-group">
-                            <label for ="Product">Product Category:</label>
-                            <select name="Product" class="form-control">
-                                <option selected value="0">Coffee</option>
-                                <option value="1">Teas</option>
-                                <option value="2">Pastries</option>
-                                <option value="3">Breakfast Items</option>
-                                <option value="4">Snacks</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for ="Product description">Product Description:</label>
-                            <input name ="Product description" type="text" class="form-control" placeholder="Description" />
-                        </div>
-                        <div class="form-group">
-                            <label for ="Product Price">Product Price:</label>
-                            <input name ="Product Price"type="text" class="form-control" placeholder="Price" />
-                        </div>
-                        <div class="form-group">
-                            <label for ="Product Image">Product Image:</label>
-                            <input name ="Product Image" type="file" class="form-control" placeholder="Upload Image" />
+                        <div class="table-responsive-sm">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col">Item</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col">Quantity</th>
+                                        <th scope="col">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">ICED LATTE MACCHIATO</th>
+                                        <td>$10</td>
+                                        <td>100</td>
+                                        <td>$1000</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">PANINI</th>
+                                        <td>$15</td>
+                                        <td>30</td>
+                                        <td>$450</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Cappuccino</th>
+                                        <td>$20</td>
+                                        <td>15</td>
+                                        <td>$300</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
 
-                        <div class="button">
-                            <button type="submit">Submit</button>
-                        </div>
                     </div>
+                </div>
+            </div>
 
+            <div class="container">
+                <header class="section-header">
+                    <h3 class="st-ti st-customer">customers Analytics<span>(last month)</span></h3>
+                    
+                </header>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive-sm">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col">Phone Number</th>
+                                        <th scope="col">No. of Orders</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col">Reward(%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">09123456789</th>
+                                        <td>100</td>
+                                        <td>$1000</td>
+                                        <td>98%</td>
+
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">09378901234</th>
+                                        <td>30</td>
+                                        <td>$450</td>
+                                        <td>100%</td>
+
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">09356789999</th>
+                                        <td>15</td>
+                                        <td>$300</td>
+                                        <td>88%</td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </section>
-        <!-- Add Product Section End -->
+        <!-- Cart Section End -->
 
         <!-- Footer Start -->
         <footer id="footer">
