@@ -73,6 +73,16 @@ h6 {
     padding-top: 10px;
 }
 
+td,th {
+    text-align: center;
+
+}
+select.form-control {
+    border-radius: 20px;
+}
+#reservations p{
+    color:#fff
+}
 /* ================================================= */
 /* ---------------- Top Header CSS ----------------- */
 /* ================================================= */
@@ -100,6 +110,22 @@ h6 {
     }
 }
 
+header#header {
+    display: flex;
+}
+
+header#header img {
+    position: relative;
+    top: 0;
+    left: 28%;
+}
+
+.copyright img {
+    position: relative;
+    top: -20px;
+    left: 0%;
+    width: 100px;
+}
 /* ================================================= */
 /* ------------------ Header CSS ------------------- */
 /* ================================================= */
@@ -396,13 +422,13 @@ body.mobile-nav-active #mobile-nav-toggle {
     padding: 20px 0;
     text-align: center;
     position: relative;
-    background: #353535;
-    margin-bottom: 70px;
+    background: #5f3022;
+    /* margin-bottom: 70px; */
 }
 
 #reservations .container {
     position: relative;
-    max-width: 700px;
+    max-width: 800px;
     z-index: 9;
 }
 
@@ -710,6 +736,60 @@ body.mobile-nav-active #mobile-nav-toggle {
 #food-menu .single-menu:hover a {
     color: #BC9B5D;
     background: #ffffff;
+}
+
+/* span.dec.q-btn, span.inc.q-btn {
+    border: 1px solid #bc9b5d;
+    background-color: #bc9b5d;
+    border-radius: 40px;
+    padding: 4px 10px;
+}
+
+span.quantity {
+    display: inline-block;
+    margin: 30px 0;
+    padding: 2px 10px;
+    color: #353535;
+    /* background: #BC9B5D; */
+    /* border-radius: 30px; */
+/* } */ 
+
+/* #food-menu .quantity .dec.q-btn {
+    margin-right: -32px;
+}
+
+#food-menu .quantity .q-btn {
+    position: relative;
+    display: inline-block;
+    background: #BC9B5D;
+    color: #353535;
+    height: 30px;
+    width: 30px;
+    font-size: 19px;
+    text-align: center;
+    border-radius: 20px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#food-menu .quantity .inc.q-btn {
+    margin-left: -32px;
+} */
+
+.menu-cat a {
+    margin: 27px 10px !important;
+    padding: 10px 20px;
+    border: 1px solid #bc9b5d;
+    border-radius: 25px;
+    background-color: #bc9b5d;
+    color: #ffffff;
+}
+
+.menu-cat {
+    margin-bottom: 20px;
 }
 
 /* ================================================= */
@@ -1183,6 +1263,7 @@ body.mobile-nav-active #mobile-nav-toggle {
     }
 }
 
+
 /* ================================================= */
 /* ------------------- Footer CSS ------------------ */
 /* ================================================= */
@@ -1190,7 +1271,7 @@ body.mobile-nav-active #mobile-nav-toggle {
 #footer {
     position: relative;
     background: #353535;
-    padding: 30px 0;
+    padding: 20px 0;
 }
 
 #footer .col-sm-6 {
@@ -1203,7 +1284,7 @@ body.mobile-nav-active #mobile-nav-toggle {
 
 #footer .copyright {
     color: #ffffff;
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 300;
     text-align: left;
     position: relative;
@@ -1211,6 +1292,8 @@ body.mobile-nav-active #mobile-nav-toggle {
     -moz-transform: translateY(-50%);
     -webkit-transform: translateY(-50%);
     transform: translateY(-50%);
+    text-align: center;
+
 }
 
 @media (max-width: 575.98px) {
@@ -1245,9 +1328,9 @@ body.mobile-nav-active #mobile-nav-toggle {
     margin: 0 0 15px 0;
     padding: 0;
     list-style-type: none;
-    text-align: right;
+    text-align: center;
     position: relative;
-    top: 50%;
+    top: 15%;
     -moz-transform: translateY(-50%);
     -webkit-transform: translateY(-50%);
     transform: translateY(-50%);
@@ -1280,6 +1363,34 @@ body.mobile-nav-active #mobile-nav-toggle {
     }
 }
 
+#footer .nav-menu a {
+    padding: 0 15px 0 15px;
+    text-decoration: none;
+    color: #bc9b5d;
+    font-weight: 100;
+    font-size: 15px;
+    outline: none;
+}
+
+#footer .nav-menu > li {
+    float: none;
+}
+#footer h4 a:hover {
+    color: #bc9b5d8f;
+}
+
+#footer h4 {
+    text-align: center;
+    border-bottom: 1px solid #bc9b5d;
+    padding-bottom: 12px;
+}
+
+/* h4.foot_acs {
+    text-align: left !important;
+} */
+#footer ul.nav-menu.sf-js-enabled.sf-arrows {
+    text-align: center;
+}
 /* ================================================= */
 /* ------------------- Cart Style ------------------ */
 /* ================================================= */
@@ -1839,3 +1950,5 @@ h3.st-ti {
     color: #BC9B5D;
     background: #353535;
 }
+
+
