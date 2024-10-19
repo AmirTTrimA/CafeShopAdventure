@@ -1,103 +1,77 @@
 """views.py"""
+
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.contrib import messages
+from django.views.generic.edit import FormView
+from django.views import View
+from django.urls import reverse_lazy
 
 from .models import Staff
 from .forms import StaffRegistrationForm
 
 
-def register_view(request):
-    """
-    Handle staff registration.
+class RegisterView(FormView):
+    template_name = "staff/register.html"
+    form_class = StaffRegistrationForm
+    success_url = reverse_lazy("login")
 
-    If the request method is POST, it processes the registration form.
-    If valid, it saves the new staff member and redirects to the login page.
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, "Staff registered successfully!")
+        return super().form_valid(form)
 
-    Args:
-        request: The HTTP request object.
-
-    Returns:
-        Rendered registration page or redirects to login on success.
-    """
-    if request.method == "POST":
-        form = StaffRegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Staff registered successfully!")
-            return redirect("login")  # Redirect to the login page or wherever you want
-    else:
-        form = StaffRegistrationForm()
-    return render(request, "staff/register.html", {"form": form})
+    def form_invalid(self, form):
+        messages.error(self.request, "There was an error in the registration form.")
+        return super().form_invalid(form)
 
 
-def login_view(request):
-    """
-    Handle staff login.
+class LoginView(View):
+    template_name = "staff/login.html"
 
-    If the request method is POST, it authenticates the user with the provided phone number and password.
-    If valid, it logs in the user and redirects to the home page.
+    def get(self, request):
+        return render(request, self.template_name)
 
-    Args:
-        request: The HTTP request object.
-
-    Returns:
-        Rendered login page or redirects to home on successful login.
-    """
-    if request.method == "POST":
-        phone_number = request.POST["phone_number"]
-        password = request.POST["password"]
+    def post(self, request):
+        phone_number = request.POST.get("phone_number")
+        password = request.POST.get("password")
         user = authenticate(request, phone_number=phone_number, password=password)
+
         if user is not None:
             login(request, user)
-            return redirect("home")
+            return redirect("staff")
         else:
-            print(f"Failed login attempt for phone_number: {phone_number}")
-            messages.error(request, "Invalid phone_number or password.")
-    return render(request, "staff/login.html")
+            messages.error(request, "Invalid phone number or password.")
+            return render(request, self.template_name)
 
 
-@login_required
-def logout_view(request):
+@method_decorator(login_required, name="dispatch")
+class LogoutView(View):
     """
     Handle staff logout.
 
     Logs out the user and redirects to the login page.
-
-    Args:
-        request: The HTTP request object.
-
-    Returns:
-        Redirect to the login page.
     """
-    logout(request)
-    return redirect("login")
+
+    def get(self, request):
+        logout(request)
+        return redirect("login")
 
 
-def home_view(request):
+@method_decorator(login_required, name="dispatch")
+class StaffView(View):
     """
-    Render the home page for logged-in staff members.
-
-    Args:
-        request: The HTTP request object.
-
-    Returns:
-        Rendered home page.
+    Render the staff page.
     """
-    return render(request, "staff/home.html")
 
+    template_name = "staff.html"
 
-@login_required
-def staff_view(request):
-    """
-    Display a list of all staff members.
+    def get(self, request):
+        context = self.get_context_data()
+        return render(request, self.template_name, context)
 
-    Args:
-        request: The HTTP request object.
-
-    Returns:
-        Rendered staff list page with all staff members.
-    """
-    staff_members = Staff.objects.all()
-    return render(request, "staff_list.html", {"staff_members": staff_members})
+    def get_context_data(self, **kwargs):
+        context = {}
+        return context
