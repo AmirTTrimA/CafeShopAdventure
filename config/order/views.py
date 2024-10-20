@@ -1,37 +1,49 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Order, Cart, CartItem, MenuItem
+from django.http import JsonResponse
+from .models import Order, OrderItem, MenuItem
+from .utils import get_cart_from_cookies, set_cart_in_cookies
 
 
-@login_required
 def add_to_cart(request, item_id):
-    """Add a menu item to the customer's cart."""
+    """Add a menu item to the cart."""
     menu_item = get_object_or_404(MenuItem, id=item_id)
-    cart, created = Cart.objects.get_or_create(customer=request.user.customer)
 
-    cart_item, created = CartItem.objects.get_or_create(cart=cart, menu_item=menu_item)
-    if not created:
-        cart_item.quantity += 1
-    cart_item.save()
+    # Use cookies to manage the cart
+    cart = get_cart_from_cookies(request)
 
-    messages.success(request, f"{menu_item.name} has been added to your cart.")
-    return redirect("cart_view")
+    # Add item to cart
+    if str(menu_item.id) in cart:
+        cart[str(menu_item.id)]["quantity"] += 1
+    else:
+        cart[str(menu_item.id)] = {
+            "name": menu_item.name,
+            "price": str(menu_item.price),
+            "quantity": 1,
+        }
+
+    # Save updated cart in cookies
+    response = JsonResponse(
+        {
+            "message": f"{menu_item.name} has been added to your cart.",
+            "cart": cart,
+        }
+    )
+    set_cart_in_cookies(response, cart)
+    return response
 
 
-@login_required
 def cart_view(request):
-    """Display the contents of the customer's cart."""
-    cart = get_object_or_404(Cart, customer=request.user.customer)
+    """Display the contents of the cart."""
+    cart = get_cart_from_cookies(request)
     return render(request, "cart.html", {"cart": cart})
 
 
-@login_required
 def submit_order(request):
-    """Submit an order based on the items in the customer's cart."""
-    cart = get_object_or_404(Cart, customer=request.user.customer)
+    """Submit an order based on the items in the cart."""
+    cart = get_cart_from_cookies(request)
 
-    if not cart.items.exists():
+    if not cart:
         messages.warning(request, "Your cart is empty.")
         return redirect("cart_view")
 
@@ -42,7 +54,8 @@ def submit_order(request):
             order=order, item=item.menu_item, quantity=item.quantity
         )
 
-    cart.items.all().delete()
-
+    # Clear the cart in cookies
+    response = redirect("order_success")
+    response.delete_cookie("cart")
     messages.success(request, "Your order has been submitted successfully!")
-    return redirect("order_success")
+    return response
