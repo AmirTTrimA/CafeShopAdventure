@@ -125,3 +125,14 @@ class OrderItem(models.Model):
 #     def __str__(self):
 #         """Return a string representation of the cart."""
 #         return f"Cart for {self.customer.first_name} {self.customer.last_name}"
+
+
+class OrderHistory(models.Model):
+    """Model to store order history in JSON format."""
+
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    order_data = models.JSONField()  # Stores the order details in JSON format
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Order by {self.customer.phone_number} on {self.created_at}"

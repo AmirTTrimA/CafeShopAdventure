@@ -9,6 +9,7 @@ class CartItemInline(admin.TabularInline):
     model = Order.cart_items.through  # Use the through model for ManyToMany
     extra = 1  # Number of empty forms to display
 
+
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
     """
@@ -16,6 +17,10 @@ class OrderAdmin(admin.ModelAdmin):
 
     This configuration allows the admin to view and manage customer orders.
     """
+
+    def save_model(self, request, obj, form, change):
+        # Save the order instance first
+        super().save_model(request, obj, form, change)
 
     inlines = [CartItemInline]
     list_display = (
@@ -53,82 +58,73 @@ class OrderAdmin(admin.ModelAdmin):
 
     ordering = ("-created_at",)
 
-    def save_model(self, request, obj, form, change):
-        """
-        Override save_model to calculate the total price before saving the order.
-        """
-        obj.calculate_total_price()
-        super().save_model(request, obj, form, change)
+    # def save_model(self, request, obj, form, change):
+    #     """
+    #     Override save_model to calculate the total price before saving the order.
+    #     """
+    #     obj.calculate_total_price()
+    #     super().save_model(request, obj, form, change)
 
 
-# @admin.register(models.OrderItem)
-# class OrderItemAdmin(admin.ModelAdmin):
-#     """
-#     Admin interface for the OrderItem model.
-
-#     This configuration allows the admin to view and manage items in customer orders.
-#     """
-
-#     list_display = (
-#         "id",
-#         "order",
-#         "item",
-#         "quantity",
-#         "subtotal",
-#         "created_at",
-#         "updated_at",
-#     )
-
-#     list_filter = ("order", "item")
-
-#     search_fields = ("order__id", "item__name")
-
-#     readonly_fields = ("subtotal", "created_at", "updated_at")
-
-#     fieldsets = (
-#         (None, {"fields": ("order", "item", "quantity")}),
-#         ("Subtotal Information", {"fields": ("subtotal",)}),
-#         (
-#             "Timestamps",
-#             {
-#                 "fields": ("created_at", "updated_at"),
-#             },
-#         ),
-#     )
-
-    ordering = ("-created_at",)
-
-    def save_model(self, request, obj, form, change):
-        """
-        Override save_model to calculate the subtotal before saving the order item.
-        """
-        obj.subtotal = obj.item.price * obj.quantity
-        super().save_model(request, obj, form, change)
-
-
-@admin.register(models.Cart)
-class CartAdmin(admin.ModelAdmin):
+@admin.register(models.OrderItem)
+class OrderItemAdmin(admin.ModelAdmin):
     """
-    Admin interface for the Cart model.
+    Admin interface for the OrderItem model.
 
-    This configuration allows the admin to view and manage customer carts.
+    This configuration allows the admin to view and manage items in customer orders.
     """
 
-    list_display = ("id", "customer", "created_at")
+    list_display = (
+        "id",
+        "order",
+        "item",
+        "quantity",
+        "subtotal",
+        "created_at",
+        "updated_at",
+    )
 
-    search_fields = ("customer__first_name", "customer__last_name")
+    list_filter = ("order", "item")
 
-    readonly_fields = ("created_at",)
+    search_fields = ("order__id", "item__name")
+
+    readonly_fields = ("subtotal", "created_at", "updated_at")
 
     fieldsets = (
-        (None, {"fields": ("customer",)}),
+        (None, {"fields": ("order", "item", "quantity")}),
+        ("Subtotal Information", {"fields": ("subtotal",)}),
         (
             "Timestamps",
             {
-                "fields": ("created_at",),
+                "fields": ("created_at", "updated_at"),
             },
         ),
     )
+
+
+# @admin.register(models.Cart)
+# class CartAdmin(admin.ModelAdmin):
+#     """
+#     Admin interface for the Cart model.
+
+#     This configuration allows the admin to view and manage customer carts.
+#     """
+
+#     list_display = ("id", "customer", "created_at")
+
+#     search_fields = ("customer__first_name", "customer__last_name")
+
+#     readonly_fields = ("created_at",)
+
+#     fieldsets = (
+#         (None, {"fields": ("customer",)}),
+#         (
+#             "Timestamps",
+#             {
+#                 "fields": ("created_at",),
+#             },
+#         ),
+#     )
 
 
 @admin.register(models.CartItem)
@@ -139,12 +135,12 @@ class CartItemAdmin(admin.ModelAdmin):
     This configuration allows the admin to view and manage items in customer carts.
     """
 
-    list_display = ("id", "cart", "menu_item", "quantity")
+    list_display = ("id", "menu_item", "quantity")
 
-    list_filter = ("cart", "menu_item")
+    list_filter = ("menu_item",)
 
     search_fields = ("cart__id", "menu_item__name")
 
-    fieldsets = ((None, {"fields": ("cart", "menu_item", "quantity")}),)
+    fieldsets = ((None, {"fields": ("menu_item", "quantity")}),)
 
-    ordering = ("-cart__created_at",)
+    ordering = ("-menu_item__created_at",)
