@@ -75,3 +75,31 @@ class StaffView(View):
     def get_context_data(self, **kwargs):
         context = {}
         return context
+
+
+def order_list(request):
+    orders = Order.objects.all()  # Default to all orders
+    form = FilterOrderForm()
+
+    if request.method == 'POST':
+        form = FilterOrderForm(request.POST)
+        if form.is_valid():
+            selected_filter = form.cleaned_data['filter_type']
+            
+            if selected_filter == 'date':
+                date = form.cleaned_data['date']
+                if date:
+                    orders = orders.filter(order_date__date=date)
+            elif selected_filter == 'table':
+                table_number = form.cleaned_data['table_number']
+                if table_number:
+                    orders = orders.filter(table_number=table_number)
+            elif selected_filter == 'last_order':
+                orders = orders.order_by('-order_date')[:1]  # Get last order
+            elif selected_filter == 'status':
+                status = form.cleaned_data['status']
+                if status:
+                    orders = orders.filter(status=status)
+
+    return render(request, 'staff\order_list.html', {'form': form, 'orders': orders})
+
