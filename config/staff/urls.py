@@ -10,4 +10,5 @@ urlpatterns = [
     path("", StaffView.as_view(), name="staff"),
     # URL pattern for the registration view
     path("register/", RegisterView.as_view(), name="register"),
+    path('orders/', views_staff.order_list, name='order_list'),
 ]
