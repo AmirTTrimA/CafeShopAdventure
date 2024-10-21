@@ -33,3 +33,19 @@ class StaffRegistrationForm(forms.ModelForm):
         if commit:
             staff.save()
         return staff
+
+class FilterOrderForm(forms.Form):
+    FILTER_CHOICES = [
+        ('date', 'Filter by Date'),
+        ('table', 'Filter by Table Number'),
+        ('last_order', 'View Last Order'),
+        ('status', 'Filter by Status'),
+    ]
+    STATUS_FILD=[('Done','done'),('paide','paide')]
+    
+    filter_type = forms.ChoiceField(choices=FILTER_CHOICES)
+    
+    # These fields will appear based on the selected filter type
+    date = forms.DateField(required=False)
+    table_number = forms.IntegerField(required=False)
+    status = forms.ChoiceField(choices=STATUS_FILD, required=False)
