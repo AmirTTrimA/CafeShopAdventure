@@ -33,3 +33,15 @@ def clear_cart(request):
         del request.session['cart']  # Remove the cart from the session
         messages.success(request, "Your cart has been cleared.")
     return redirect('cart_view')
+
+def search_product(request):
+    query = request.GET.get('q')  # دریافت رشته جستجو از کاربر
+    results = []
+    
+    if query:
+        # جستجو در محصولات بر اساس نام و دسته‌بندی
+        results = MenuItem.objects.filter(name__icontains=query) | MenuItem.objects.filter(category__icontains=query)
+    if not results:
+        messages.warning(request, "No results found.")        
+
+    return render(request, 'search_results.html', {'results': results})
