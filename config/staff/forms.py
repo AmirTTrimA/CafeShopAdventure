@@ -1,7 +1,17 @@
-"""forms.py"""
 from django import forms
 from django.contrib.auth.hashers import make_password
 from .models import Staff
+from order.models import Order
+
+class OrderFilterForm(forms.Form):
+    FILTER_CHOICES = [
+        ('date', 'Date'),
+        ('last_order', 'Last Order'),
+        ('status', 'Status'),
+        ('table_number', 'Table Number'),
+    ]
+    filter_type = forms.ChoiceField(choices=FILTER_CHOICES)
+    filter_value = forms.CharField(label='Enter filter value',required=False)
 
 
 class StaffRegistrationForm(forms.ModelForm):
@@ -33,19 +43,3 @@ class StaffRegistrationForm(forms.ModelForm):
         if commit:
             staff.save()
         return staff
-
-class FilterOrderForm(forms.Form):
-    FILTER_CHOICES = [
-        ('date', 'Filter by Date'),
-        ('table', 'Filter by Table Number'),
-        ('last_order', 'View Last Order'),
-        ('status', 'Filter by Status'),
-    ]
-    STATUS_FILD=[('Done','done'),('paide','paide')]
-    
-    filter_type = forms.ChoiceField(choices=FILTER_CHOICES)
-    
-    # These fields will appear based on the selected filter type
-    date = forms.DateField(required=False)
-    table_number = forms.IntegerField(required=False)
-    status = forms.ChoiceField(choices=STATUS_FILD, required=False)
