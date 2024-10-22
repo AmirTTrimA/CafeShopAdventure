@@ -55,11 +55,6 @@ class Order(models.Model):
         return f"Order {self.id} by {self.customer.phone_number if self.customer else 'Guest'}"
 
     def calculate_total_price(self):
-        """
-        Calculates the total price of the order based on its items.
-
-        This method sums the subtotal of each OrderItem associated with the order.
-        """
         total = sum(item.subtotal for item in self.order_items.all())
         self.total_price = total
 
@@ -71,8 +66,11 @@ class Order(models.Model):
             *args: Variable length argument list.
             **kwargs: Arbitrary keyword arguments.
         """
+        # First save the Order instance to the database
+        super().save(*args, **kwargs)
+
+        # Now that the Order is saved, you can access the order_items
         self.calculate_total_price()
-        super(Order, self).save(*args, **kwargs)
 
 
 class OrderItem(models.Model):
@@ -105,8 +103,14 @@ class OrderItem(models.Model):
             *args: Variable length argument list.
             **kwargs: Arbitrary keyword arguments.
         """
-        self.subtotal = self.item.price * self.quantity
-        super(OrderItem, self).save(*args, **kwargs)
+
+        self.subtotal = (
+            self.item.price * self.quantity
+        )  # Assuming item has a price attribute
+        super().save(*args, **kwargs)
+        if self.order:
+            self.order.calculate_total_price()
+            self.order.save()
 
     def __str__(self):
         """
