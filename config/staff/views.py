@@ -49,7 +49,7 @@ class LoginView(View):
             request,
             phone_number=phone_number,
             password=password,
-            backend="staff.backends.PhoneNumberBackend",
+            backend="staff.auth.PhoneNumberBackend",
         )
 
         if user is not None:

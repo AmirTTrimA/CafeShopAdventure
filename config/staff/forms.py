@@ -1,7 +1,6 @@
 """staff/forms.py"""
 
 from django import forms
-from django.contrib.auth.hashers import make_password
 from .models import Staff
 from .validator import iran_phone_regex
 
@@ -37,17 +36,6 @@ class StaffRegistrationForm(forms.ModelForm):
 
         model = Staff
         fields = ["phone_number", "password1", "password2", "role"]
-
-    # def clean_phone_number(self):
-    #     """Validate and format the phone number."""
-    #     phone_number = self.cleaned_data.get("phone_number")
-    #     # Remove any non-digit characters
-    #     phone_number = "".join(filter(str.isdigit, phone_number))
-    #     if phone_number.startswith("0"):
-    #         phone_number = "+98" + phone_number[1:]
-    #     elif not phone_number.startswith("+98"):
-    #         phone_number = "+98" + phone_number
-    #     return phone_number
 
     def clean(self):
         """
