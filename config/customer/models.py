@@ -29,6 +29,7 @@ class Customer(models.Model):
 
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
+    table_number = models.BigIntegerField()
     # email = models.EmailField(unique=True)
     # password = models.CharField(
     #     max_length=100
