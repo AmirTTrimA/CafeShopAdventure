@@ -1,14 +1,17 @@
 from django.urls import path
-from .views import LoginView, LogoutView, StaffView, RegisterView
+from .views import login_view, logout_view, staff_view, register_view, home_view,OrderFilterView
 
 urlpatterns = [
     # URL pattern for the login view
-    path("login/", LoginView.as_view(), name="login"),
+    path("login/", login_view, name="login"),
     # URL pattern for the logout view
-    path("logout/", LogoutView.as_view(), name="logout"),
+    path("logout/", logout_view, name="logout"),
     # URL pattern for viewing the staff list
-    path("", StaffView.as_view(), name="staff"),
+    path("staff/", staff_view, name="staff"),
     # URL pattern for the registration view
-    path("register/", RegisterView.as_view(), name="register"),
-    path('orders/', views_staff.order_list, name='order_list'),
+    path("register/", register_view, name="register"),
+    # URL pattern for the home view
+    path("home/", home_view, name="home"),
+    path("filter/", OrderFilterView.as_view(), name="filter")
+
 ]
