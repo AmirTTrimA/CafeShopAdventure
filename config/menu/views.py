@@ -1,17 +1,23 @@
-
-
 from django.shortcuts import render, get_object_or_404
 from .models import MenuItem,Category
+from django.views import View
 
-def menu(request):
-    products = MenuItem.objects.all().values()
-    category=Category.objects.all().values()
-    return render(request, 'menu\menu.html', {'product':products,'category':category})
 
-def product_detail(request,product_id):
-    queryset=MenuItem.objects.filter(id=product_id)
-    product = get_object_or_404(queryset)
-    context = {
-        'product': product
-    }
-    return render(request, 'menu\product.html', context)
+class CafeMenuView(View):
+    template_name = 'menu\menu.html'
+
+    def get(self, request):
+        menu_items = MenuItem.objects.filter(is_available=True)  # Only get available items
+        context = {
+            'menu_items': menu_items
+        }
+        return render(request, self.template_name, context)
+    
+
+class ProductDetailView(View):
+    template_name = 'menu\product.html'
+
+    def get(self, request, pk):
+        product = get_object_or_404(MenuItem, pk=pk)
+        context = {'product': product}
+        return render(request, self.template_name, context)
