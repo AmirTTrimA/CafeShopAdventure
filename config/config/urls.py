@@ -6,8 +6,10 @@ from django.urls import path, include
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('', include('cafe.urls')),
-    # path("staff/", include('staff.urls')),
-    # path("order/", include('order.urls')),
+    path('', include('menu.urls')),
+    path('', include('staff.urls')),
+    path('', include('order.urls')),
+    path('', include('analytics.urls')),
     # path('search/', search_products, name='search_products'),  
     # path("add_to_cart/<int:item_id>/", add_to_cart, name="add_to_cart"),
     # path("cart/", cart_view, name="cart_view"),

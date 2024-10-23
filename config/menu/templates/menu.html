@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -9,22 +11,22 @@
 
         <!-- Favicons -->
         <link href="img/favicon.ico" rel="icon">
-        <link href="img/apple-touch-icon.png" rel="apple-touch-icon">
+        <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
 
         <!-- Google Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600|Pacifico" rel="stylesheet"> 
 
         <!-- Bootstrap CSS File -->
-        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
 
         <!-- Libraries CSS Files -->
-        <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-        <link href="vendor/animate/animate.min.css" rel="stylesheet">
-        <link href="vendor/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-        <link href="vendor/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+        <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+        <link href="{% static 'vendor/animate/animate.min.css' %}" rel="stylesheet">
+        <link href="{% static 'vendor/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+        <link href="{% static 'vendor/tempusdominus/css/tempusdominus-bootstrap-4.min.css' %}" rel="stylesheet" />
 
         <!-- Main Stylesheet File -->
-        <link href="css/style.css" rel="stylesheet">
+        <link href="{% static 'css/style.css' %}" rel="stylesheet">
     </head>
 
     <body>
@@ -39,7 +41,7 @@
 
         <!-- Header Start -->
         <header id="header">
-            <img src="img/rb_49164.png" />
+            <img src="{% static 'img/rb_49164.png' %}" />
 
             <div class="container">
                 <nav id="nav-menu-container">
@@ -127,7 +129,7 @@
                 <div class="row">
                     <div class="col-sm-6 col-md-4 col-lg-3">
                         <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-1.jpg" />
+                            <img class="img-fluid" src="{% static 'img/menu-1.jpg' %}" />
                             <div>$20</div>
                             <h4>Espresso</h4>
                             <a href="order.html">Order Now</a>
@@ -139,7 +141,7 @@
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
                         <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-2.jpg" />
+                            <img class="img-fluid" src="{% static 'img/menu-2.jpg' %}" />
                             <div>$15</div>
                             <h4>Americano</h4>
                             <a href="order.html">Order Now</a>
@@ -147,7 +149,7 @@
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
                         <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-3.jpg" />
+                            <img class="img-fluid" src="{% static 'img/menu-3.jpg' %}" />
                             <div>$12</div>
                             <h4>Cappuccino</h4>
                             <a href="order.html">Order Now</a>
@@ -155,7 +157,7 @@
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
                         <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-4.jpg" />
+                            <img class="img-fluid" src="{% static 'img/menu-4.jpg' %}" />
                             <div>$18</div>
                             <h4>Latte</h4>
                             <a href="order.html">Order Now</a>
@@ -163,7 +165,7 @@
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
                         <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-5.jpg" />
+                            <img class="img-fluid" src="{% static 'img/menu-5.jpg' %}" />
                             <div>$25</div>
                             <h4>Mocha</h4>
                             <a href="order.html">Order Now</a>
@@ -171,7 +173,7 @@
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
                         <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-6.jpg" />
+                            <img class="img-fluid" src="{% static 'img/menu-6.jpg' %}" />
                             <div>$10</div>
                             <h4>Cold Brew</h4>
                             <a href="order.html">Order Now</a>
@@ -179,7 +181,7 @@
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
                         <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-7.jpg" />
+                            <img class="img-fluid" src="{% static 'img/menu-7.jpg' %}" />
                             <div>$18</div>
                             <h4>Black Tea</h4>
                             <a href="order.html">Order Now</a>
@@ -187,7 +189,7 @@
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
                         <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-8.jpg" />
+                            <img class="img-fluid" src="{% static 'img/menu-8.jpg' %}" />
                             <div>$14</div>
                             <h4>Green Tea</h4>
                             <a href="order.html">Order Now</a>
@@ -195,7 +197,7 @@
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
                         <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-9.jpg" />
+                            <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
                             <div>$22</div>
                             <h4>Iced Tea</h4>
                             <a href="order.html">Order Now</a>
@@ -203,7 +205,7 @@
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
                         <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-9.jpg" />
+                            <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
                             <div>$22</div>
                             <h4>Croissants</h4>
                             <a href="order.html">Order Now</a>
@@ -211,7 +213,7 @@
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
                         <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-9.jpg" />
+                            <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
                             <div>$22</div>
                             <h4>Muffins (Blueberry, Chocolate Chip)</h4>
                             <a href="order.html">Order Now</a>
@@ -219,7 +221,7 @@
                     </div>                    
                     <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
                         <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-9.jpg" />
+                            <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
                             <div>$22</div>
                             <h4>Cookies (Chocolate Chip, Oatmeal Raisin)</h4>
                             <a href="order.html">Order Now</a>
@@ -227,7 +229,7 @@
                     </div>                    
                     <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
                         <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-9.jpg" />
+                            <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
                             <div>$22</div>
                             <h4>Breakfast Sandwiches (Egg & Cheese, Bacon & Egg)</h4>
                             <a href="order.html">Order Now</a>
@@ -235,7 +237,7 @@
                     </div>                    
                     <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
                         <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-9.jpg" />
+                            <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
                             <div>$22</div>
                             <h4>Granola Bars</h4>
                             <a href="order.html">Order Now</a>
@@ -243,7 +245,7 @@
                     </div>                    
                     <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
                         <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-9.jpg" />
+                            <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
                             <div>$22</div>
                             <h4>Trail Mix</h4>
                             <a href="order.html">Order Now</a>
@@ -251,7 +253,7 @@
                     </div>                    
                     <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
                         <div class="single-menu">
-                            <img class="img-fluid" src="img/menu-9.jpg" />
+                            <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
                             <div>$22</div>
                             <h4>Fruit Cups</h4>
                             <a href="order.html">Order Now</a>
@@ -279,7 +281,7 @@
                     <div class="col-sm-4">
 
                         <div class="copyright">
-                            <img src="img/rb_49164.png" />
+                            <img src="{% static 'img/rb_49164.png' %}" />
 							<p>&copy; Copyright <a href="">Maktab CofeeShop</a>. All Rights Reserved</p>
 							
 							<!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
@@ -303,20 +305,20 @@
         <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 
         <!-- JavaScript Libraries -->
-        <script src="vendor/jquery/jquery.min.js"></script>
-        <script src="vendor/jquery/jquery-migrate.min.js"></script>
-        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script src="vendor/easing/easing.min.js"></script>
-        <script src="vendor/stickyjs/sticky.js"></script>
-        <script src="vendor/superfish/hoverIntent.js"></script>
-        <script src="vendor/superfish/superfish.min.js"></script>
-        <script src="vendor/owlcarousel/owl.carousel.min.js"></script>
-        <script src="vendor/tempusdominus/js/moment.min.js"></script>
-        <script src="vendor/tempusdominus/js/moment-timezone.min.js"></script>
-        <script src="vendor/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+        <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'vendor/jquery/jquery-migrate.min.js' %}"></script>
+        <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'vendor/easing/easing.min.js' %}"></script>
+        <script src="{% static 'vendor/stickyjs/sticky.js' %}"></script>
+        <script src="{% static 'vendor/superfish/hoverIntent.js' %}"></script>
+        <script src="{% static 'vendor/superfish/superfish.min.js' %}"></script>
+        <script src="{% static 'vendor/owlcarousel/owl.carousel.min.js' %}"></script>
+        <script src="{% static 'vendor/tempusdominus/js/moment.min.js' %}"></script>
+        <script src="{% static 'vendor/tempusdominus/js/moment-timezone.min.js' %}"></script>
+        <script src="{% static 'vendor/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
 
         <!-- Main Javascript File -->
-        <script src="js/main.js"></script>
+        <script src="{% static 'js/main.js' %}"></script>
 
     </body>
 </html>
