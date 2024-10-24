@@ -7,7 +7,7 @@ class CafeMenuView(View):
     template_name = 'menu\menu.html'
 
     def get(self, request):
-        menu_items = MenuItem.objects.filter(is_available=True)  # Only get available items
+        menu_items = MenuItem.objects.filter(is_available=True)
         context = {
             'menu_items': menu_items
         }
@@ -21,3 +21,12 @@ class ProductDetailView(View):
         product = get_object_or_404(MenuItem, pk=pk)
         context = {'product': product}
         return render(request, self.template_name, context)
+
+def menu_view(request):
+    return render(request, 'menu.html') 
+
+def product_view(request):
+    return render(request, 'product.html')
+
+def search_view(request):
+    return render(request, 'search.html')
