@@ -148,8 +148,6 @@ LOGIN_REDIRECT_URL = "home"  # Redirect to home after login
 LOGOUT_REDIRECT_URL = "login"  # Redirect to login after logout
 
 AUTHENTICATION_BACKENDS = [
-    "staff.auth.PhoneNumberBackend",  # Replace 'your_app' with your actual app name
+    "staff.backends.PhoneNumberBackend",  # Replace 'your_app' with your actual app name
     "django.contrib.auth.backends.ModelBackend",  # Keep the default backend as a fallback
 ]
-
-SESSION_COOKIE_AGE = 60 * 60  # an hour
