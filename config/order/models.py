@@ -11,23 +11,58 @@ from customer.models import Customer
 from menu.models import MenuItem
 
 
-class Order(models.Model):
+
+
+class Cart(models.Model):
     """
-    Represents a customer order in the system.
+    Model representing a shopping cart for a customer.
 
     Attributes:
-        customer (Customer): The customer associated with the order.
-        staff (Staff): The staff member handling the order.
-        order_date (DateTimeField): The date and time when the order was placed.
-        status (str): The current status of the order (Pending, Completed, Canceled).
-        total_price (Decimal): The total price of the order, calculated automatically.
+        customer (ForeignKey): The customer who owns the cart.
+        created_at (DateTimeField): The timestamp when the cart was created.
+    """
+
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        """Return a string representation of the cart."""
+        return f"Cart for {self.customer.first_name} {self.customer.last_name}"
+
+
+class CartItem(models.Model):
+    """
+    Model representing an item in a shopping cart.
+
+    Attributes:
+        cart (ForeignKey): The cart to which this item belongs.
+        menu_item (ForeignKey): The menu item in the cart.
+        quantity (PositiveIntegerField): The quantity of the menu item in the cart.
+    """
+
+    cart = models.ForeignKey(Cart, related_name="items", on_delete=models.CASCADE)
+    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        """Return a string representation of the cart item."""
+        return f"{self.quantity} x {self.menu_item.name} in Cart"
+
+class Order(models.Model):
+    """
+    Model representing a customer order.
+
+    Attributes:
+        customer (ForeignKey): The customer who placed the order.
+        staff (ForeignKey): The staff member handling the order (optional).
+        order_date (DateTimeField): The date when the order was placed.
+        status (CharField): The current status of the order.
+        total_price (DecimalField): The total price of the order (calculated).
         created_at (DateTimeField): The timestamp when the order was created.
         updated_at (DateTimeField): The timestamp when the order was last updated.
     """
 
-    customer = models.ForeignKey(
-        Customer, on_delete=models.SET_NULL, null=True, blank=True
-    )
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     staff = models.ForeignKey(Staff, on_delete=models.CASCADE, null=True, blank=True)
     order_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
@@ -39,6 +74,7 @@ class Order(models.Model):
         ],
         default="Pending",
     )
+    cart_items = models.ManyToManyField(CartItem)
     total_price = models.DecimalField(
         max_digits=10, decimal_places=2, default=0.00, editable=False
     )
@@ -46,43 +82,30 @@ class Order(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        """
-        Returns a string representation of the Order.
-
-        Returns:
-            str: A string indicating the order ID and customer phone number or 'Guest'.
-        """
-        return f"Order {self.id} by {self.customer.phone_number if self.customer else 'Guest'}"
+        """Return a string representation of the order."""
+        return f"Order {self.id} by {self.customer.name}"
 
     def calculate_total_price(self):
+        """Calculate the total price of the order based on its items."""
         total = sum(item.subtotal for item in self.order_items.all())
         self.total_price = total
 
     def save(self, *args, **kwargs):
-        """
-        Overrides the save method to calculate the total price before saving.
-
-        Args:
-            *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
-        """
-        # First save the Order instance to the database
-        super().save(*args, **kwargs)
-
-        # Now that the Order is saved, you can access the order_items
+        """Override save method to calculate total price before saving."""
         self.calculate_total_price()
+        super(Order, self).save(*args, **kwargs)
 
 class OrderItem(models.Model):
     """
-    Represents an item within an order.
+    Model representing an item in an order.
 
     Attributes:
-        order (Order): The order to which this item belongs.
-        item (MenuItem): The menu item being ordered.
-        quantity (int): The quantity of the menu item ordered.
-        subtotal (Decimal): The subtotal price for this item, calculated automatically.
-        created_at (DateTimeField): The timestamp when the item was created.
-        updated_at (DateTimeField): The timestamp when the item was last updated.
+        order (ForeignKey): The order to which this item belongs.
+        item (ForeignKey): The menu item being ordered.
+        quantity (PositiveIntegerField): The quantity of the item ordered.
+        subtotal (DecimalField): The subtotal price for this item (calculated).
+        created_at (DateTimeField): The timestamp when the order item was created.
+        updated_at (DateTimeField): The timestamp when the order item was last updated.
     """
 
     order = models.ForeignKey(
@@ -95,58 +118,10 @@ class OrderItem(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-
-        """
-        Overrides the save method to calculate the subtotal before saving.
-
-        Args:
-            *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
-        """
-
-        self.subtotal = (
-            self.item.price * self.quantity
-        )  # Assuming item has a price attribute
-        super().save(*args, **kwargs)
-        if self.order:
-            self.order.calculate_total_price()
-            self.order.save()
+        """Override save method to calculate subtotal before saving."""
+        self.subtotal = self.item.price * self.quantity
+        super(OrderItem, self).save(*args, **kwargs)
 
     def __str__(self):
-        """
-        Returns a string representation of the OrderItem.
-
-        Returns:
-            str: A string indicating the quantity and item name in the corresponding order.
-        """
+        """Return a string representation of the order item."""
         return f"{self.quantity} x {self.item.name} in Order {self.order.id}"
-
-
-class OrderHistory(models.Model):
-    """
-    Model to store order history in JSON format.
-
-    Attributes:
-        customer (Customer): The customer associated with the order history.
-        guest_id (str): An identifier for guest users.
-        order_data (JSONField): Stores the order details in JSON format.
-        created_at (DateTimeField): The timestamp when the order history was created.
-    """
-
-    customer = models.ForeignKey(
-        Customer, on_delete=models.CASCADE, null=True, blank=True
-    )
-    guest_id = models.CharField(
-        max_length=36, null=True, blank=True
-    )  # For guest tracking
-    order_data = models.JSONField()  # Stores the order details in JSON format
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        """
-        Returns a string representation of the OrderHistory.
-
-        Returns:
-            str: A string indicating the customer phone number and creation date.
-        """
-        return f"Order by {self.customer.phone_number} on {self.created_at}"
