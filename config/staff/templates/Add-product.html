@@ -1,30 +1,31 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Add Category</title>
+        <title>Add Product</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
 
         <!-- Favicons -->
-        <link href="img/favicon.ico" rel="icon">
-        <link href="img/apple-touch-icon.png" rel="apple-touch-icon">
+        <link href="{% static 'img/favicon.ico' %}" rel="icon">
+        <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
 
         <!-- Google Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600|Pacifico" rel="stylesheet"> 
 
         <!-- Bootstrap CSS File -->
-        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
 
         <!-- Libraries CSS Files -->
-        <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-        <link href="vendor/animate/animate.min.css" rel="stylesheet">
-        <link href="vendor/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-        <link href="vendor/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+        <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+        <link href="{% static 'vendor/animate/animate.min.css' %}" rel="stylesheet">
+        <link href="{% static 'vendor/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+        <link href="{% static 'vendor/tempusdominus/css/tempusdominus-bootstrap-4.min.css' %}" rel="stylesheet" />
 
         <!-- Main Stylesheet File -->
-        <link href="css/style.css" rel="stylesheet">
+        <link href="{% static 'css/style.css' %}" rel="stylesheet">
     </head>
 
     <body>
@@ -32,14 +33,14 @@
         <!-- Top Header Start -->
         <!-- <section id="top-header">
             <div class="logo">
-                <img src="img/logo.png" />
+                <img src="{% static 'img/logo.png' %}" />
             </div>
         </section> -->
         <!-- Top Header End -->
 
         <!-- Header Start -->
         <header id="header">
-            <img src="img/rb_49164.png" />
+            <img src="{% static 'img/rb_49164.png' %}" />
 
             <div class="container">
                 <nav id="nav-menu-container">
@@ -60,21 +61,41 @@
         <section id="add-product">
             <div class="container">
                 <header class="section-header">
-                    <h3>Add Category</h3>
+                    <h3>Add Product</h3>
                 </header>
                 <div class="row form">
-
-                    <div class="col-md-6">
-
-                        <h4>Add New Category</h4>
+                    <div class="col-md-12">
+                        <h4>Add Product Form</h4>
                         <div class="form-group">
-                            <label for ="Category Name">Category Name</label>
-                            <input name="Category Name" type="text" class="form-control" placeholder="Category Name" />
+                            <label for ="Product Name">Product Name:</label>
+                            <input name="Prodcut Name" type="text" class="form-control" placeholder="Product Name" />
                         </div>
+                        <div class="form-group">
+                            <label for ="Product">Product Category:</label>
+                            <select name="Product" class="form-control">
+                                <option selected value="0">Coffee</option>
+                                <option value="1">Teas</option>
+                                <option value="2">Pastries</option>
+                                <option value="3">Breakfast Items</option>
+                                <option value="4">Snacks</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for ="Product description">Product Description:</label>
+                            <input name ="Product description" type="text" class="form-control" placeholder="Description" />
+                        </div>
+                        <div class="form-group">
+                            <label for ="Product Price">Product Price:</label>
+                            <input name ="Product Price"type="text" class="form-control" placeholder="Price" />
+                        </div>
+                        <div class="form-group">
+                            <label for ="Product Image">Product Image:</label>
+                            <input name ="Product Image" type="file" class="form-control" placeholder="Upload Image" />
+                        </div>
+
                         <div class="button">
                             <button type="submit">Submit</button>
                         </div>
- 
                     </div>
 
                 </div>
@@ -99,7 +120,7 @@
                     <div class="col-sm-4">
 
                         <div class="copyright">
-                            <img src="img/rb_49164.png" />
+                            <img src="{% static 'img/rb_49164.png' %}" />
 							<p>&copy; Copyright <a href="">Maktab CofeeShop</a>. All Rights Reserved</p>
 							
 							<!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
@@ -123,20 +144,20 @@
         <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 
         <!-- JavaScript Libraries -->
-        <script src="vendor/jquery/jquery.min.js"></script>
-        <script src="vendor/jquery/jquery-migrate.min.js"></script>
-        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script src="vendor/easing/easing.min.js"></script>
-        <script src="vendor/stickyjs/sticky.js"></script>
-        <script src="vendor/superfish/hoverIntent.js"></script>
-        <script src="vendor/superfish/superfish.min.js"></script>
-        <script src="vendor/owlcarousel/owl.carousel.min.js"></script>
-        <script src="vendor/tempusdominus/js/moment.min.js"></script>
-        <script src="vendor/tempusdominus/js/moment-timezone.min.js"></script>
-        <script src="vendor/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+        <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'vendor/jquery/jquery-migrate.min.js' %}"></script>
+        <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'vendor/easing/easing.min.js' %}"></script>
+        <script src="{% static 'vendor/stickyjs/sticky.js' %}"></script>
+        <script src="{% static 'vendor/superfish/hoverIntent.js' %}"></script>
+        <script src="{% static 'vendor/superfish/superfish.min.js' %}"></script>
+        <script src="{% static 'vendor/owlcarousel/owl.carousel.min.js' %}"></script>
+        <script src="{% static 'vendor/tempusdominus/js/moment.min.js' %}"></script>
+        <script src="{% static 'vendor/tempusdominus/js/moment-timezone.min.js' %}"></script>
+        <script src="{% static 'vendor/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
 
         <!-- Main Javascript File -->
-        <script src="js/main.js"></script>
+        <script src="{% static 'js/main.js' %}"></script>
 
     </body>
 </html>
