@@ -21,26 +21,26 @@ class StaffAdmin(admin.ModelAdmin):
         "last_name",
         "phone_number",
         "role",
-        # "is_staff",
-        # "is_superuser",
+        "is_staff",
+        "is_superuser",
     )
 
-    list_filter = ["role"]
+    list_filter = ("role", "is_staff", "is_superuser")
     search_fields = ("first_name", "last_name", "phone_number")
     ordering = ("last_name", "first_name")
     readonly_fields = ("staff_id",)  # Assuming staff_id should be read-only
 
     def has_change_permission(self, request, obj=None):
         """Override to restrict change permissions if needed."""
-        return request.user.role == "M"
+        return request.user.is_superuser
 
     def has_delete_permission(self, request, obj=None):
         """Override to restrict delete permissions if needed."""
-        return request.user.role == "M"
+        return request.user.is_superuser
 
     def get_queryset(self, request):
         """Customize the queryset to show only relevant staff members."""
         queryset = super().get_queryset(request)
-        if request.user.role == "M":
+        if request.user.is_superuser:
             return queryset
-        return queryset.filter(role="S")
+        return queryset.filter(is_staff=True)  

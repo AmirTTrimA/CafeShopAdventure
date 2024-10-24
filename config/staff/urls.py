@@ -6,10 +6,8 @@ urlpatterns = [
     path("login/", LoginView.as_view(), name="login"),
     # URL pattern for the logout view
     path("logout/", LogoutView.as_view(), name="logout"),
-    # URL pattern for viewing the staff view
-    path("", StaffView.as_view(), name="staff"),
-    # URL pattern for the registration view
-    path("register/", RegisterView.as_view(), name="register"),
+    # URL pattern for viewing the staff list
+    path("staff/", StaffView.as_view(), name="staff"),
     # URL pattern for the registration view
     path("register/", RegisterView.as_view(), name="register"),
     # URL pattern for the home view
@@ -19,5 +17,6 @@ urlpatterns = [
     path("checkout/", checkout, name="checkout"),
     path("edit-product/", edit_product, name="edit-product"),
     path("manager/", manager, name="manager"),
+    # path("", staff, name="staff"),
     path("edit-category/", edit_category, name="edit-category"),
 ]
