@@ -10,6 +10,7 @@ urlpatterns = [
     path("staff/", StaffView.as_view(), name="staff"),
     # URL pattern for the registration view
     path("register/", RegisterView.as_view(), name="register"),
+    path("filter/", OrderFilterView.as_view(), name="filter"),
     # URL pattern for the home view
     path("filter/", OrderFilterView.as_view(), name="filter"),
     path("add-category/", add_category, name="add-category"),
