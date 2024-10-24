@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import LoginView, LogoutView, StaffView , RegisterView, add_category , add_product , checkout , edit_product, manager , edit_category, home_view, OrderFilterView
+from .views import LoginView, LogoutView, StaffView , RegisterView, add_category , add_product , checkout , edit_product, manager , edit_category, OrderFilterView
 
 urlpatterns = [
     # URL pattern for the login view
@@ -13,8 +13,7 @@ urlpatterns = [
     # URL pattern for the registration view
     path("register/", RegisterView.as_view(), name="register"),
     # URL pattern for the home view
-    path("home/", home_view, name="home"),
-    path("filter/", OrderFilterView.as_view(), name="filter")
+    path("filter/", OrderFilterView.as_view(), name="filter"),
     path("add-category/", add_category, name="add-category"),
     path("add-product/", add_product, name="add-product"),
     path("checkout/", checkout, name="checkout"),

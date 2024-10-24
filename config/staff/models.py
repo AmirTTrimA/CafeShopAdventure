@@ -15,7 +15,7 @@ from django.contrib.auth.models import (
 from .validator import iran_phone_regex
 
 
-class StaffManager(BaseUserManager):
+class StaffManager(BaseUserManager): # AbstractBaseUser
     """
     Custom manager for the Staff model.
 

@@ -9,7 +9,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Order, CartItem, MenuItem, OrderItem, Cart, Customer
+from .models import Order, MenuItem, OrderItem, Customer
 from django.contrib import messages
 from django.http import JsonResponse
 
