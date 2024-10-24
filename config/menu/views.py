@@ -2,6 +2,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import MenuItem
 
+def menu_view(request):
+    return render(request, 'menu.html') 
+
+def product_view(request):
+    return render(request, 'product.html')
+
+def search_view(request):
+    return render(request, 'search.html')
+
 def add_to_cart(request, item_id):
     """Add a menu item to the shopping cart stored in the session."""
     menu_item = get_object_or_404(MenuItem, id=item_id)

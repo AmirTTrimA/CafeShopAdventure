@@ -1,3 +1,7 @@
 from django.shortcuts import render
 
-# Create your views here.
+def customer_analytics_view(request):
+    return render(request, 'customer-analytics.html')  
+
+def orders_view(request):
+    return render(request, 'orders.html')  
