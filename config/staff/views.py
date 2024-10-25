@@ -117,9 +117,10 @@ class LoginView(View):
 
         if user:
             login(request, user)
-            return render(
-                request, "staff.html", {"user": user, "login_logout": "logout"}
-            )
+            if user.is_staff:  # Check if the user is a manager
+                return redirect("manager")  # Redirect to manager dashboard
+            else:
+                return redirect("staff")  # Redirect to staff panel
         else:
             messages.error(request, "Invalid phone number or password.")
             return render(request, self.template_name)
@@ -137,6 +138,16 @@ class LogoutView(View):
         logout(request)
         messages.success(request, "You have been logged out successfully.")
         return redirect("login")
+
+
+@method_decorator(login_required, name="dispatch")
+class ManagerView(View):
+    """Render the manager dashboard."""
+
+    template_name = "manager.html"
+
+    def get(self, request):
+        return render(request, self.template_name)
 
 
 @method_decorator(login_required, name="dispatch")

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import LoginView, LogoutView, StaffView , RegisterView, add_category , add_product , checkout , edit_product, manager , edit_category, OrderFilterView, staff_access    
+from .views import LoginView, LogoutView, StaffView , RegisterView, add_category , add_product , checkout , edit_product, manager , edit_category, OrderFilterView, staff_access, ManagerView
 
 urlpatterns = [
     # URL pattern for the login view
@@ -8,6 +8,8 @@ urlpatterns = [
     path("logout/", LogoutView.as_view(), name="logout"),
     # URL pattern for viewing the staff list
     path("staff/", StaffView.as_view(), name="staff"),
+    # URL pattern for the manager view
+    path("manager/", ManagerView.as_view(), name="manager"),
     # URL pattern for the registration view
     path("register/", RegisterView.as_view(), name="register"),
     path("filter/", OrderFilterView.as_view(), name="filter"),
