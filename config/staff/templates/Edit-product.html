@@ -2,6 +2,7 @@
 
 {% block title %}Edit Product{% endblock %}
 
+
 {% block content %}
 {% load static %}
 
@@ -14,6 +15,7 @@
         <li><a href="{% url 'add-product' %}">Add Product</a></li>
         <li><a href="{% url 'edit-product' %}">Edit Product</a></li>
         <li><a href="{% url 'logout' %}">logout</a></li>
+
 
 
     </div>
@@ -29,29 +31,43 @@
                         <div class="form-group">
                             <label for ="Product">Select Product:</label>
                             <select name="Product" class="form-control">
-                                <option selected value="0">Espresso</option>
+                                {%for item in items%}
+                                <option value={{item.id}}>{{item.name}}</option>
+                                {%endfor%}
+                                <!-- <option selected value="0">Espresso</option>
                                 <option value="1">Americano</option>
                                 <option value="2">Cappuccino</option>
                                 <option value="3">Black Tea</option>
-                                <option value="4">Cookies (Chocolate Chip, Oatmeal Raisin)</option>
+                                <option value="4">Cookies (Chocolate Chip, Oatmeal Raisin)</option> -->
                             </select>
                         </div>
                         <div class="form-group">
                             <label for ="Product cat">Product Category:</label>
                             <select name="Product cat" class="form-control">
-                                <option selected value="0">Coffee</option>
+                                {%for cat in cats%}
+                                <option value={{cat.id}}>{{cat.name}}</option>
+                                {%endfor%}
+                                <!-- <option selected value="0">Coffee</option>
                                 <option value="1">Teas</option>
                                 <option value="2">Pastries</option>
                                 <option value="3">Breakfast Items</option>
-                                <option value="4">Snacks</option>
+                                <option value="4">Snacks</option> -->
                             </select>
                         </div>
-                        <div class="form-group">
+                        <form class="form-group" method="post">
+                            {% csrf_token %}
+                            {{ form.as_p }}
                             <label for ="Product Name">Product Name:</label>
                             <input name="Prodcut Name" type="text" class="form-control" placeholder="Product Name" />
-                        </div>
+                            <label for ="Product description">Product Description:</label>
+                            <input name ="Product description" type="text" class="form-control" placeholder="Description" />
+                            <label for ="Product Price">Product Price:</label>
+                            <input name ="Product Price"type="text" class="form-control" placeholder="Price" />
+                            <label for ="Product Image">Product Image:</label>
+                            <input name ="Product Image" type="file" class="form-control" placeholder="Upload Image" />
+                        </form>
 
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for ="Product description">Product Description:</label>
                             <input name ="Product description" type="text" class="form-control" placeholder="Description" />
                         </div>
@@ -62,16 +78,17 @@
                         <div class="form-group">
                             <label for ="Product Image">Product Image:</label>
                             <input name ="Product Image" type="file" class="form-control" placeholder="Upload Image" />
-                        </div>
+                        </div> -->
 
                         <div class="button">
                             <button type="submit">Submit</button>
                         </div>
+                        <div>{{massage}}</div>
                     </div>
 
                 </div>
             </div>
         </section>
         <!-- Add Product Section End -->
-         
 {% endblock %}
+
