@@ -12,7 +12,7 @@ urlpatterns = [
     path("register/", RegisterView.as_view(), name="register"),
     path("filter/", OrderFilterView.as_view(), name="filter"),
     # URL pattern for the home view
-    path("filter/", OrderFilterView.as_view(), name="filter"),
+    # path("filter/", OrderFilterView.as_view(), name="filter"),
     path("add-category/", add_category, name="add-category"),
     path("add-product/", add_product, name="add-product"),
     path("checkout/", checkout, name="checkout"),

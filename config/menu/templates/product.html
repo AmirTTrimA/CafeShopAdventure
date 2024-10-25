@@ -10,26 +10,27 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="product-col-left">></div>
+                        <div class="product-col-left"><img src="{% static 'img/menu-9.jpg' %}"></div>
                     </div>
 
                     <div class="col-md-6">
                         <div class="product-col-right">
                             <header class="section-header">
-                                <h3>Aliquam Erat</h3>
+                                <h3>Americano</h3>
+                                <p class="price">category: hot coffee</p>
                             </header>
 
                             <p>
                                 Aliquam Erat dolor sit amet, consectetur adipiscing elit. Aliquam convallis quam sed tincidunt accumsan. Aliquam at tincidunt tortor, ac porta turpis. Curabitur lacinia venenatis semper.
                             </p>
                             <p>
-                                Aliquam ut nibh ut lacus posuere facilisis. Vestibulum ullamcorper arcu et bibendum ultrices. Suspendisse rutrum turpis vitae.
+                                Aliquam ut nibh ut lacus posuere facilisis. Suspendisse rutrum turpis vitae.
                             </p>
                             <p class="price">
                                Price: $18 
                             </p>
-                            <div class="quantity"><input type="text" value="1"></div>
-                            <a class="btn" href="#">Order Now</a>
+                            <span class="quantity"><input type="text" value="1"></span>
+                            <a class="btn" href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i></a>
                         </div>
                     </div>
                 </div>
