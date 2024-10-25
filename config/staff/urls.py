@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import LoginView, LogoutView, StaffView , RegisterView, add_category , add_product , checkout , edit_product, manager , edit_category, OrderFilterView
+from .views import LoginView, LogoutView, StaffView , RegisterView, add_category , add_product , checkout , edit_product, manager , edit_category, OrderFilterView, staff_access    
 
 urlpatterns = [
     # URL pattern for the login view
@@ -20,4 +20,5 @@ urlpatterns = [
     path("manager/", manager, name="manager"),
     # path("", staff, name="staff"),
     path("edit-category/", edit_category, name="edit-category"),
+    path("staff-access/", staff_access, name="staff-access"),
 ]

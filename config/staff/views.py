@@ -15,8 +15,7 @@ from .forms import StaffRegistrationForm
 from order.models import Order
 from customer.models import Customer
 from .models import Staff
-from .forms import StaffRegistrationForm,OrderFilterForm
-
+from .forms import StaffRegistrationForm, OrderFilterForm
 
 
 # class RegisterView(FormView):
@@ -82,8 +81,8 @@ from .forms import StaffRegistrationForm,OrderFilterForm
 #         context = {}
 #         return context
 
+
 class RegisterView(FormView):
-    template_name = "login.html"
     template_name = "login.html"
     form_class = StaffRegistrationForm
     success_url = reverse_lazy("login")
@@ -116,9 +115,11 @@ class LoginView(View):
             backend="staff.auth.PhoneNumberBackend",
         )
 
-        if user :
+        if user:
             login(request, user)
-            return render(request,'staff.html',{'user':user,'login_logout':'logout'})
+            return render(
+                request, "staff.html", {"user": user, "login_logout": "logout"}
+            )
         else:
             messages.error(request, "Invalid phone number or password.")
             return render(request, self.template_name)
@@ -147,130 +148,129 @@ class StaffView(View):
     template_name = "staff.html"
 
     def get(self, request):
-
         if request.user.is_authenticated:
             """render the staff page"""
-        # context = self.get_context_data()
-            return render(request, self.template_name,{'login_logout':'logout'})
+            # context = self.get_context_data()
+            return render(request, self.template_name, {"login_logout": "logout"})
         else:
-            return render(request, self.template_name,{'login_logout':'login'})
+            return render(request, self.template_name, {"login_logout": "login"})
+
     def get_context_data(self, **kwargs):
         context = {}
         return context
-    
+
+
 class OrderFilterView(View):
-    template_name = 'staff\order_list.html'
+    template_name = "staff\order_list.html"
 
     def get(self, request):
         form = OrderFilterForm()
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {"form": form})
 
     def post(self, request):
         form = OrderFilterForm(request.POST)
         if form.is_valid():
-            filter_type = form.cleaned_data['filter_type']
-            filter_value= form.cleaned_data['filter_value']
-            if filter_type!='last_order' and filter_value =='':
-                form.add_error('filter_value', 'Please enter a valid value.')
+            filter_type = form.cleaned_data["filter_type"]
+            filter_value = form.cleaned_data["filter_value"]
+            if filter_type != "last_order" and filter_value == "":
+                form.add_error("filter_value", "Please enter a valid value.")
 
-            elif filter_type == 'last_order' :
-                orders = View.Order.objects.order_by('-order_date')[:1]  # Last order
-                return render(request, self.template_name, {'form': form, 'orders': orders})
+            elif filter_type == "last_order":
+                orders = View.Order.objects.order_by("-order_date")[:1]  # Last order
+                return render(
+                    request, self.template_name, {"form": form, "orders": orders}
+                )
 
-            elif filter_type !='last_order' and filter_value!='':
-            
-            # Apply filtering based on filter type
-                if filter_type == 'date':
+            elif filter_type != "last_order" and filter_value != "":
+                # Apply filtering based on filter type
+                if filter_type == "date":
                     import datetime
+
                     try:
-                        date_filter = datetime.datetime.strptime(filter_value, '%Y-%m-%d')
+                        date_filter = datetime.datetime.strptime(
+                            filter_value, "%Y-%m-%d"
+                        )
                         orders = Order.objects.filter(order_date__date=date_filter)
                     except ValueError:
-                        orders =Order.objects.none()  # Return no results on invalid date
-                elif filter_type == 'status':
+                        orders = (
+                            Order.objects.none()
+                        )  # Return no results on invalid date
+                elif filter_type == "status":
                     orders = Order.objects.filter(status=filter_value)
-                elif filter_type == 'table_number':
+                elif filter_type == "table_number":
                     customers = Customer.objects.filter(table_number=filter_value)
                     orders = Order.objects.filter(customer__in=customers)
 
-                return render(request, self.template_name, {'form': form, 'orders': orders})
-        
-            return render(request, self.template_name, {'form': form})
-        
+                return render(
+                    request, self.template_name, {"form": form, "orders": orders}
+                )
+
+            return render(request, self.template_name, {"form": form})
+
 
 def manager(request):
-    return render(request, 'manager.html')
-  
+    return render(request, "manager.html")
+
+
 def edit_product(request):
-    return render(request, 'edit-product.html')
-  
+    return render(request, "edit-product.html")
+
+
 def checkout(request):
-    return render(request, 'checkout.html')
-  
+    return render(request, "checkout.html")
+
+
 def add_product(request):
-    return render(request, 'add-product.html')  
-  
+    return render(request, "add-product.html")
+
+
 def add_category(request):
-    return render(request, 'add-category.html')  
+    return render(request, "add-category.html")
+
 
 def edit_category(request):
-      return render(request, 'edit-category.html') 
-    
-
-def manager(request):
-    return render(request, 'manager.html')
-  
-def edit_product(request):
-    return render(request, 'edit-product.html')
-  
-def checkout(request):
-    return render(request, 'checkout.html')
-  
-def add_product(request):
-    return render(request, 'add-product.html')  
-  
-def add_category(request):
-    return render(request, 'add-category.html')  
-
-def edit_category(request):
-    return render(request, 'edit-category.html')  
+    return render(request, "edit-category.html")
 
 
-class OrderFilterView(View):
-    template_name = 'order_list.html'
+def staff_access(request):
+    return render(request, "staff-access.html")
 
-    def get(self, request):
-        form = OrderFilterForm()
-        return render(request, self.template_name, {'form': form})
 
-    def post(self, request):
-        form = OrderFilterForm(request.POST)
-        if form.is_valid():
-            filter_type = form.cleaned_data['filter_type']
-            filter_value= form.cleaned_data['filter_value']
-            if filter_type!='last_order' and filter_value =='':
-                form.add_error('filter_value', 'Please enter a valid value.')
+# class OrderFilterView(View):
+#     template_name = 'order_list.html'
 
-            elif filter_type == 'last_order' :
-                orders = Order.objects.order_by('-order_date')[:1]  # Last order
-                return render(request, self.template_name, {'form': form, 'orders': orders})
+#     def get(self, request):
+#         form = OrderFilterForm()
+#         return render(request, self.template_name, {'form': form})
 
-            elif filter_type !='last_order' and filter_value!='':
-            
-            # Apply filtering based on filter type
-                if filter_type == 'date':
-                    import datetime
-                    try:
-                        date_filter = datetime.datetime.strptime(filter_value, '%Y-%m-%d')
-                        orders = Order.objects.filter(order_date__date=date_filter)
-                    except ValueError:
-                        orders = Order.objects.none()  # Return no results on invalid date
-                elif filter_type == 'status':
-                    orders = Order.objects.filter(status=filter_value)
-                elif filter_type == 'table_number':
-                    customers = Customer.objects.filter(table_number=filter_value)
-                    orders = Order.objects.filter(customer__in=customers)
+#     def post(self, request):
+#         form = OrderFilterForm(request.POST)
+#         if form.is_valid():
+#             filter_type = form.cleaned_data['filter_type']
+#             filter_value= form.cleaned_data['filter_value']
+#             if filter_type!='last_order' and filter_value =='':
+#                 form.add_error('filter_value', 'Please enter a valid value.')
 
-                return render(request, self.template_name, {'form': form, 'orders': orders})
-        
-            return render(request, self.template_name, {'form': form})
+#             elif filter_type == 'last_order' :
+#                 orders = Order.objects.order_by('-order_date')[:1]  # Last order
+#                 return render(request, self.template_name, {'form': form, 'orders': orders})
+
+#             elif filter_type !='last_order' and filter_value!='':
+
+#             # Apply filtering based on filter type
+#                 if filter_type == 'date':
+#                     import datetime
+#                     try:
+#                         date_filter = datetime.datetime.strptime(filter_value, '%Y-%m-%d')
+#                         orders = Order.objects.filter(order_date__date=date_filter)
+#                     except ValueError:
+#                         orders = Order.objects.none()  # Return no results on invalid date
+#                 elif filter_type == 'status':
+#                     orders = Order.objects.filter(status=filter_value)
+#                 elif filter_type == 'table_number':
+#                     customers = Customer.objects.filter(table_number=filter_value)
+#                     orders = Order.objects.filter(customer__in=customers)
+
+#                 return render(request, self.template_name, {'form': form, 'orders': orders})
+
+#             return render(request, self.template_name, {'form': form})
