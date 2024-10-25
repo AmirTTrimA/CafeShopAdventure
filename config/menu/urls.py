@@ -1,8 +1,9 @@
 from django.urls import path
-from .views import menu_view, product_view, search_view
+from .views import ProductDetailView, CafeMenuView, SearchView
 
 urlpatterns = [
-    path('menu/', menu_view, name='menu_view'),
-    path('product/', product_view, name='product_view'),
-    path('search/', search_view, name='search_view'),
+    path("search/", SearchView.as_view() , name="search"),
+    path("menu/", CafeMenuView.as_view(), name="menu"),
+    path("product/<int:pk>", ProductDetailView.as_view(), name="product"),
+    # path("product/", ProductDetailView.as_view(), name="product"),
 ]

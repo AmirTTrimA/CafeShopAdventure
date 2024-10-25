@@ -1,60 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}search{% endblock %}
+
+{% block content %}
 {% load static %}
-
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>search</title>
-        <meta content="width=device-width, initial-scale=1.0" name="viewport">
-        <meta content="" name="keywords">
-        <meta content="" name="description">
-
-        <!-- Favicons -->
-        <link href="{% static 'img/favicon.ico' %}" rel="icon">
-        <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
-
-        <!-- Google Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600|Pacifico" rel="stylesheet"> 
-
-        <!-- Bootstrap CSS File -->
-        <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-
-        <!-- Libraries CSS Files -->
-        <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
-        <link href="{% static 'vendor/animate/animate.min.css' %}" rel="stylesheet">
-        <link href="{% static 'vendor/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
-        <link href="{% static 'vendor/tempusdominus/css/tempusdominus-bootstrap-4.min.css' %}" rel="stylesheet" />
-
-        <!-- Main Stylesheet File -->
-        <link href="{% static 'css/style.css' %}" rel="stylesheet">
-    </head>
-
-    <body>
-
-        <!-- Header Start -->
-        <header id="header">
-            <img src="{% static 'img/rb_49164.png' %}" />
-
-            <div class="container">
-                <nav id="nav-menu-container">
-                    <ul class="nav-menu">
-                        <li class="menu-active"><a href="index.html">Home</a></li>
-                        <li><a href="menu.html">Menu</a></li>
-                        <li><a href="cart.html">Cart</a></li>
-                        <li><a href="login.html">Login</a></li>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </header>
-        <!-- Header End -->
 
         <!-- Menu Section Start -->
         <section id="food-menu">
             <div class="container">
                 <header class="section-header">
-                    <h3><a href="menu.html">your search result</a></h3>
+                    <h3><a href="{% url 'menu' %}">your search result</a></h3>
                 </header>
                 <div class="row">
                     <div class="col-sm-6 col-md-4 col-lg-3">
@@ -62,11 +17,10 @@
                             <img class="img-fluid" src="{% static 'img/menu-1.jpg' %}" />
                             <div>$20</div>
                             <h4>Espresso</h4>
-                            <a href="order.html">Order Now</a>
+                            <span class="quantity"><input type="text" value="1"></span>
+                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
+                            </a>
 
-                                <!-- <input type="number" id="quantity" name="quantity" min="1" max="5"> -->
-                                <!-- <div class="quantity"><input type="text" value="1">
-                                </div> -->
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
@@ -74,7 +28,9 @@
                             <img class="img-fluid" src="{% static 'img/menu-2.jpg' %}" />
                             <div>$15</div>
                             <h4>Americano</h4>
-                            <a href="order.html">Order Now</a>
+                            <span class="quantity"><input type="text" value="1"></span>
+                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
+                            </a>
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
@@ -82,77 +38,13 @@
                             <img class="img-fluid" src="{% static 'img/menu-3.jpg' %}" />
                             <div>$12</div>
                             <h4>Cappuccino</h4>
-                            <a href="order.html">Order Now</a>
+                            <span class="quantity"><input type="text" value="1"></span>
+                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
+                            </a>
                         </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
-                            <div>$22</div>
-                            <h4>Iced Tea</h4>
-                            <a href="order.html">Order Now</a>
-                        </div>
-                    </div>             
+                    </div>            
                 </div>
             </div>
         </section>
         <!-- Menu Section End-->
-
-        <!-- Footer Start -->
-        <footer id="footer">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-4">
-                        <h4 class="foot_acs"><a href="contact.html">Quich access</a></h4>
-                        <ul class="nav-menu">
-                            <li ><a href="index.html">Home</a></li>
-                            <li><a href="menu.html">Menu</a></li>
-                            <li><a href="cart.html">Cart</a></li>
-                            <li><a href="login.html">Login</a></li>
-                            <li><a href="about.html">About</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-sm-4">
-
-                        <div class="copyright">
-                            <img src="{% static 'img/rb_49164.png' %}" />
-							<p>&copy; Copyright <a href="">Maktab CofeeShop</a>. All Rights Reserved</p>
-							
-							<!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-							<p>Designed By <a href="#">group3</a></p>
-						</div>
-                    </div>
-                    <div class="col-sm-4">
-                            <h4><a href="contact.html">Contact Us</a></h4>
-                        <ul class="icon">
-                            <li><a href="#" class="fa fa-twitter"></a></li>
-                            <li><a href="#" class="fa fa-facebook"></a></li>
-                            <li><a href="#" class="fa fa-pinterest"></a></li>
-                            <li><a href="#" class="fa fa-google-plus"></a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </footer>
-        <!-- Footer end -->
-
-        <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
-
-        <!-- JavaScript Libraries -->
-        <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-        <script src="{% static 'vendor/jquery/jquery-migrate.min.js' %}"></script>
-        <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-        <script src="{% static 'vendor/easing/easing.min.js' %}"></script>
-        <script src="{% static 'vendor/stickyjs/sticky.js' %}"></script>
-        <script src="{% static 'vendor/superfish/hoverIntent.js' %}"></script>
-        <script src="{% static 'vendor/superfish/superfish.min.js' %}"></script>
-        <script src="{% static 'vendor/owlcarousel/owl.carousel.min.js' %}"></script>
-        <script src="{% static 'vendor/tempusdominus/js/moment.min.js' %}"></script>
-        <script src="{% static 'vendor/tempusdominus/js/moment-timezone.min.js' %}"></script>
-        <script src="{% static 'vendor/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
-
-        <!-- Main Javascript File -->
-        <script src="{% static 'js/main.js' %}"></script>
-
-    </body>
-</html>
+{% endblock %}

@@ -29,11 +29,11 @@ class Customer(models.Model):
 
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    # email = models.EmailField(unique=True)
-    # password = models.CharField(
-    #     max_length=100
-    # )  # Consider using a more secure method for password handling
-    phone_number = models.CharField(max_length=12, validators=[iran_phone_regex])
+
+
+    phone_number = models.CharField(
+        max_length=12, validators=[iran_phone_regex], unique=True, null=True, blank=True
+    )
     points = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -1,8 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Contact</title>
+        <title>Menu</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
@@ -24,7 +25,7 @@
         <link href="vendor/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
 
         <!-- Main Stylesheet File -->
-        <link href="css/style.css" rel="stylesheet">
+        <link href="./css/style.css" rel="stylesheet">
     </head>
 
     <body>
@@ -45,11 +46,11 @@
                 <nav id="nav-menu-container">
                     <ul class="nav-menu">
                         <li><a href="index.html">Home</a></li>
-                        <li><a href="menu.html">Menu</a></li>
+                        <li class="menu-active"><a href="menu.html">Menu</a></li>
                         <li><a href="cart.html">Cart</a></li>
                         <li><a href="login.html">Login</a></li>
                         <li><a href="about.html">About</a></li>
-                        <li class="menu-active"><a href="contact.html">Contact</a></li>
+                        <li><a href="contact.html">Contact</a></li>
                     </ul>
                 </nav>
             </div>
@@ -57,7 +58,7 @@
         <!-- Header End -->
 
         <!-- Reservations Section Start -->
-        <section id="reservations">
+        <!-- <section id="reservations">
             <div class="container">
                 <header class="section-header">
                     <h3>Reservations</h3>
@@ -107,71 +108,169 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> -->
         <!-- Reservations Section End -->
 
-        <!-- Contact Section Start -->
-        <section id="contact">
+        <!-- Menu Section Start -->
+        <section id="food-menu">
             <div class="container">
-                <div class="section-header">
-                    <h3>Contact Us</h3>
+                <header class="section-header">
+                    <h3><a href="menu.html">delicious Food Menu</a></h3>
+                </header>
+                <div class="menu-cat">
+                    {%for cat in category%}
+                    <a href="">{{cat.name}}</a>
+                    {%endfor%}
+                    <!-- <a href="">Coffee</a>
+                    <a href="">Teas</a>
+                    <a href="">Pastries</a>
+                    <a href="">Breakfast Items</a>
+                    <a href="">Snacks</a>
+                    <a href="">Specialty Drinks</a> -->
                 </div>
-                
-                <div class="row contact-detail">
-                    <div class="col-md-6">
-                        <div class="contact-col-1">
-                            <div class="contact-hours">
-                                <h4>Opening Hours</h4>
-                                <p>Monday-Friday: 7am to 12am</p>
-                                <p>Saturday: 5pm to 12am</p>
-                                <p>Sunday: 9am to 12am</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="contact-col-2">
-                            <div class="contact-info">
-                                <h4>Contact Info</h4>
-                                <p>4137  State Street, CA, USA</p>
-                                <p><a href="tel:+1-234-567-8900">+1-234-567-8900</a></p>
-                                <p><a href="mailto:info@example.com">info@example.com</a></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="contact-map">
-                            <iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d12623.52751148822!2d-122.47260557388145!3d37.72245039905841!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1s220%2C+San+Francisco%2C+California%2C+USA!5e0!3m2!1sen!2sbd!4v1555690883913!5m2!1sen!2sbd" frameborder="0" style="border:0" allowfullscreen></iframe>
+                    <div class="col-sm-6 col-md-4 col-lg-3">
+                        <div class="single-menu">
+                            <img class="img-fluid" src="img/menu-1.jpg" />
+                            {%for pro in product%}
+                            <div>{{pro.price}}</div>
+                            <h4>{{pro.name}}</h4>
+                            <!-- <div>$20</div>
+                            <h4>Espresso</h4> -->
+                            {% url 'product' pro.id as product_url %}
+                            <a , href ="{{ product_url }}">Order Now</a>
+                            
+                            {%endfor%}
+
+                                <!-- <input type="number" id="quantity" name="quantity" min="1" max="5"> -->
+                                <!-- <div class="quantity"><input type="text" value="1">
+                                </div> -->
                         </div>
                     </div>
-
-                    <div class="col-md-6">
-                        <div class="contact-form">
-                            <form>
-                                <div class="form-row">
-                                    <div class="form-group col-md-6">
-                                        <input type="text" class="form-control" placeholder="Your Name" required="required" />
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <input type="email" class="form-control" placeholder="Your Email" required="required" />
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Subject" required="required" />
-                                </div>
-                                <div class="form-group">
-                                    <textarea class="form-control" rows="5" placeholder="Message" required="required" ></textarea>
-                                </div>
-                                <div><button type="submit">Send Message</button></div>
-                            </form>
+                    <div class="col-sm-6 col-md-4 col-lg-3">
+                        <div class="single-menu">
+                            <img class="img-fluid" src="img/menu-2.jpg" />
+                            <div>$15</div>
+                            <h4>Americano</h4>
+                            <a href="order.html">Order Now</a>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-4 col-lg-3">
+                        <div class="single-menu">
+                            <img class="img-fluid" src="img/menu-3.jpg" />
+                            <div>$12</div>
+                            <h4>Cappuccino</h4>
+                            <a href="order.html">Order Now</a>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-4 col-lg-3">
+                        <div class="single-menu">
+                            <img class="img-fluid" src="img/menu-4.jpg" />
+                            <div>$18</div>
+                            <h4>Latte</h4>
+                            <a href="order.html">Order Now</a>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-4 col-lg-3">
+                        <div class="single-menu">
+                            <img class="img-fluid" src="img/menu-5.jpg" />
+                            <div>$25</div>
+                            <h4>Mocha</h4>
+                            <a href="order.html">Order Now</a>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-4 col-lg-3">
+                        <div class="single-menu">
+                            <img class="img-fluid" src="img/menu-6.jpg" />
+                            <div>$10</div>
+                            <h4>Cold Brew</h4>
+                            <a href="order.html">Order Now</a>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-4 col-lg-3">
+                        <div class="single-menu">
+                            <img class="img-fluid" src="img/menu-7.jpg" />
+                            <div>$18</div>
+                            <h4>Black Tea</h4>
+                            <a href="order.html">Order Now</a>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-4 col-lg-3">
+                        <div class="single-menu">
+                            <img class="img-fluid" src="img/menu-8.jpg" />
+                            <div>$14</div>
+                            <h4>Green Tea</h4>
+                            <a href="order.html">Order Now</a>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
+                        <div class="single-menu">
+                            <img class="img-fluid" src="img/menu-9.jpg" />
+                            <div>$22</div>
+                            <h4>Iced Tea</h4>
+                            <a href="order.html">Order Now</a>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
+                        <div class="single-menu">
+                            <img class="img-fluid" src="img/menu-9.jpg" />
+                            <div>$22</div>
+                            <h4>Croissants</h4>
+                            <a href="order.html">Order Now</a>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
+                        <div class="single-menu">
+                            <img class="img-fluid" src="img/menu-9.jpg" />
+                            <div>$22</div>
+                            <h4>Muffins (Blueberry, Chocolate Chip)</h4>
+                            <a href="order.html">Order Now</a>
+                        </div>
+                    </div>                    
+                    <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
+                        <div class="single-menu">
+                            <img class="img-fluid" src="img/menu-9.jpg" />
+                            <div>$22</div>
+                            <h4>Cookies (Chocolate Chip, Oatmeal Raisin)</h4>
+                            <a href="order.html">Order Now</a>
+                        </div>
+                    </div>                    
+                    <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
+                        <div class="single-menu">
+                            <img class="img-fluid" src="img/menu-9.jpg" />
+                            <div>$22</div>
+                            <h4>Breakfast Sandwiches (Egg & Cheese, Bacon & Egg)</h4>
+                            <a href="order.html">Order Now</a>
+                        </div>
+                    </div>                    
+                    <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
+                        <div class="single-menu">
+                            <img class="img-fluid" src="img/menu-9.jpg" />
+                            <div>$22</div>
+                            <h4>Granola Bars</h4>
+                            <a href="order.html">Order Now</a>
+                        </div>
+                    </div>                    
+                    <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
+                        <div class="single-menu">
+                            <img class="img-fluid" src="img/menu-9.jpg" />
+                            <div>$22</div>
+                            <h4>Trail Mix</h4>
+                            <a href="order.html">Order Now</a>
+                        </div>
+                    </div>                    
+                    <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
+                        <div class="single-menu">
+                            <img class="img-fluid" src="img/menu-9.jpg" />
+                            <div>$22</div>
+                            <h4>Fruit Cups</h4>
+                            <a href="order.html">Order Now</a>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-        <!-- Contact Section End -->
+        <!-- Menu Section End-->
 
         <!-- Footer Start -->
         <footer id="footer">

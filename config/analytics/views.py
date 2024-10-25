@@ -1,7 +1,11 @@
 from django.shortcuts import render
+from django.views import View
 
-def customer_analytics_view(request):
-    return render(request, 'customer-analytics.html')  
+class CustomerAnalyticsView(View):
+    def get(self, request):
+        return render(request, 'customer-analytics.html')
 
-def orders_view(request):
-    return render(request, 'orders.html')  
+class OrdersView(View):
+    def get(self, request):
+        return render(request, 'orders.html')
+

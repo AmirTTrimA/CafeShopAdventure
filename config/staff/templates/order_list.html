@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Filter Orders{% endblock %}
+
+{% block content %}
+{% load static %}
+
+    <h1>Filter Orders</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Filter</button>
+    </form>
+
+    {% if orders %}
+        <h2>Filtered Orders</h2>
+        <ul>
+            {% for order in orders %}
+                <li>{{order}} in {{order.order_date}} and status is {{order.status}} and {{order.total_price}} price</li>
+            {% empty %}
+                <li>No results found.</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+{% endblock %}

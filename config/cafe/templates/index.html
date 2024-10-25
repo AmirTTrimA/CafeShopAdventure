@@ -1,69 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
 {% load static %}
-
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>Home</title>
-        <meta content="width=device-width, initial-scale=1.0" name="viewport">
-        <meta content="" name="keywords">
-        <meta content="" name="description">
-
-        <!-- Favicons -->
-        <link href="{% static 'img/favicon.ico' %}" rel="icon">
-        <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
-
-        <!-- Google Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600|Pacifico" rel="stylesheet"> 
-
-        <!-- Bootstrap CSS File -->
-        <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-
-        <!-- Libraries CSS Files -->
-        <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
-        <link href="{% static 'vendor/animate/animate.min.css' %}" rel="stylesheet">
-        <link href="{% static 'vendor/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
-        <link href="{% static 'vendor/tempusdominus/css/tempusdominus-bootstrap-4.min.css' %}" rel="stylesheet" />
-
-        <!-- Main Stylesheet File -->
-        <link href="{% static 'css/style.css' %}" rel="stylesheet">
-    </head>
-
-    <body>
-
-        <!-- Top Header Start -->
-        <!-- <section id="top-header">
-            <div class="logo">
-                <img src="img/49164.jpg" />
-            </div>
-        </section> -->
-        <!-- Top Header End -->
-
-        <!-- Header Start -->
-        <header id="header">
-            <img src="{% static 'img/rb_49164.png' %}" />
-            <div class="container"> 
-
-                <nav id="nav-menu-container">
-                    <ul class="nav-menu">
-                        <li class="menu-active"><a href="index.html">Home</a></li>
-                        <li><a href="menu.html">Menu</a></li>
-                        <li><a href="cart.html">Cart</a></li>
-                        <li><a href="login.html">Login</a></li>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </header>
-        <!-- Header End -->
         
         <!-- Reservations Section Start -->
         <section id="reservations">
             <div class="container">
                 <header class="section-header">
                         <div class="container">
-                            <h3>Welcome to Maktab CofeeShop</h3>
+                            <h3>Welcome to Maktab CoffeeShop</h3>
                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas gravida sollicitudin turpis id posuere. Fusce nec rhoncus nibh. Fusce arcu libero, euismod eget commodo at, venenatis a nisi. Sed faucibus metus sed leo vulputate blandit.</p>
                         </div>
                 </header>
@@ -85,10 +32,10 @@
                                 <h3>About Us</h3>
                             </header>
                             <ul class="icon">
-                                <li><a href="#" class="fa fa-twitter"></a></li>
-                                <li><a href="#" class="fa fa-facebook"></a></li>
-                                <li><a href="#" class="fa fa-pinterest"></a></li>
-                                <li><a href="#" class="fa fa-google-plus"></a></li>
+                                <li><a href="#" class="fab fa-twitter"></a></li>
+                                <li><a href="#" class="fab fa-facebook"></a></li>
+                                <li><a href="#" class="fab fa-pinterest"></a></li>
+                                <li><a href="#" class="fab fa-google-plus"></a></li>
                             </ul>
                             <p>
                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam convallis quam sed tincidunt accumsan. Aliquam at tincidunt tortor, ac porta turpis. Curabitur lacinia venenatis semper.
@@ -96,7 +43,7 @@
                             <p>
                                 Aliquam ut nibh ut lacus posuere facilisis. Vestibulum ullamcorper arcu et bibendum ultrices. Suspendisse rutrum turpis vitae.
                             </p>
-                            <a class="btn" href="about.html">Learn More</a>
+                            <a class="btn" href="{% url 'about' %}">Learn More</a>
                         </div>
                     </div>
                 </div>
@@ -107,28 +54,21 @@
         <!-- Menu Section Start -->
         <section id="food-menu">
             <div class="container">
+                
                 <header class="section-header">
-                    <h3><a href="menu.html">delicious Food Menu</a></h3>
+                    <h3><a href="{% url 'menu' %}">delicious Food Menu</a></h3>
                 </header>
-                <div class="menu-cat">
-                    <a href="">Coffee</a>
-                    <a href="">Teas</a>
-                    <a href="">Pastries</a>
-                    <a href="">Breakfast Items</a>
-                    <a href="">Snacks</a>
-                    <a href="">Specialty Drinks</a>
-                </div>
+
                 <div class="row">
                     <div class="col-sm-6 col-md-4 col-lg-3">
                         <div class="single-menu">
                             <img class="img-fluid" src="{% static 'img/menu-1.jpg' %}" />
                             <div>$20</div>
                             <h4>Espresso</h4>
-                            <a href="order.html">Order Now</a>
+                            <span class="quantity"><input type="text" value="1"></span>
+                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
+                            </a>
 
-                                <!-- <input type="number" id="quantity" name="quantity" min="1" max="5"> -->
-                                <!-- <div class="quantity"><input type="text" value="1">
-                                </div> -->
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
@@ -136,7 +76,9 @@
                             <img class="img-fluid" src="{% static 'img/menu-2.jpg' %}" />
                             <div>$15</div>
                             <h4>Americano</h4>
-                            <a href="order.html">Order Now</a>
+                            <span class="quantity"><input type="text" value="1"></span>
+                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
+                            </a>
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
@@ -144,7 +86,9 @@
                             <img class="img-fluid" src="{% static 'img/menu-3.jpg' %}" />
                             <div>$12</div>
                             <h4>Cappuccino</h4>
-                            <a href="order.html">Order Now</a>
+                            <span class="quantity"><input type="text" value="1"></span>
+                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
+                            </a>
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
@@ -152,7 +96,9 @@
                             <img class="img-fluid" src="{% static 'img/menu-4.jpg' %}" />
                             <div>$18</div>
                             <h4>Latte</h4>
-                            <a href="order.html">Order Now</a>
+                            <span class="quantity"><input type="text" value="1"></span>
+                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
+                            </a>
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
@@ -160,7 +106,9 @@
                             <img class="img-fluid" src="{% static 'img/menu-5.jpg' %}" />
                             <div>$25</div>
                             <h4>Mocha</h4>
-                            <a href="order.html">Order Now</a>
+                            <span class="quantity"><input type="text" value="1"></span>
+                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
+                            </a>
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
@@ -168,7 +116,9 @@
                             <img class="img-fluid" src="{% static 'img/menu-6.jpg' %}" />
                             <div>$10</div>
                             <h4>Cold Brew</h4>
-                            <a href="order.html">Order Now</a>
+                            <span class="quantity"><input type="text" value="1"></span>
+                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
+                            </a>
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
@@ -176,7 +126,9 @@
                             <img class="img-fluid" src="{% static 'img/menu-7.jpg' %}" />
                             <div>$18</div>
                             <h4>Black Tea</h4>
-                            <a href="order.html">Order Now</a>
+                            <span class="quantity"><input type="text" value="1"></span>
+                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
+                            </a>
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
@@ -184,7 +136,9 @@
                             <img class="img-fluid" src="{% static 'img/menu-8.jpg' %}" />
                             <div>$14</div>
                             <h4>Green Tea</h4>
-                            <a href="order.html">Order Now</a>
+                            <span class="quantity"><input type="text" value="1"></span>
+                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
+                            </a>
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
@@ -252,12 +206,13 @@
                         </div>
                     </div>
                 </div>
+            <div class="single-menu"><a href="{% url 'menu' %}">See More</a></div>
             </div>
         </section>
         <!-- Menu Section End-->
 
         <!-- Team Section Start -->
-        <section id="team">
+        <!-- <section id="team">
             <div class="container">
                 <div class="section-header">
                     <h3>Meet Our Chef</h3>
@@ -313,7 +268,7 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> -->
         <!-- Team Section End -->
 
         <!-- Testimonials Section Start -->
@@ -413,15 +368,15 @@
                         <div class="contact-col-2">
                             <div class="contact-info">
                                 <h4>Contact Info</h4>
-                                <p>4137  State Street, CA, USA</p>
-                                <p><a href="tel:+1-234-567-8900">+1-234-567-8900</a></p>
+                                <p>1489 Enghelab Street, Tehran, Iran</p>
+                                <p><a href="tel:+98-021-748-1492">+98-021-748-1492</a></p>
                                 <p><a href="mailto:info@example.com">info@example.com</a></p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col-md-6">
                         <div class="contact-map">
                             <iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d12623.52751148822!2d-122.47260557388145!3d37.72245039905841!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1s220%2C+San+Francisco%2C+California%2C+USA!5e0!3m2!1sen!2sbd!4v1555690883913!5m2!1sen!2sbd" frameborder="0" style="border:0" allowfullscreen></iframe>
@@ -449,66 +404,9 @@
                             </form>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </section>
         <!-- Contact Section End -->
 
-        <!-- Footer Start -->
-        <footer id="footer">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-4">
-                        <h4 class="foot_acs"><a href="contact.html">Quich access</a></h4>
-                        <ul class="nav-menu">
-                            <li ><a href="index.html">Home</a></li>
-                            <li><a href="menu.html">Menu</a></li>
-                            <li><a href="cart.html">Cart</a></li>
-                            <li><a href="login.html">Login</a></li>
-                            <li><a href="about.html">About</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-sm-4">
-
-                        <div class="copyright">
-                            <img src="{% static 'img/rb_49164.png' %}" />
-							<p>&copy; Copyright <a href="">Maktab CofeeShop</a>. All Rights Reserved</p>
-							
-							<!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-							<p>Designed By <a href="#">group3</a></p>
-						</div>
-                    </div>
-                    <div class="col-sm-4">
-                            <h4><a href="contact.html">Contact Us</a></h4>
-                        <ul class="icon">
-                            <li><a href="#" class="fa fa-twitter"></a></li>
-                            <li><a href="#" class="fa fa-facebook"></a></li>
-                            <li><a href="#" class="fa fa-pinterest"></a></li>
-                            <li><a href="#" class="fa fa-google-plus"></a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </footer>
-        <!-- Footer end -->
-
-        <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
-
-        <!-- JavaScript Libraries -->
-        <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-        <script src="{% static 'vendor/jquery/jquery-migrate.min.js' %}"></script>
-        <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-        <script src="{% static 'vendor/easing/easing.min.js' %}"></script>
-        <script src="{% static 'vendor/stickyjs/sticky.js' %}"></script>
-        <script src="{% static 'vendor/superfish/hoverIntent.js' %}"></script>
-        <script src="{% static 'vendor/superfish/superfish.min.js' %}"></script>
-        <script src="{% static 'vendor/owlcarousel/owl.carousel.min.js' %}"></script>
-        <script src="{% static 'vendor/tempusdominus/js/moment.min.js' %}"></script>
-        <script src="{% static 'vendor/tempusdominus/js/moment-timezone.min.js' %}"></script>
-        <script src="{% static 'vendor/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
-
-        <!-- Main Javascript File -->
-        <script src="{% static 'js/main.js' %}"></script>
-
-    </body>
-</html>
+{% endblock %}       
