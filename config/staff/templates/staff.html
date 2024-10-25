@@ -15,11 +15,10 @@
         <h3>Welcom {{staff.first_name}} {{staff.last_name}}</h3>
         {%endif%} -->
         <div class="st-panel">
-            <li><a href="checkout.html">checkout</a></li>
-            <li><a href="Edit-product.html">Edit product</a></li>
-            <li><a href="Add-product.html">Add product</a></li>
-<!--             <li><a href="Add-category.html">Add category</a></li> -->
-
+            <li><a href="{% url 'checkout' %}">checkout</a></li>
+            <li><a href="{% url 'edit-product' %}">Edit product</a></li>
+            <li><a href="{% url 'add-product' %}">Add product</a></li>
+            <li><a href="{% url 'logout' %}">logout</a></li>
 
     </div>
 

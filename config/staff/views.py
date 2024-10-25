@@ -219,32 +219,35 @@ class OrderFilterView(View):
             return render(request, self.template_name, {"form": form})
 
 
-def manager(request):
-    return render(request, "manager.html")
+# def manager(request):
+#     return render(request, "manager.html")
 
 
-def edit_product(request):
-    return render(request, "edit-product.html")
+class EditProductView(View):
+    def get(request):
+        return render(request, "edit-product.html")
+
+class CheckoutView(View):
+    def get(request):
+        return render(request, "checkout.html")
+
+class AddProductView(View):
+    def get(request):
+        return render(request, "add-product.html")
+
+class AddCategoryView(View):
+    def get(request):
+        return render(request, "add-category.html")
+
+class EditCategoryView(View):
+    def get(request):
+        return render(request, "edit-category.html")
 
 
-def checkout(request):
-    return render(request, "checkout.html")
 
-
-def add_product(request):
-    return render(request, "add-product.html")
-
-
-def add_category(request):
-    return render(request, "add-category.html")
-
-
-def edit_category(request):
-    return render(request, "edit-category.html")
-
-
-def staff_access(request):
-    return render(request, "staff-access.html")
+class StaffAccessView(View):
+    def get(self, request):
+        return render(request, 'staff-access.html')
 
 
 # class OrderFilterView(View):
