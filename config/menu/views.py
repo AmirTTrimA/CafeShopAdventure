@@ -2,7 +2,9 @@ from django.shortcuts import render, get_object_or_404
 from .models import MenuItem,Category
 from django.views import View
 
-
+# class ProductDetailView(View):
+#     def get(self, request):
+#         return render(request, 'Product.html')
 class CafeMenuView(View):
     template_name = 'menu.html'
 
@@ -22,3 +24,9 @@ class ProductDetailView(View):
         product = get_object_or_404(MenuItem, pk=pk)
         context = {'product': product}
         return render(request, self.template_name, context)
+
+
+class SearchView(View):
+    def get(self, request):
+        return render(request, 'search.html')
+ 

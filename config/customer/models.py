@@ -7,6 +7,8 @@ including attributes related to customer information and validation.
 
 from django.db import models
 from .validator import iran_phone_regex
+from django.conf import settings
+
 # from django.contrib.auth.hashers import make_password
 
 
@@ -29,7 +31,8 @@ class Customer(models.Model):
 
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    table_number = models.CharField(max_length=10, blank=True, null=True)    
     phone_number = models.CharField(
         max_length=12, validators=[iran_phone_regex], unique=True, null=True, blank=True
     )
@@ -41,10 +44,3 @@ class Customer(models.Model):
     def __str__(self):
         """Return the full name of the customer."""
         return f"{self.first_name} {self.last_name}"
-
-    # there's no need for password for customers
-    # def save(self, *args, **kwargs):
-    #     """Override save method to hash the password before saving."""
-    #     if self.password:
-    #         self.password = make_password(self.password)
-    #     super(Customer, self).save(*args, **kwargs)

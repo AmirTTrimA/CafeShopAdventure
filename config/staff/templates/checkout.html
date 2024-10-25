@@ -1,271 +1,175 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>Checkout</title>
-        <meta content="width=device-width, initial-scale=1.0" name="viewport">
-        <meta content="" name="keywords">
-        <meta content="" name="description">
 
-        <!-- Favicons -->
-        <link href="{% static 'img/favicon.ico' %}" rel="icon">
-        <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+<h1 class="st-h">Staff Panel</h1>
+{% if user.is_authenticated %}
+    <h3 class="st-h">Welcome {{ user.first_name }} {{ user.last_name }}!</h3>
+{% endif %}
+<div class="st-panel">
+    <li><a href="{% url 'checkout' %}">Checkout</a></li>
+    <li><a href="{% url 'add-product' %}">Add Product</a></li>
+    <li><a href="{% url 'edit-product' %}">Edit Product</a></li>
+    <li><a href="{% url 'logout' %}">logout</a></li>
 
-        <!-- Google Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600|Pacifico" rel="stylesheet"> 
+</div>
 
-        <!-- Bootstrap CSS File -->
-        <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-
-        <!-- Libraries CSS Files -->
-        <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
-        <link href="{% static 'vendor/animate/animate.min.css' %}" rel="stylesheet">
-        <link href="{% static 'vendor/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
-        <link href="{% static 'vendor/tempusdominus/css/tempusdominus-bootstrap-4.min.css' %}" rel="stylesheet" />
-
-        <!-- Main Stylesheet File -->
-        <link href="{% static 'css/style.css' %}" rel="stylesheet">
-    </head>
-
-    <body>
-
-        <!-- Top Header Start -->
-        <!-- <section id="top-header">
-            <div class="logo">
-                <img src="{% static 'img/logo.png' %}" />
-            </div>
-        </section> -->
-        <!-- Top Header End -->
-
-        <!-- Header Start -->
-        <header id="header">
-            <img src="{% static 'img/rb_49164.png' %}" />
-
-            <div class="container">
-                <nav id="nav-menu-container">
-                    <ul class="nav-menu">
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="menu.html">Menu</a></li>
-                        <li><a href="cart.html">Cart</a></li>
-                        <li class="menu-active"><a href="checkout.html">Checkout</a></li>
-                        <li><a href="login.html">Login</a></li>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </nav>
-            </div>
+<!-- Checkout Section Start -->
+<section id="checkout">
+    <div class="container">
+        <header class="section-header">
+            <h3>Checkout</h3>
         </header>
-        <!-- Header End -->
-
-        <!-- Checkout Section Start -->
-        <section id="checkout">
-            <div class="container">
-                <header class="section-header">
-                    <h3>Checkout</h3>
-                </header>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="table-responsive-sm">
-                            <table class="table table-bordered table-hover">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th scope="col">Order Number</th>
-                                        <th scope="col">Table Number</th>
-                                        <th scope="col">Phone Number</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Details</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">7895211585</th>
-                                        <td>12</td>
-                                        <td>093512345678</td>
-                                        <td>
+        <div class="row">
+            <div class="col-md-12">
+                <form method="POST" action="{% url 'checkout' %}">
+                    {% csrf_token %}
+                    <div class="table-responsive-sm">
+                        <table class="table table-bordered table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">Order Number</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Table Number</th>
+                                    <th scope="col">Phone Number</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Edit Status</th>
+                                    <th scope="col">Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order_item in order_items %}
+                                <tr>
+                                    <th scope="row">{{ order_item.order.order_number }}</th>
+                                    <td>{{ order_item.order.date }}</td>
+                                    <td>{{ order_item.order.table_number }}</td>
+                                    <td>{{ order_item.order.phone_number }}</td>
+                                    <td>
+                                        {{ order_item.order.status }}
+                                        <div class="dropdown" id="{{ order_item.order.id }}">
+                                            <select class="custom-select" name="status_{{ order_item.order.id }}">
+                                                <option value="1" {% if order_item.order.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                                <option value="2" {% if order_item.order.status == 'Processing' %}selected{% endif %}>Processing</option>
+                                                <option value="3" {% if order_item.order.status == 'Paid' %}selected{% endif %}>Paid</option>
+                                                <option value="4" {% if order_item.order.status == 'Canceled' %}selected{% endif %}>Canceled</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="edit-icon" onclick="toggleDropdown({{ order_item.order.order_number }})">
+                                            <img src="{% static 'img/Edit-icon.png' %}" alt="Edit">
+                                        </div>
+                                    </td>
+                                    <td><a href="{% url 'cart' %}">Details</a></td>
+                                </tr>
+                                {% endfor %}
+                                <!-- مثال‌های ثابت -->
+                                <tr>
+                                    <th scope="row">7895211585</th>
+                                    <td>2024-10-24</td>
+                                    <td>12</td>
+                                    <td>093512345678</td>
+                                    <td>
+                                        Pending
+                                        <div class="dropdown" id="7895211585">
                                             <select class="custom-select">
-                                                <option value="1">Pending</option>
+                                                <option selected value="1">Pending</option>
                                                 <option value="2">Processing</option>
                                                 <option value="3">Paid</option>
                                                 <option value="4">Cancel</option>
                                             </select>
-                                        </td>
-                                        <td><a href="cart.html">Details</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">7956842315</th>
-                                        <td>5</td>
-                                        <td>091212345678</td>
-                                        <td>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="edit-icon" onclick="toggleDropdown(7895211585)">
+                                            <img src="{% static 'img/Edit-icon.png' %}">
+                                        </div>
+                                    </td>
+                                    <td><a href="{% url 'cart' %}">Details</a></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">7956842315</th>
+                                    <td>2024-10-24</td>
+                                    <td>5</td>
+                                    <td>091212345678</td>
+                                    <td>
+                                        Processing
+                                        <div class="dropdown" id="7956842315">
                                             <select class="custom-select">
-                                            <option value="1">Pending</option>
-                                            <option selected value="2">Processing</option>
-                                            <option value="3">Paid</option>
-                                            <option value="4">Cancel</option>
+                                                <option value="1">Pending</option>
+                                                <option selected value="2">Processing</option>
+                                                <option value="3">Paid</option>
+                                                <option value="4">Cancel</option>
                                             </select>
-                                        </td>
-                                        <td><a href="cart.html">Details</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">7946582315</th>
-                                        <td>23</td>
-                                        <td></td>
-                                        <td>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="edit-icon" onclick="toggleDropdown(7956842315)">
+                                            <img src="{% static 'img/Edit-icon.png' %}">
+                                        </div>
+                                    </td>
+                                    <td><a href="{% url 'cart' %}">Details</a></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">7946582315</th>
+                                    <td>2024-10-21</td>
+                                    <td>23</td>
+                                    <td></td>
+                                    <td>
+                                        Paid
+                                        <div class="dropdown" id="7946582315">
                                             <select class="custom-select">
-                                            <option value="1">Pending</option>
-                                            <option value="2">Processing</option>
-                                            <option selected value="3">Paid</option>
-                                            <option value="4">Cancel</option>
+                                                <option value="1">Pending</option>
+                                                <option value="2">Processing</option>
+                                                <option selected value="3">Paid</option>
+                                                <option value="4">Cancel</option>
                                             </select>
-                                        </td>
-                                        <td><a href="cart.html">Details</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">7845936147</th>
-                                        <td>3</td>
-                                        <td>0991012345678</td>
-                                        <td>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="edit-icon" onclick="toggleDropdown(7946582315)">
+                                            <img src="{% static 'img/Edit-icon.png' %}">
+                                        </div>
+                                    </td>
+                                    <td><a href="{% url 'cart' %}">Details</a></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">7845936147</th>
+                                    <td>2024-10-20</td>
+                                    <td>3</td>
+                                    <td>0991012345678</td>
+                                    <td>
+                                        Canceled
+                                        <div class="dropdown" id="7845936147">
                                             <select class="custom-select">
                                                 <option value="1">Pending</option>
                                                 <option value="2">Processing</option>
                                                 <option value="3">Paid</option>
                                                 <option selected value="4">Cancel</option>
                                             </select>
-                                        </td>
-                                        <td><a href="cart.html">Details</a></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="control-group button">
-                                <button type="submit" class="btn btn-book">Submit</button>
-                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="edit-icon" onclick="toggleDropdown(7845936147)">
+                                            <img src="{% static 'img/Edit-icon.png' %}">
+                                        </div>
+                                    </td>
+                                    <td><a href="{% url 'cart' %}">Details</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="control-group button">
+                            <button type="submit" class="btn btn-book">Submit</button>
                         </div>
-                        <!-- <div class="button">
-                            <button type="submit">Checkout</button>
-                        </div> -->
                     </div>
-                </div>
+                </form>
             </div>
+        </div>
+    </div>
+</section>
+<!-- Checkout Section End -->
 
-        </section>
-        <!-- Checkout Section End -->
-
-        <!-- Old Checkout Section Start 
-        <section id="checkout">
-            <div class="container">
-                <header class="section-header">
-                    <h3>Checkout</h3>
-                </header>
-                <div class="row form">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Full Name" />
-                        </div>
-                        <div class="form-group">
-                            <input type="email" class="form-control" placeholder="Email" />
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Address" />
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="City" />
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <input type="text" class="form-control" placeholder="State" />
-                            </div>
-                            <div class="form-group col-md-6">
-                                <input type="text" class="form-control" placeholder="Zip" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="cards">
-                            <p>We Accept:</p>
-                            <img src="{% static 'img/credit-cards.png' %}" />
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Name on Card" />
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Credit card number" />
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Exp Month" />
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <input type="text" class="form-control" placeholder="Exp Year" />
-                            </div>
-                            <div class="form-group col-md-6">
-                                <input type="text" class="form-control" placeholder="CVV" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="button">
-                        <button type="submit">Place Order</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-         Old Checkout Section End -->
-
-
-        <!-- Footer Start -->
-        <footer id="footer">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-4">
-                        <h4 class="foot_acs"><a href="contact.html">Quich access</a></h4>
-                        <ul class="nav-menu">
-                            <li ><a href="index.html">Home</a></li>
-                            <li><a href="menu.html">Menu</a></li>
-                            <li><a href="cart.html">Cart</a></li>
-                            <li><a href="login.html">Login</a></li>
-                            <li><a href="about.html">About</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-sm-4">
-
-                        <div class="copyright">
-                            <img src="{% static 'img/rb_49164.png' %}" />
-							<p>&copy; Copyright <a href="">Maktab CofeeShop</a>. All Rights Reserved</p>
-							
-							<!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-							<p>Designed By <a href="#">group3</a></p>
-						</div>
-                    </div>
-                    <div class="col-sm-4">
-                            <h4><a href="contact.html">Contact Us</a></h4>
-                        <ul class="icon">
-                            <li><a href="#" class="fa fa-twitter"></a></li>
-                            <li><a href="#" class="fa fa-facebook"></a></li>
-                            <li><a href="#" class="fa fa-pinterest"></a></li>
-                            <li><a href="#" class="fa fa-google-plus"></a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </footer>
-        <!-- Footer end -->
-
-        <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
-
-        <!-- JavaScript Libraries -->
-        <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-        <script src="{% static 'vendor/jquery/jquery-migrate.min.js' %}"></script>
-        <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-        <script src="{% static 'vendor/easing/easing.min.js' %}"></script>
-        <script src="{% static 'vendor/stickyjs/sticky.js' %}"></script>
-        <script src="{% static 'vendor/superfish/hoverIntent.js' %}"></script>
-        <script src="{% static 'vendor/superfish/superfish.min.js' %}"></script>
-        <script src="{% static 'vendor/owlcarousel/owl.carousel.min.js' %}"></script>
-        <script src="{% static 'vendor/tempusdominus/js/moment.min.js' %}"></script>
-        <script src="{% static 'vendor/tempusdominus/js/moment-timezone.min.js' %}"></script>
-        <script src="{% static 'vendor/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
-
-        <!-- Main Javascript File -->
-        <script src="{% static 'js/main.js' %}"></script>
-
-    </body>
-</html>
+{% endblock %}
