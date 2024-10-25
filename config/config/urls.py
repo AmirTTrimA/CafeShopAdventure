@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
+# from . import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -8,4 +9,5 @@ urlpatterns = [
     path('', include('staff.urls')),
     path('', include('order.urls')),
     path('', include('analytics.urls')),
+    # path('search/', search_products, name='search_products'),  
 ]

@@ -1,8 +1,20 @@
 """staff/forms.py"""
 
 from django import forms
+from django.contrib.auth.hashers import make_password
 from .models import Staff
 from .validator import iran_phone_regex
+
+
+class OrderFilterForm(forms.Form):
+    FILTER_CHOICES = [
+        ("date", "Date"),
+        ("last_order", "Last Order"),
+        ("status", "Status"),
+        ("table_number", "Table Number"),
+    ]
+    filter_type = forms.ChoiceField(choices=FILTER_CHOICES)
+    filter_value = forms.CharField(label="Enter filter value", required=False)
 
 
 class StaffRegistrationForm(forms.ModelForm):
