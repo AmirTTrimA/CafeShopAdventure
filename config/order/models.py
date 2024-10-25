@@ -72,6 +72,7 @@ class Order(models.Model):
         # Now that the Order is saved, you can access the order_items
         self.calculate_total_price()
 
+
 class OrderItem(models.Model):
     """
     Represents an item within an order.
@@ -95,7 +96,6 @@ class OrderItem(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-
         """
         Overrides the save method to calculate the subtotal before saving.
 

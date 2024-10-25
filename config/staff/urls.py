@@ -1,24 +1,26 @@
 from django.urls import path
-from .views import LoginView, LogoutView, StaffView , RegisterView, add_category , add_product , checkout , edit_product, manager , edit_category, home_view, OrderFilterView
+from .views import LoginView, LogoutView, StaffView , RegisterView, add_category , add_product , checkout , edit_product, manager , edit_category, OrderFilterView, staff_access, ManagerView
 
 urlpatterns = [
     # URL pattern for the login view
     path("login/", LoginView.as_view(), name="login"),
     # URL pattern for the logout view
     path("logout/", LogoutView.as_view(), name="logout"),
-    # URL pattern for viewing the staff view
-    path("", StaffView.as_view(), name="staff"),
+    # URL pattern for viewing the staff list
+    path("staff/", StaffView.as_view(), name="staff"),
+    # URL pattern for the manager view
+    path("manager/", ManagerView.as_view(), name="manager"),
     # URL pattern for the registration view
     path("register/", RegisterView.as_view(), name="register"),
-    # URL pattern for the registration view
-    path("register/", RegisterView.as_view(), name="register"),
+    path("filter/", OrderFilterView.as_view(), name="filter"),
     # URL pattern for the home view
-    path("home/", home_view, name="home"),
-    path("filter/", OrderFilterView.as_view(), name="filter")
+    # path("filter/", OrderFilterView.as_view(), name="filter"),
     path("add-category/", add_category, name="add-category"),
     path("add-product/", add_product, name="add-product"),
     path("checkout/", checkout, name="checkout"),
     path("edit-product/", edit_product, name="edit-product"),
     path("manager/", manager, name="manager"),
+    # path("", staff, name="staff"),
     path("edit-category/", edit_category, name="edit-category"),
+    path("staff-access/", staff_access, name="staff-access"),
 ]
