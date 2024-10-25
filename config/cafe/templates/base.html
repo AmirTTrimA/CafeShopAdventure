@@ -67,6 +67,8 @@
     <li><a href="{% url 'add-category' %}">Add Category</a></li>
     <li><a href="{% url 'edit-category' %}">Edit Category</a></li>
     <li><a href="{% url 'staff-access' %}">Staff Access</a></li>
+    <li><a href="{% url 'logout' %}">logout</a></li>
+    
 </div>
 
 {% else %}
@@ -79,6 +81,7 @@
     <li><a href="{% url 'checkout' %}">Checkout</a></li>
     <li><a href="{% url 'add-product' %}">Add Product</a></li>
     <li><a href="{% url 'edit-product' %}">Edit Product</a></li>
+    <li><a href="{% url 'logout' %}">logout</a></li>
 
 </div>
 
