@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import LoginView, LogoutView, StaffView , RegisterView, add_category , add_product , checkout , edit_product, manager , edit_category, OrderFilterView
+from .views import LoginView, LogoutView, StaffView , RegisterView, add_category , add_product , checkout , manager , edit_category, OrderFilterView, staff_access,ProductUpdateView    
 
 urlpatterns = [
     # URL pattern for the login view
@@ -12,12 +12,13 @@ urlpatterns = [
     path("register/", RegisterView.as_view(), name="register"),
     path("filter/", OrderFilterView.as_view(), name="filter"),
     # URL pattern for the home view
-    path("filter/", OrderFilterView.as_view(), name="filter"),
+    # path("filter/", OrderFilterView.as_view(), name="filter"),
     path("add-category/", add_category, name="add-category"),
-    path("add-product/", add_product, name="add-product"),
+    path("Add-product.html/", add_product, name="add-product"),
     path("checkout/", checkout, name="checkout"),
-    path("edit-product/", edit_product, name="edit-product"),
+    path("Edit-product.html",ProductUpdateView.as_view(), name="edit-product"),
     path("manager/", manager, name="manager"),
     # path("", staff, name="staff"),
     path("edit-category/", edit_category, name="edit-category"),
+    path("staff-access/", staff_access, name="staff-access"),
 ]
