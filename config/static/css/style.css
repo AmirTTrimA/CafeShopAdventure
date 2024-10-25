@@ -1866,6 +1866,14 @@ h1.st-h {
     font-size: 70px;
 }
 
+h3.st-h {
+    text-align: center;
+    background-color: #353535;
+    color: #bc9b5d;
+    margin: -5px;
+    padding: 10px;
+}
+
 h3.st-ti span {
     font-weight: 100;
     font-size: 18px;

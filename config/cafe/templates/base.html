@@ -57,7 +57,7 @@
 
 
 <!--staff and manager Header Start -->       
-{% if user.is_staff %}
+
 {% if user.is_superuser %}
 <h1 class="st-h">manager Panel</h1>
 <div class="st-panel">
@@ -71,7 +71,7 @@
     
 </div>
 
-{% else %}
+{% elif user.is_staff %}
 <!--staff Header Start --> 
 <h1 class="st-h">Staff Panel</h1>
 {% if user.is_authenticated %}
@@ -85,7 +85,6 @@
 
 </div>
 
-{% endif %}
 {% endif %}
 <!--staff and manager Header end -->
 

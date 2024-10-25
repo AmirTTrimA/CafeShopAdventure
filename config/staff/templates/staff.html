@@ -8,9 +8,6 @@
         </header>
         <!-- Header End -->
         <h1 class="st-h">Staff Panel</h1>
-        {% if user.is_authenticated %}
-            <h3 class="st-h" > Welcome {{user.first_name}} {{user.last_name}}!</h3>
-        {% endif %}
         <!-- {%if user %}
         <h3>Welcom {{staff.first_name}} {{staff.last_name}}</h3>
         {%endif%} -->
@@ -20,8 +17,10 @@
             <li><a href="{% url 'add-product' %}">Add product</a></li>
             <li><a href="{% url 'logout' %}">logout</a></li>
 
-    </div>
-
+        </div>
+        {% if user.is_authenticated %}
+            <h3 class="st-h st-welcome2" > Welcome {{user.first_name}} {{user.last_name}}!</h3>
+        {% endif %}
         <!-- Cart Section Start -->
         <section id="staff-cart">
             <div class="container">
