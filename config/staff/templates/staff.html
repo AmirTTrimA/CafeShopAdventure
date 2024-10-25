@@ -60,6 +60,9 @@
         {% if user.is_authenticated %}
             <h3 class="st-h" > Welcome {{user.first_name}} {{user.last_name}}!</h3>
         {% endif %}
+        <!-- {%if user %}
+        <h3>Welcom {{staff.first_name}} {{staff.last_name}}</h3>
+        {%endif%} -->
         <div class="st-panel">
             <li><a href="checkout.html">checkout</a></li>
             <li><a href="Edit-product.html">Edit product</a></li>
