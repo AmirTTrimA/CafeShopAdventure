@@ -1,97 +1,100 @@
 {% extends 'base.html' %}
 
-{% block title %}carts{% endblock %}
+{% block title %}Carts{% endblock %}
 
 {% block content %}
 {% load static %}
 
-        <!-- Cart Section Start -->
-        <section id="cart">
-            <div class="container">
-                <header class="section-header">
-                    <h3>Cart</h3>
-                </header>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="table-responsive-sm">
-                            <table class="table table-bordered table-hover">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th scope="col">Menu</th>
-                                        <th scope="col">Price</th>
-                                        <th scope="col">Quantity</th>
-                                        <th scope="col">Total</th>
-                                        <th scope="col">Delete</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">Espresso</th>
-                                        <td>$10</td>
-                                        <td><div class="quantity"><input type="text" value="1"></div></td>
-                                        <td>$10</td>
-                                        <td><a href=""><i class="fa fa-trash-o"></i></a></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Breakfast Sandwiches (Egg & Cheese, Bacon & Egg)</th>
-                                        <td>$15</td>
-                                        <td><div class="quantity"><input type="text" value="2"></div></td>
-                                        <td>$30</td>
-                                        <td><a href=""><i class="fa fa-trash-o"></i></a></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Black Tea</th>
-                                        <td>$20</td>
-                                        <td><div class="quantity"><input type="text" value="3"></div></td>
-                                        <td>$60</td>
-                                        <td><a href=""><i class="fa fa-trash-o"></i></a></td>
-                                    </tr>
-                                </tbody>
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th scope="col">Total</th>
-                                        <th scope="col">$45</th>
-                                        <th scope="col">-</th>
-                                        <th scope="col">$100</th>
-                                        <th scope="col">-</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </div>
+<!-- Cart Section Start -->
+<section id="cart">
+    <div class="container">
+        <header class="section-header">
+            <h3>Cart</h3>
+        </header>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive-sm">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Menu</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Total</th>
+                                <th scope="col">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">Espresso</th>
+                                <td>$10</td>
+                                <td><div class="quantity"><input type="text" value="1"></div></td>
+                                <td>$10</td>
+                                <td><a href=""><i class="fa fa-trash-o"></i></a></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Breakfast Sandwiches (Egg & Cheese, Bacon & Egg)</th>
+                                <td>$15</td>
+                                <td><div class="quantity"><input type="text" value="2"></div></td>
+                                <td>$30</td>
+                                <td><a href=""><i class="fa fa-trash-o"></i></a></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Black Tea</th>
+                                <td>$20</td>
+                                <td><div class="quantity"><input type="text" value="3"></div></td>
+                                <td>$60</td>
+                                <td><a href=""><i class="fa fa-trash-o"></i></a></td>
+                            </tr>
+                        </tbody>
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Total</th>
+                                <th scope="col">$100</th>
+                                <th scope="col">-</th>
+                                <th scope="col">$100</th>
+                                <th scope="col">-</th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
-        </section>
-        <!-- Cart Section End -->
+        </div>
+    </div>
+</section>
+<!-- Cart Section End -->
 
-        <!-- Reservations Section Start -->
-        <section id="reservations">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-row">
-                            <div class="control-group col-sm-4">
-                                <div class="form-group">
-                                    <div class="input-group" id="num" data-target-input="nearest">
-                                        <input name="Table Number" type="text" class="form-control" placeholder="Table Number" required/>
-                                    </div>
+<!-- Reservations Section Start -->
+<section id="reservations">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <form method="POST" action="{% url 'submit_order' %}">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="control-group col-sm-4">
+                            <div class="form-group">
+                                <div class="input-group" id="num" data-target-input="nearest">
+                                    <input name="table_number" type="text" class="form-control" placeholder="Table Number" required />
                                 </div>
                             </div>
-                            <div class="control-group col-sm-4">
-                                <div class="form-group">
-                                    <div class="input-group" id="num" data-target-input="nearest">
-                                        <input name="Phone Number" type="text" class="form-control" placeholder="Phone Number"/>
-                                    </div>
+                        </div>
+                        <div class="control-group col-sm-4">
+                            <div class="form-group">
+                                <div class="input-group" id="num" data-target-input="nearest">
+                                    <input name="phone_number" type="text" class="form-control" placeholder="Phone Number" />
                                 </div>
                             </div>
-                            <div class="control-group col-sm-4 button">
-                                <button href="{% url 'submit_order' %}" type="submit" class="btn btn-block btn-book">submit</button>
-                            </div>
-
+                        </div>
+                        <div class="control-group col-sm-4 button">
+                            <button type="submit" class="btn btn-block btn-book">Submit</button>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
-        </section>
-        <!-- Reservations Section End -->
+        </div>
+    </div>
+</section>
+<!-- Reservations Section End -->
+
 {% endblock %}

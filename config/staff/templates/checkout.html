@@ -5,196 +5,169 @@
 {% block content %}
 {% load static %}
 
-    <h1 class="st-h">Staff Panel</h1>
-    {% if user.is_authenticated %}
-        <h3 class="st-h" > Welcome {{user.first_name}} {{user.last_name}}!</h3>
-    {% endif %}
-    <div class="st-panel">
-        <li><a href="{% url 'checkout' %}">Checkout</a></li>
-        <li><a href="{% url 'add-product' %}">Add Product</a></li>
-        <li><a href="{% url 'edit-product' %}">Edit Product</a></li>
+<h1 class="st-h">Staff Panel</h1>
+{% if user.is_authenticated %}
+    <h3 class="st-h">Welcome {{ user.first_name }} {{ user.last_name }}!</h3>
+{% endif %}
+<div class="st-panel">
+    <li><a href="{% url 'checkout' %}">Checkout</a></li>
+    <li><a href="{% url 'add-product' %}">Add Product</a></li>
+    <li><a href="{% url 'edit-product' %}">Edit Product</a></li>
+</div>
 
+<!-- Checkout Section Start -->
+<section id="checkout">
+    <div class="container">
+        <header class="section-header">
+            <h3>Checkout</h3>
+        </header>
+        <div class="row">
+            <div class="col-md-12">
+                <form method="POST" action="{% url 'checkout' %}">
+                    {% csrf_token %}
+                    <div class="table-responsive-sm">
+                        <table class="table table-bordered table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">Order Number</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Table Number</th>
+                                    <th scope="col">Phone Number</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Edit Status</th>
+                                    <th scope="col">Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order_item in order_items %}
+                                <tr>
+                                    <th scope="row">{{ order_item.order.order_number }}</th>
+                                    <td>{{ order_item.order.date }}</td>
+                                    <td>{{ order_item.order.table_number }}</td>
+                                    <td>{{ order_item.order.phone_number }}</td>
+                                    <td>
+                                        {{ order_item.order.status }}
+                                        <div class="dropdown" id="{{ order_item.order.id }}">
+                                            <select class="custom-select" name="status_{{ order_item.order.id }}">
+                                                <option value="1" {% if order_item.order.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                                <option value="2" {% if order_item.order.status == 'Processing' %}selected{% endif %}>Processing</option>
+                                                <option value="3" {% if order_item.order.status == 'Paid' %}selected{% endif %}>Paid</option>
+                                                <option value="4" {% if order_item.order.status == 'Canceled' %}selected{% endif %}>Canceled</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="edit-icon" onclick="toggleDropdown({{ order_item.order.order_number }})">
+                                            <img src="{% static 'img/Edit-icon.png' %}" alt="Edit">
+                                        </div>
+                                    </td>
+                                    <td><a href="{% url 'cart' %}">Details</a></td>
+                                </tr>
+                                {% endfor %}
+                                <!-- مثال‌های ثابت -->
+                                <tr>
+                                    <th scope="row">7895211585</th>
+                                    <td>2024-10-24</td>
+                                    <td>12</td>
+                                    <td>093512345678</td>
+                                    <td>
+                                        Pending
+                                        <div class="dropdown" id="7895211585">
+                                            <select class="custom-select">
+                                                <option selected value="1">Pending</option>
+                                                <option value="2">Processing</option>
+                                                <option value="3">Paid</option>
+                                                <option value="4">Cancel</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="edit-icon" onclick="toggleDropdown(7895211585)">
+                                            <img src="{% static 'img/Edit-icon.png' %}">
+                                        </div>
+                                    </td>
+                                    <td><a href="{% url 'cart' %}">Details</a></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">7956842315</th>
+                                    <td>2024-10-24</td>
+                                    <td>5</td>
+                                    <td>091212345678</td>
+                                    <td>
+                                        Processing
+                                        <div class="dropdown" id="7956842315">
+                                            <select class="custom-select">
+                                                <option value="1">Pending</option>
+                                                <option selected value="2">Processing</option>
+                                                <option value="3">Paid</option>
+                                                <option value="4">Cancel</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="edit-icon" onclick="toggleDropdown(7956842315)">
+                                            <img src="{% static 'img/Edit-icon.png' %}">
+                                        </div>
+                                    </td>
+                                    <td><a href="{% url 'cart' %}">Details</a></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">7946582315</th>
+                                    <td>2024-10-21</td>
+                                    <td>23</td>
+                                    <td></td>
+                                    <td>
+                                        Paid
+                                        <div class="dropdown" id="7946582315">
+                                            <select class="custom-select">
+                                                <option value="1">Pending</option>
+                                                <option value="2">Processing</option>
+                                                <option selected value="3">Paid</option>
+                                                <option value="4">Cancel</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="edit-icon" onclick="toggleDropdown(7946582315)">
+                                            <img src="{% static 'img/Edit-icon.png' %}">
+                                        </div>
+                                    </td>
+                                    <td><a href="{% url 'cart' %}">Details</a></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">7845936147</th>
+                                    <td>2024-10-20</td>
+                                    <td>3</td>
+                                    <td>0991012345678</td>
+                                    <td>
+                                        Canceled
+                                        <div class="dropdown" id="7845936147">
+                                            <select class="custom-select">
+                                                <option value="1">Pending</option>
+                                                <option value="2">Processing</option>
+                                                <option value="3">Paid</option>
+                                                <option selected value="4">Cancel</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="edit-icon" onclick="toggleDropdown(7845936147)">
+                                            <img src="{% static 'img/Edit-icon.png' %}">
+                                        </div>
+                                    </td>
+                                    <td><a href="{% url 'cart' %}">Details</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="control-group button">
+                            <button type="submit" class="btn btn-book">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-        <!-- Checkout Section Start -->
-        <section id="checkout">
-            <div class="container">
-                <header class="section-header">
-                    <h3>Checkout</h3>
-                </header>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="table-responsive-sm">
-                            <table class="table table-bordered table-hover">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th scope="col">Order Number</th>
-                                        <th scope="col">Date <i class="fas fa-filter filter-icon" title="filter"></i></th>
-                                        <th scope="col">Table Number <i class="fas fa-filter filter-icon" title="filter"></i></th>
-                                        <th scope="col">Phone Number</th>
-                                        <th scope="col">Status <i class="fas fa-filter filter-icon" title="filter"></i></th>
-                                        <th scope="col">Edit Status</th>
-                                        <th scope="col">Details</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">7895211585</th>
-                                        <td>2024-10-24</td>
-                                        <td>12</td>
-                                        <td>093512345678</td>
-                                        <td>
-                                            Pending
-                                            <div class="dropdown" id="7895211585">
-                                                <select class="custom-select">
-                                                    <option selected value="1">Pending</option>
-                                                    <option value="2">Processing</option>
-                                                    <option value="3">Paid</option>
-                                                    <option value="4">Cancel</option>
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="edit-icon" onclick="toggleDropdown(7895211585)"><img src="{% static 'img/Edit-icon.png' %}"></div>
-                                        </td>
-                                        <td><a href="{% url 'cart' %}">Details</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">7956842315</th>
-                                        <td>2024-10-24</td>
-                                        <td>5</td>
-                                        <td>091212345678</td>
-                                        <td>
-                                            Processing
-                                            <div class="dropdown" id="7956842315">
-                                                <select class="custom-select">
-                                                    <option value="1">Pending</option>
-                                                    <option selected value="2">Processing</option>
-                                                    <option value="3">Paid</option>
-                                                    <option value="4">Cancel</option>
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="edit-icon" onclick="toggleDropdown(7956842315)"><img src="{% static 'img/Edit-icon.png' %}"></div>
-                                        </td>
-                                        <td><a href="{% url 'cart' %}">Details</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">7946582315</th>
-                                        <td>2024-10-21</td>
-                                        <td>23</td>
-                                        <td></td>
-                                        <td>
-                                            Paid
-                                            <div class="dropdown" id="7946582315">
-                                                <select class="custom-select">
-                                                    <option value="1">Pending</option>
-                                                    <option value="2">Processing</option>
-                                                    <option selected value="3">Paid</option>
-                                                    <option value="4">Cancel</option>
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="edit-icon" onclick="toggleDropdown(7946582315)"><img src="{% static 'img/Edit-icon.png' %}"></div>
-                                        </td>
-                                        <td><a href="{% url 'cart' %}">Details</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">7845936147</th>
-                                        <td>2024-10-20</td>
-                                        <td>3</td>
-                                        <td>0991012345678</td>
-                                        <td>
-                                            Canceled
-                                            <div class="dropdown" id="7845936147">
-                                                <select class="custom-select">
-                                                    <option value="1">Pending</option>
-                                                    <option value="2">Processing</option>
-                                                    <option value="3">Paid</option>
-                                                    <option selected value="4">Cancel</option>
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="edit-icon" onclick="toggleDropdown(7845936147)"><img src="{% static 'img/Edit-icon.png' %}"></div>
-                                        </td>
-                                        <td><a href="{% url 'cart' %}">Details</a></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="control-group button">
-                                <button type="submit" class="btn btn-book">Submit</button>
-                            </div>
-                        </div>
-                        <!-- <div class="button">
-                            <button type="submit">Checkout</button>
-                        </div> -->
-                    </div>
-                </div>
-            </div>
-
-        </section>
-        <!-- Checkout Section End -->
-
-        <!-- Old Checkout Section Start 
-        <section id="checkout">
-            <div class="container">
-                <header class="section-header">
-                    <h3>Checkout</h3>
-                </header>
-                <div class="row form">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Full Name" />
-                        </div>
-                        <div class="form-group">
-                            <input type="email" class="form-control" placeholder="Email" />
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Address" />
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="City" />
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <input type="text" class="form-control" placeholder="State" />
-                            </div>
-                            <div class="form-group col-md-6">
-                                <input type="text" class="form-control" placeholder="Zip" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="cards">
-                            <p>We Accept:</p>
-                            <img src="{% static 'img/credit-cards.png' %}" />
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Name on Card" />
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Credit card number" />
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Exp Month" />
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <input type="text" class="form-control" placeholder="Exp Year" />
-                            </div>
-                            <div class="form-group col-md-6">
-                                <input type="text" class="form-control" placeholder="CVV" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="button">
-                        <button type="submit">Place Order</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-         Old Checkout Section End -->
+</section>
+<!-- Checkout Section End -->
 
 {% endblock %}
