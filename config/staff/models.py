@@ -65,7 +65,7 @@ class Staff(AbstractBaseUser, PermissionsMixin, models.Model):
         ("M", "Manager"),
         ("S", "Staff"),
     )
-
+    is_staff = models.BooleanField(default=False)
     staff_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=50)

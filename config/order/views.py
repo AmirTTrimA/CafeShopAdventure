@@ -13,10 +13,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 from django.utils import timezone
-
-from .forms import OrderForm
 from .models import Order, OrderItem, OrderHistory, MenuItem, Customer
+from .forms import OrderForm
 from .utils import get_cart_from_cookies, set_cart_in_cookies
+from django.db import transaction
+
+
 
 DEFAULT_GUEST_CUSTOMER_PHONE = "09123456789"  # Default phone number for guest customer
 
@@ -193,33 +195,32 @@ def change_order_status(request, order_id):
 # فرآیند Checkout (پرداخت)
 @login_required
 def checkout(request):
-    """Handle the checkout process, calculating the total price and creating an order."""
-    customer_cart = get_object_or_404(Cart, customer=request.user.customer)
+    """Handle the checkout process, calculate the total price, and create an order."""
+    
+    try:
+        customer = request.user.customer
+    except Customer.DoesNotExist:
+        messages.error(request, "You are not associated with a customer account.")
+        return redirect("menu")
 
-    if customer_cart.items.count() == 0:
-        messages.error(request, "Your cart is empty.")
-        return redirect("cart_view")
-
-    total_price = customer_cart.get_total_price()
+    order_items = OrderItem.objects.filter(order__customer=customer, order__status="Pending")
+    total_price = sum(item.item.price * item.quantity for item in order_items)
 
     if request.method == "POST":
-        order = Order.objects.create(customer=request.user.customer)
-        for item in customer_cart.items.all():
-            order.cart_items.add(item)
+        # به‌روزرسانی وضعیت‌های سفارشات
+        for order_item in order_items:
+            status_key = f'status_{order_item.order.id}'
+            new_status = request.POST.get(status_key)
+            if new_status:
+                order_item.order.status = new_status  # به‌روزرسانی وضعیت
+                order_item.order.save()
 
-        order.calculate_total_price()
-        order.status = "Pending"
-        order.save()
-
-        customer_cart.items.all().delete()
-
-        messages.success(request, "Your order has been placed successfully!")
-        return redirect("order_confirmation", order_id=order.id)
+        messages.success(request, "Order statuses have been updated successfully!")
+        return redirect("checkout")  # به‌روز رسانی مجدد صفحه
 
     return render(
-        request, "checkout.html", {"cart": customer_cart, "total_price": total_price}
+        request, "checkout.html", {"order_items": order_items, "total_price": total_price}
     )
-
 
 # تأیید سفارش
 @login_required
