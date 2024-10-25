@@ -8,7 +8,7 @@ import uuid
 from datetime import timedelta
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponseForbidden
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
@@ -17,6 +17,7 @@ from .models import Order, OrderItem, OrderHistory, MenuItem, Customer
 from .forms import OrderForm
 from .utils import get_cart_from_cookies, set_cart_in_cookies
 from django.db import transaction
+import uuid
 
 
 
@@ -24,15 +25,7 @@ DEFAULT_GUEST_CUSTOMER_PHONE = "09123456789"  # Default phone number for guest c
 
 
 def add_to_cart(request, item_id):
-    """Add a menu item to the cart.
-
-    Args:
-        request: The HTTP request object.
-        item_id (int): The ID of the menu item to add to the cart.
-
-    Returns:
-        JsonResponse: A response containing a message and the updated cart.
-    """
+    """Add a menu item to the cart."""
     menu_item = get_object_or_404(MenuItem, id=item_id)
 
     # Get cart from cookies
@@ -49,14 +42,11 @@ def add_to_cart(request, item_id):
         }
 
     # Save updated cart in cookies
-    set_cart_in_cookies(request, cart)
-
-    return JsonResponse(
-        {
-            "message": f"{menu_item.name} has been added to your cart.",
-            "cart": cart,
-        }
-    )
+    
+def set_cart_in_cookies(response, cart):
+    """Set the cart in cookies."""
+    response.set_cookie('cart', cart)  # تنظیم کوکی
+    return response  # برگرداندن پاسخ
 
 
 def cart_view(request):
@@ -72,15 +62,9 @@ def cart_view(request):
     return render(request, "cart.html", {"cart": cart})
 
 
+
 def submit_order(request):
-    """Submit an order based on the items in the cart.
-
-    Args:
-        request: The HTTP request object.
-
-    Returns:
-        HttpResponse: Redirects to order success page or renders the order form.
-    """
+    """Submit an order based on the items in the cart."""
     cart = get_cart_from_cookies(request)
 
     if request.method == "POST":
@@ -89,38 +73,41 @@ def submit_order(request):
         if form.is_valid():
             phone_number = form.cleaned_data.get("phone_number")
 
-            if phone_number:
+            if request.user.is_authenticated:
                 customer, created = Customer.objects.get_or_create(
-                    phone_number=phone_number
+                    user=request.user,
+                    defaults={'phone_number': phone_number}
                 )
             else:
-                guest_id = str(uuid.uuid4())
-                customer = None  # No customer linked
+                customer = Customer.objects.create(phone_number=phone_number)  # ایجاد مشتری ناشناس
 
-            # Create the order
+            # ایجاد سفارش
             order = Order.objects.create(customer=customer)
 
-            # Iterate through cart items and create OrderItems
+            # ایجاد آیتم‌های سفارش
             for item_id, item_data in cart.items():
-                menu_item = MenuItem.objects.get(id=item_id)  # Fetch the menu item
+                menu_item = MenuItem.objects.get(id=item_id)  # دریافت آیتم منو
                 OrderItem.objects.create(
                     order=order, item=menu_item, quantity=item_data["quantity"]
                 )
 
-            # Store order history
-            if customer:
-                OrderHistory.objects.create(customer=customer, order_data=cart)
-            else:
-                OrderHistory.objects.create(guest_id=guest_id, order_data=cart)
+            # ذخیره تاریخچه سفارش
+            OrderHistory.objects.create(customer=customer, order_data=cart)
 
-            set_cart_in_cookies(request, {})
+            # پاک کردن سبد خرید
+            response = HttpResponse()  # ایجاد یک پاسخ جدید
+            set_cart_in_cookies(response, {})  # تنظیم کوکی‌ها
             messages.success(request, "Your order has been submitted successfully!")
-            return redirect("order_success")
+
+            return redirect('order_success')  # هدایت به صفحه موفقیت
     else:
         form = OrderForm()
 
     return render(request, "submit_order.html", {"form": form, "cart": cart})
 
+def order_success(request):
+    """Render the order success page."""
+    return render(request, "order_success.html")  # نام قالب را به‌روز کنید
 
 # مدیریت آیتم‌های سفارش توسط کاربران Staff
 @login_required

@@ -30,10 +30,10 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th scope="col">Order Number</th>
-                                    <th scope="col">Date <i class="fas fa-filter filter-icon" title="filter"></i></th>
-                                    <th scope="col">Table Number <i class="fas fa-filter filter-icon" title="filter"></i></th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Table Number</th>
                                     <th scope="col">Phone Number</th>
-                                    <th scope="col">Status <i class="fas fa-filter filter-icon" title="filter"></i></th>
+                                    <th scope="col">Status</th>
                                     <th scope="col">Edit Status</th>
                                     <th scope="col">Details</th>
                                 </tr>
@@ -64,6 +64,99 @@
                                     <td><a href="{% url 'cart' %}">Details</a></td>
                                 </tr>
                                 {% endfor %}
+                                <!-- مثال‌های ثابت -->
+                                <tr>
+                                    <th scope="row">7895211585</th>
+                                    <td>2024-10-24</td>
+                                    <td>12</td>
+                                    <td>093512345678</td>
+                                    <td>
+                                        Pending
+                                        <div class="dropdown" id="7895211585">
+                                            <select class="custom-select">
+                                                <option selected value="1">Pending</option>
+                                                <option value="2">Processing</option>
+                                                <option value="3">Paid</option>
+                                                <option value="4">Cancel</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="edit-icon" onclick="toggleDropdown(7895211585)">
+                                            <img src="{% static 'img/Edit-icon.png' %}">
+                                        </div>
+                                    </td>
+                                    <td><a href="{% url 'cart' %}">Details</a></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">7956842315</th>
+                                    <td>2024-10-24</td>
+                                    <td>5</td>
+                                    <td>091212345678</td>
+                                    <td>
+                                        Processing
+                                        <div class="dropdown" id="7956842315">
+                                            <select class="custom-select">
+                                                <option value="1">Pending</option>
+                                                <option selected value="2">Processing</option>
+                                                <option value="3">Paid</option>
+                                                <option value="4">Cancel</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="edit-icon" onclick="toggleDropdown(7956842315)">
+                                            <img src="{% static 'img/Edit-icon.png' %}">
+                                        </div>
+                                    </td>
+                                    <td><a href="{% url 'cart' %}">Details</a></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">7946582315</th>
+                                    <td>2024-10-21</td>
+                                    <td>23</td>
+                                    <td></td>
+                                    <td>
+                                        Paid
+                                        <div class="dropdown" id="7946582315">
+                                            <select class="custom-select">
+                                                <option value="1">Pending</option>
+                                                <option value="2">Processing</option>
+                                                <option selected value="3">Paid</option>
+                                                <option value="4">Cancel</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="edit-icon" onclick="toggleDropdown(7946582315)">
+                                            <img src="{% static 'img/Edit-icon.png' %}">
+                                        </div>
+                                    </td>
+                                    <td><a href="{% url 'cart' %}">Details</a></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">7845936147</th>
+                                    <td>2024-10-20</td>
+                                    <td>3</td>
+                                    <td>0991012345678</td>
+                                    <td>
+                                        Canceled
+                                        <div class="dropdown" id="7845936147">
+                                            <select class="custom-select">
+                                                <option value="1">Pending</option>
+                                                <option value="2">Processing</option>
+                                                <option value="3">Paid</option>
+                                                <option selected value="4">Cancel</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="edit-icon" onclick="toggleDropdown(7845936147)">
+                                            <img src="{% static 'img/Edit-icon.png' %}">
+                                        </div>
+                                    </td>
+                                    <td><a href="{% url 'cart' %}">Details</a></td>
+                                </tr>
                             </tbody>
                         </table>
                         <div class="control-group button">
