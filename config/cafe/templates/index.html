@@ -32,10 +32,10 @@
                                 <h3>About Us</h3>
                             </header>
                             <ul class="icon">
-                                <li><a href="#" class="fa fa-twitter"></a></li>
-                                <li><a href="#" class="fa fa-facebook"></a></li>
-                                <li><a href="#" class="fa fa-pinterest"></a></li>
-                                <li><a href="#" class="fa fa-google-plus"></a></li>
+                                <li><a href="#" class="fab fa-twitter"></a></li>
+                                <li><a href="#" class="fab fa-facebook"></a></li>
+                                <li><a href="#" class="fab fa-pinterest"></a></li>
+                                <li><a href="#" class="fab fa-google-plus"></a></li>
                             </ul>
                             <p>
                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam convallis quam sed tincidunt accumsan. Aliquam at tincidunt tortor, ac porta turpis. Curabitur lacinia venenatis semper.
@@ -43,7 +43,7 @@
                             <p>
                                 Aliquam ut nibh ut lacus posuere facilisis. Vestibulum ullamcorper arcu et bibendum ultrices. Suspendisse rutrum turpis vitae.
                             </p>
-                            <a class="btn" href="about.html">Learn More</a>
+                            <a class="btn" href="{% url 'about' %}">Learn More</a>
                         </div>
                     </div>
                 </div>
@@ -56,7 +56,7 @@
             <div class="container">
                 
                 <header class="section-header">
-                    <h3><a href="menu.html">delicious Food Menu</a></h3>
+                    <h3><a href="{% url 'menu' %}">delicious Food Menu</a></h3>
                 </header>
 
                 <div class="row">
@@ -65,11 +65,10 @@
                             <img class="img-fluid" src="{% static 'img/menu-1.jpg' %}" />
                             <div>$20</div>
                             <h4>Espresso</h4>
-                            <a href="order.html">Order Now</a>
+                            <span class="quantity"><input type="text" value="1"></span>
+                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
+                            </a>
 
-                                <!-- <input type="number" id="quantity" name="quantity" min="1" max="5"> -->
-                                <!-- <div class="quantity"><input type="text" value="1">
-                                </div> -->
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
@@ -77,7 +76,9 @@
                             <img class="img-fluid" src="{% static 'img/menu-2.jpg' %}" />
                             <div>$15</div>
                             <h4>Americano</h4>
-                            <a href="order.html">Order Now</a>
+                            <span class="quantity"><input type="text" value="1"></span>
+                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
+                            </a>
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
@@ -85,7 +86,9 @@
                             <img class="img-fluid" src="{% static 'img/menu-3.jpg' %}" />
                             <div>$12</div>
                             <h4>Cappuccino</h4>
-                            <a href="order.html">Order Now</a>
+                            <span class="quantity"><input type="text" value="1"></span>
+                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
+                            </a>
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
@@ -93,7 +96,9 @@
                             <img class="img-fluid" src="{% static 'img/menu-4.jpg' %}" />
                             <div>$18</div>
                             <h4>Latte</h4>
-                            <a href="order.html">Order Now</a>
+                            <span class="quantity"><input type="text" value="1"></span>
+                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
+                            </a>
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
@@ -101,7 +106,9 @@
                             <img class="img-fluid" src="{% static 'img/menu-5.jpg' %}" />
                             <div>$25</div>
                             <h4>Mocha</h4>
-                            <a href="order.html">Order Now</a>
+                            <span class="quantity"><input type="text" value="1"></span>
+                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
+                            </a>
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
@@ -109,7 +116,9 @@
                             <img class="img-fluid" src="{% static 'img/menu-6.jpg' %}" />
                             <div>$10</div>
                             <h4>Cold Brew</h4>
-                            <a href="order.html">Order Now</a>
+                            <span class="quantity"><input type="text" value="1"></span>
+                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
+                            </a>
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
@@ -117,7 +126,9 @@
                             <img class="img-fluid" src="{% static 'img/menu-7.jpg' %}" />
                             <div>$18</div>
                             <h4>Black Tea</h4>
-                            <a href="order.html">Order Now</a>
+                            <span class="quantity"><input type="text" value="1"></span>
+                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
+                            </a>
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3">
@@ -125,7 +136,9 @@
                             <img class="img-fluid" src="{% static 'img/menu-8.jpg' %}" />
                             <div>$14</div>
                             <h4>Green Tea</h4>
-                            <a href="order.html">Order Now</a>
+                            <span class="quantity"><input type="text" value="1"></span>
+                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
+                            </a>
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
@@ -193,7 +206,7 @@
                         </div>
                     </div>
                 </div>
-            <div class="single-menu"><a href="menu">See More</a></div>
+            <div class="single-menu"><a href="{% url 'menu' %}">See More</a></div>
             </div>
         </section>
         <!-- Menu Section End-->

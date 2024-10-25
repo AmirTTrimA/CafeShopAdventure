@@ -750,7 +750,7 @@ body.mobile-nav-active #mobile-nav-toggle {
 #food-menu .single-menu h4 {
     position: absolute;
     width: 100%;
-    bottom: 88px;
+    bottom: 60px;
     padding: 10px;
     color: #353535;
     background: rgba(188, 155, 93, .8);
@@ -774,7 +774,7 @@ body.mobile-nav-active #mobile-nav-toggle {
 
 #food-menu .single-menu a {
     display: inline-block;
-    margin: 30px 0;
+    margin: 20px 0;
     padding: 7px 30px;
     color: #353535;
     background: #BC9B5D;
@@ -786,12 +786,53 @@ body.mobile-nav-active #mobile-nav-toggle {
     background: #ffffff;
 }
 
+#food-menu .quantity input {
+    width: 100px;
+    height: 30px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    color: #666;
+    margin: 2px 2px 20px 2px;
+}
+
+#food-menu .quantity .q-btn {
+    position: relative;
+    display: inline-block;
+    background: #BC9B5D;
+    color: #353535;
+    height: 30px;
+    width: 30px;
+    font-size: 19px;
+    text-align: center;
+    border-radius: 20px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none; 
+}
+
+#food-menu .quantity .q-btn:hover {
+    color: #BC9B5D;
+    background: #353535;
+}
+
+#food-menu .quantity .dec.q-btn {
+    margin-right: -32px !important;
+}
+
+#food-menu .quantity .inc.q-btn {
+    margin-left: -32px !important;
+}
+
 /* span.dec.q-btn, span.inc.q-btn {
     border: 1px solid #bc9b5d;
     background-color: #bc9b5d;
     border-radius: 40px;
     padding: 4px 10px;
 }
+
 
 span.quantity {
     display: inline-block;
@@ -1872,9 +1913,9 @@ h3.st-ti {
 #product .product-col-left {
     position: relative;
     width: 100%;
-    height: 100vh;
+    /* height: 100vh; */
     border-radius: 6px;
-    background: url("../img/menu-4.jpg") left top no-repeat fixed;
+    /* background: url("../img/menu-4.jpg") left top no-repeat fixed; */
     background-size: contain;
 }
 
@@ -1904,9 +1945,10 @@ h3.st-ti {
 
 #product .product-col-right p {
     color: #353535;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 300;
     margin-bottom: 15px;
+    text-align: justify;
 }
 
 #product .product-col-right p:last-child {
@@ -1915,7 +1957,7 @@ h3.st-ti {
 
 #product .product-col-right a {
     display: inline-block;
-    padding: 8px 30px;
+    padding: 8px;
     border-radius: 20px;
     color: #353535;
     background: #BC9B5D;
@@ -1942,12 +1984,12 @@ h3.st-ti {
     #product .product-col-right p {
         font-size: 16px;
     }
-    #product .quantity .dec.q-btn {
+    #product .quantity .dec.q-btn,#food-menu .quantity .dec.q-btn {
         margin-right: 0px;
         margin-bottom: 5px;
     }
 
-    #product .quantity .inc.q-btn {
+    #product .quantity .inc.q-btn,#food-menu .quantity .inc.q-btn {
         margin-left: 0px;
         margin-top: 5px;
     }

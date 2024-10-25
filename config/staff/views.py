@@ -148,7 +148,7 @@ class StaffView(View):
 
     def get(self, request):
 
-      if request.user.is_authenticated:
+        if request.user.is_authenticated:
             """render the staff page"""
         # context = self.get_context_data()
             return render(request, self.template_name,{'login_logout':'logout'})
