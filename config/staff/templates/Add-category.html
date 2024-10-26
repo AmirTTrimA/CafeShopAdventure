@@ -7,13 +7,12 @@
 
     <h1 class="st-h">manager Panel</h1>
     <div class="st-panel">
-        <li><a href="{% url 'checkout' %}">Checkout</a></li>
-        <li><a href="{% url 'add-product' %}">Add Product</a></li>
-        <li><a href="{% url 'edit-product' %}">Edit Product</a></li>
-        <li><a href="{% url 'add-category' %}">Add Category</a></li>
-        <li><a href="{% url 'edit-category' %}">Edit Category</a></li>
-        <li><a href="{% url 'staff-access' %}">Staff Access</a></li>
-        <li><a href="{% url 'logout' %}">logout</a></li>
+        <li><a href="{% url 'checkout' %}">checkout</a></li>
+        <li><a href="{% url 'edit-product' %}">Edit product</a></li>
+        <li><a href="{% url 'add-product' %}">Add product</a></li>
+        <li><a href="{% url 'add-category' %}">Add category</a></li>
+        <li><a href="{% url 'remove-p' %}">Remove product</a></li>
+        <li><a href="{% url 'remove-c' %}">Remove category</a></li>
 
     </div>
         <!-- Add Product Section Start -->
@@ -27,19 +26,21 @@
                     <div class="col-md-6">
 
                         <h4>Add New Category</h4>
-                        <div class="form-group">
+                        <form class="form-group" method="post">
+                            {% csrf_token %}
                             <label for ="Category Name">Category Name</label>
                             <input name="Category Name" type="text" class="form-control" placeholder="Category Name" />
-                        </div>
-                        <div class="button">
-                            <button type="submit">Submit</button>
-                        </div>
+                            <div class="button">
+                                <button type="submit">Submit</button>
+                            </div>
+                        </form>
  
                     </div>
-
                 </div>
             </div>
         </section>
+        <div>{{massage}}</div>
         <!-- Add Product Section End -->
 
 {% endblock %}
+
