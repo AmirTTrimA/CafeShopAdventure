@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Category{% endblock %}
+
+{% block content %}
+{% load static %}
+
+    <h1 class="st-h">manager Panel</h1>
+    <div class="st-panel">
+        <li><a href="{% url 'checkout' %}">checkout</a></li>
+        <li><a href="{% url 'edit-product' %}">Edit product</a></li>
+        <li><a href="{% url 'add-product' %}">Add product</a></li>
+        <li><a href="{% url 'add-category' %}">Add category</a></li>
+        <li><a href="{% url 'remove-p' %}">Remove product</a></li>
+        <li><a href="{% url 'remove-c' %}">Remove category</a></li>
+
+    </div>
+        <!-- Add Product Section Start -->
+        <section id="add-product">
+            <div class="container">
+                <header class="section-header">
+                    <h3>Remove Category</h3>
+                </header>
+                <div class="row form">
+
+                    <div class="col-md-6">
+
+                        <h4>Remove a Category</h4>
+                        <form class="form-group" method="post">
+                            {% csrf_token %}
+                            <label for ="Category Name">Category Name</label>
+                            <input name="Category Name" type="text" class="form-control" placeholder="Category Name" />
+                            <div class="button">
+                                <button type="submit">Submit</button>
+                            </div>
+                        </form>
+ 
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div>{{massage}}</div>
+        <!-- Add Product Section End -->
+
+{% endblock %}

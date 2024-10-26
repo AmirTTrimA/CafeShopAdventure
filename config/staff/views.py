@@ -172,58 +172,66 @@ class StaffView(View):
 
 
 class OrderFilterView(View):
-    template_name = "staff\order_list.html"
+    template_name = "order_list.html"
 
     def get(self, request):
         form = OrderFilterForm()
         return render(request, self.template_name, {"form": form})
 
     def post(self, request):
-        form = OrderFilterForm(request.POST)
-        if form.is_valid():
-            filter_type = form.cleaned_data["filter_type"]
-            filter_value = form.cleaned_data["filter_value"]
-            if filter_type != "last_order" and filter_value == "":
-                form.add_error("filter_value", "Please enter a valid value.")
+        form = OrderFilterForm()
+        if request.POST.get('form_type')=='change_status':
+            data=request.POST
+            order_id=data.get('order_id')
+            print(order_id)
+            new_status=data.get('status')
+            order = Order.objects.get(id=order_id)
+            order.status=new_status
+            order.save()
+            return render(request, self.template_name, {"form": form,'massage':'Status change was done successfully'})
+        else:
+            form = OrderFilterForm(request.POST)
+            if form.is_valid():
+                filter_type = form.cleaned_data["filter_type"]
+                filter_value = form.cleaned_data["filter_value"]
+                if filter_type != "last_order" and filter_value == "":
+                    form.add_error("filter_value", "Please enter a valid value.")
 
-            elif filter_type == "last_order":
-                orders = View.Order.objects.order_by("-order_date")[:1]  # Last order
-                return render(
-                    request, self.template_name, {"form": form, "orders": orders}
-                )
+                elif filter_type == "last_order":
+                    orders = Order.objects.order_by("-order_date")[:1]  # Last order
+                    return render(
+                        request, self.template_name, {"form": form, "orders": orders}
+                    )
 
-            elif filter_type != "last_order" and filter_value != "":
-                # Apply filtering based on filter type
-                if filter_type == "date":
-                    import datetime
+                elif filter_type != "last_order" and filter_value != "":
+                    # Apply filtering based on filter type
+                    if filter_type == "date":
+                        import datetime
 
-                    try:
-                        date_filter = datetime.datetime.strptime(
-                            filter_value, "%Y-%m-%d"
-                        )
-                        orders = Order.objects.filter(order_date__date=date_filter)
-                    except ValueError:
-                        orders = (
-                            Order.objects.none()
-                        )  # Return no results on invalid date
-                elif filter_type == "status":
-                    orders = Order.objects.filter(status=filter_value)
-                elif filter_type == "table_number":
-                    customers = Customer.objects.filter(table_number=filter_value)
-                    orders = Order.objects.filter(customer__in=customers)
+                        try:
+                            date_filter = datetime.datetime.strptime(
+                                filter_value, "%Y-%m-%d"
+                            )
+                            orders = Order.objects.filter(order_date__date=date_filter)
+                        except ValueError:
+                            orders = (
+                                Order.objects.none()
+                            )  # Return no results on invalid date
+                    elif filter_type == "status":
+                        orders = Order.objects.filter(status=filter_value)
+                    elif filter_type == "table_number":
+                        customers = Customer.objects.filter(table_number=filter_value)
+                        orders = Order.objects.filter(customer__in=customers)
 
-                return render(
-                    request, self.template_name, {"form": form, "orders": orders}
-                )
+                    return render(
+                        request, self.template_name, {"form": form, "orders": orders}
+                    )
 
-            return render(request, self.template_name, {"form": form})
-
-
-# def manager(request):
-#     return render(request, "manager.html")
+                return render(request, self.template_name, {"form": form})
+    
 
 
-class ProductUpdateView(View):
+class EditProduct(View):
 
     def get(self, request):
          items=MenuItem.objects.all()
@@ -231,81 +239,95 @@ class ProductUpdateView(View):
          return render(request,'Edit-product.html',{'massage':'','items':items,'cats':cats})
     
     def post(self, request):
-         name_i = request.get('Prodcut Name')
-         item=MenuItem.objects.get(name=name_i)
+         name_e=request.POST.get('Product')
+         name_i = request.POST.get('Prodcut Name')
+         item=MenuItem.objects.get(name=name_e)
          items=MenuItem.objects.all()
          cats=Category.objects.all()
          if item:
-            item.description =request.Post.get('Product description')
-            item.price = request.Post.get('Product Price')
-            item.category = request.Post.get('Product cat')
+            if name_i is not '':
+                item.name=name_i
+            price =request.POST.get('Product Price')
+            if price is not '':
+                item.price=Decimal(price)
+            item_cat = request.POST.get('Product cat')
+            if item_cat is not ['']:
+                item.category=Category.objects.get(id=item_cat)
+            if request.POST.get("Product description") is not ['']:
+                item.description=request.POST.get("Product description")
             item.save()
             return render(request,'Edit-product.html',{'items':items,'cats':cats,'massage':'Changes saved successfully'})
          else:
             return render(request,'Edit-product.html',{'items':items,'cats':cats,'massage':'product dose not exist'})
+        
+class Add_product(View):
 
-# class EditProductView(View):
-#     def get(request):
-#         return render(request, "edit-product.html")
-
-class CheckoutView(View):
-    def get(request):
-        return render(request, "checkout.html")
-
-class AddProductView(View):
-    def get(request):
-        return render(request, "add-product.html")
-
-class AddCategoryView(View):
-    def get(request):
-        return render(request, "add-category.html")
-
-class EditCategoryView(View):
-    def get(request):
-        return render(request, "edit-category.html")
-
-
-
-class StaffAccessView(View):
     def get(self, request):
-        return render(request, 'staff-access.html')
+        cats=Category.objects.all()
+        return render(request, "add-product.html",{'cats':cats})
+    
+    def post(self, request):
+        data=request.POST
+        cats=Category.objects.all()
+        Product_Name=(data.getlist('Prodcut Name'))[0]
+         
+        Product_cat=(data.getlist('Product cat'))[0]
+        category_p=Category.objects.get(id=Product_cat)
+        Product_description = data.get('Product description')
+        Product_Price=data.get('Product Price')
+        check_item=MenuItem.objects.filter(name=Product_Name,category=category_p)
+        if check_item:
+            return render(request, "add-product.html",{'cats':cats,'massage':'There is a product with this title and category'})
+        else:
+            item=MenuItem.objects.create(name=Product_Name,description=Product_description,price=Decimal(Product_Price),category=category_p)
+            item.save()
+            return render(request, "add-product.html",{'cats':cats,'massage':'saved!!'})
 
+class RemoveProduct(View):
+    def get(self, request):
+        cats=Category.objects.all()
+        return render(request, "remove-p.html",{'cats':cats})
+    
+    def post(self, request):
+        data=request.POST
+        cats=Category.objects.all()
+        Product_Name=(data.getlist('Prodcut Name'))[0]
+        Product_cat=(data.getlist('Product cat'))[0]
+        category_p=Category.objects.get(id=Product_cat)
+        item=MenuItem.objects.filter(name=Product_Name,category=category_p)
+        if item:
+            item.delete()
+            return render(request, "remove-p.html",{'cats':cats,'massage':'Product removal was successful'})
+        else:
+             return render(request, "remove-p.html",{'cats':cats,'massage':'this product dose not exist!'})
+        
+class AddCategory(View):
+    def get(self, request):
+        return render(request, "Add-category.html")
+    
+    def post(self, request):
+        data=request.POST
+        Category_Name=data.get('Category Name')
+        item=Category.objects.filter(name=Category_Name)
+        if item:
+            return render(request, "Add-category.html",{'massage':'There is a category with this title'})
+        else:
+            new_item=Category.objects.create(name=Category_Name)
+            new_item.save()
+            return render(request, "Add-category.html",{'massage':'Information saved successfully'})
+    
+class RemoveCategory(View):
+    def get(self, request):
+        return render(request, "remove-c.html")
+    
+    def post(self, request):
+        data=request.POST
+        Category_Name=data.get('Category Name')
+        item=Category.objects.filter(name=Category_Name)
+        if item:
+            item.delete()
 
-# class OrderFilterView(View):
-#     template_name = 'order_list.html'
-
-#     def get(self, request):
-#         form = OrderFilterForm()
-#         return render(request, self.template_name, {'form': form})
-
-#     def post(self, request):
-#         form = OrderFilterForm(request.POST)
-#         if form.is_valid():
-#             filter_type = form.cleaned_data['filter_type']
-#             filter_value= form.cleaned_data['filter_value']
-#             if filter_type!='last_order' and filter_value =='':
-#                 form.add_error('filter_value', 'Please enter a valid value.')
-
-#             elif filter_type == 'last_order' :
-#                 orders = Order.objects.order_by('-order_date')[:1]  # Last order
-#                 return render(request, self.template_name, {'form': form, 'orders': orders})
-
-#             elif filter_type !='last_order' and filter_value!='':
-
-#             # Apply filtering based on filter type
-#                 if filter_type == 'date':
-#                     import datetime
-#                     try:
-#                         date_filter = datetime.datetime.strptime(filter_value, '%Y-%m-%d')
-#                         orders = Order.objects.filter(order_date__date=date_filter)
-#                     except ValueError:
-#                         orders = Order.objects.none()  # Return no results on invalid date
-#                 elif filter_type == 'status':
-#                     orders = Order.objects.filter(status=filter_value)
-#                 elif filter_type == 'table_number':
-#                     customers = Customer.objects.filter(table_number=filter_value)
-#                     orders = Order.objects.filter(customer__in=customers)
-
-#                 return render(request, self.template_name, {'form': form, 'orders': orders})
-
-#             return render(request, self.template_name, {'form': form})
+            return render(request, "Add-category.html",{'massage':'Information saved successfully'})
+        else:
+            return render(request, "Add-category.html",{'massage':'There is no category with this title'})
+    
