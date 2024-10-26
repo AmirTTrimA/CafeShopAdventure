@@ -25,34 +25,22 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% for item in cart.items.all %}
                             <tr>
-                                <th scope="row">Espresso</th>
-                                <td>$10</td>
-                                <td><div class="quantity"><input type="text" value="1"></div></td>
-                                <td>$10</td>
-                                <td><a href=""><i class="fa fa-trash-o"></i></a></td>
+                                <th scope="row">{{ item.menu_item.name }}</th>
+                                <td>${{ item.menu_item.price }}</td>
+                                <td><div class="quantity"><input type="text" value="{{ item.quantity }}"></div></td>
+                                <td>${{ item.total_price }}</td>
+                                <td><a href=""><i class="fab fa-trash-o"></i></a></td>
                             </tr>
-                            <tr>
-                                <th scope="row">Breakfast Sandwiches (Egg & Cheese, Bacon & Egg)</th>
-                                <td>$15</td>
-                                <td><div class="quantity"><input type="text" value="2"></div></td>
-                                <td>$30</td>
-                                <td><a href=""><i class="fa fa-trash-o"></i></a></td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Black Tea</th>
-                                <td>$20</td>
-                                <td><div class="quantity"><input type="text" value="3"></div></td>
-                                <td>$60</td>
-                                <td><a href=""><i class="fa fa-trash-o"></i></a></td>
-                            </tr>
+                            {% endfor %}
                         </tbody>
                         <thead class="thead-dark">
                             <tr>
                                 <th scope="col">Total</th>
-                                <th scope="col">$100</th>
                                 <th scope="col">-</th>
-                                <th scope="col">$100</th>
+                                <th scope="col">-</th>
+                                <th scope="col">${{ total_price }}</th>
                                 <th scope="col">-</th>
                             </tr>
                         </thead>

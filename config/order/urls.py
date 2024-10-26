@@ -1,7 +1,7 @@
 from django.urls import path
 from. import views
 from .views import (
-    add_to_cart,
+    add_to_cart_view,
     cart_view,
     submit_order,
     manage_order_items,
@@ -11,7 +11,7 @@ from .views import (
 )
 
 urlpatterns = [
-    path("add_to_cart/<int:item_id>/", add_to_cart, name="add_to_cart"),
+    path("add_to_cart/<int:item_id>/", add_to_cart_view, name="add_to_cart"),
     path("cart/", cart_view, name="cart"),
     path("submit_order/", submit_order, name="submit_order"),
     path('order_success/', views.order_success, name='order_success'),  # URL جدید

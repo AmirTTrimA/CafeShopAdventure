@@ -10,12 +10,9 @@ from django.views import View
 from django.urls import reverse_lazy
 from order.models import Order
 from customer.models import Customer
+from menu.models import MenuItem, Category
 from .forms import OrderFilterForm
 from .forms import StaffRegistrationForm
-from order.models import Order
-from customer.models import Customer
-from .models import Staff
-from .forms import StaffRegistrationForm, OrderFilterForm
 
 
 # class RegisterView(FormView):
@@ -172,7 +169,7 @@ class StaffView(View):
 
 
 class OrderFilterView(View):
-    template_name = "staff\order_list.html"
+    template_name = "order_list.html"
 
     def get(self, request):
         form = OrderFilterForm()
@@ -187,7 +184,7 @@ class OrderFilterView(View):
                 form.add_error("filter_value", "Please enter a valid value.")
 
             elif filter_type == "last_order":
-                orders = View.Order.objects.order_by("-order_date")[:1]  # Last order
+                orders = Order.objects.order_by("-order_date")[:1]  # Last order
                 return render(
                     request, self.template_name, {"form": form, "orders": orders}
                 )
@@ -224,51 +221,77 @@ class OrderFilterView(View):
 
 
 class ProductUpdateView(View):
-
     def get(self, request):
-         items=MenuItem.objects.all()
-         cats=Category.objects.all()
-         return render(request,'Edit-product.html',{'massage':'','items':items,'cats':cats})
-    
+        items = MenuItem.objects.all()
+        cats = Category.objects.all()
+        return render(
+            request, "edit-product.html", {"massage": "", "items": items, "cats": cats}
+        )
+
     def post(self, request):
-         name_i = request.get('Prodcut Name')
-         item=MenuItem.objects.get(name=name_i)
-         items=MenuItem.objects.all()
-         cats=Category.objects.all()
-         if item:
-            item.description =request.Post.get('Product description')
-            item.price = request.Post.get('Product Price')
-            item.category = request.Post.get('Product cat')
+        name_i = request.get("Prodcut Name")
+        item = MenuItem.objects.get(name=name_i)
+        items = MenuItem.objects.all()
+        cats = Category.objects.all()
+        if item:
+            item.description = request.POST.get("Product description")
+            item.price = request.POST.get("Product Price")
+            item.category = request.POST.get("Product cat")
             item.save()
-            return render(request,'Edit-product.html',{'items':items,'cats':cats,'massage':'Changes saved successfully'})
-         else:
-            return render(request,'Edit-product.html',{'items':items,'cats':cats,'massage':'product dose not exist'})
+            return render(
+                request,
+                "edit-product.html",
+                {"items": items, "cats": cats, "massage": "Changes saved successfully"},
+            )
+        else:
+            return render(
+                request,
+                "edit-product.html",
+                {"items": items, "cats": cats, "massage": "product dose not exist"},
+            )
+
+def order_success(request):
+    """Render the order success page."""
+    return render(request, "order_success.html")
 
 # class EditProductView(View):
 #     def get(request):
 #         return render(request, "edit-product.html")
 
-class CheckoutView(View):
-    def get(request):
-        return render(request, "checkout.html")
+
+@login_required
+def checkout(request):
+    # Get the logged-in staff member
+    # staff_member = request.user  # The user is assumed to be a staff member
+
+    # Fetch orders associated with the logged-in staff
+    orders = Order.objects.filter()
+
+    context = {
+        'orders': orders
+    }
+    
+    return render(request, 'checkout.html', context)
+
 
 class AddProductView(View):
     def get(request):
         return render(request, "add-product.html")
 
+
 class AddCategoryView(View):
     def get(request):
         return render(request, "add-category.html")
+
 
 class EditCategoryView(View):
     def get(request):
         return render(request, "edit-category.html")
 
 
-
 class StaffAccessView(View):
     def get(self, request):
-        return render(request, 'staff-access.html')
+        return render(request, "staff-access.html")
 
 
 # class OrderFilterView(View):

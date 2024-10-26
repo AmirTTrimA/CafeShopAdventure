@@ -60,152 +60,19 @@
                 </header>
 
                 <div class="row">
+                    {%for item in menu_items%}
                     <div class="col-sm-6 col-md-4 col-lg-3">
                         <div class="single-menu">
-                            <img class="img-fluid" src="{% static 'img/menu-1.jpg' %}" />
-                            <div>$20</div>
-                            <h4>Espresso</h4>
-                            <span class="quantity"><input type="text" value="1"></span>
-                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
-                            </a>
-
+                        <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
+                        <div>${{item.price}}</div>
+                        <h4><a href="{% url 'product' item.pk %}">{{item.name}}</a></h4>
+                        <span class="quantity"><input type="text" value="1" /></span>
+                        <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i> </a>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="{% static 'img/menu-2.jpg' %}" />
-                            <div>$15</div>
-                            <h4>Americano</h4>
-                            <span class="quantity"><input type="text" value="1"></span>
-                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="{% static 'img/menu-3.jpg' %}" />
-                            <div>$12</div>
-                            <h4>Cappuccino</h4>
-                            <span class="quantity"><input type="text" value="1"></span>
-                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="{% static 'img/menu-4.jpg' %}" />
-                            <div>$18</div>
-                            <h4>Latte</h4>
-                            <span class="quantity"><input type="text" value="1"></span>
-                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="{% static 'img/menu-5.jpg' %}" />
-                            <div>$25</div>
-                            <h4>Mocha</h4>
-                            <span class="quantity"><input type="text" value="1"></span>
-                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="{% static 'img/menu-6.jpg' %}" />
-                            <div>$10</div>
-                            <h4>Cold Brew</h4>
-                            <span class="quantity"><input type="text" value="1"></span>
-                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="{% static 'img/menu-7.jpg' %}" />
-                            <div>$18</div>
-                            <h4>Black Tea</h4>
-                            <span class="quantity"><input type="text" value="1"></span>
-                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="{% static 'img/menu-8.jpg' %}" />
-                            <div>$14</div>
-                            <h4>Green Tea</h4>
-                            <span class="quantity"><input type="text" value="1"></span>
-                            <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
-                            <div>$22</div>
-                            <h4>Iced Tea</h4>
-                            <a href="order.html">Order Now</a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
-                            <div>$22</div>
-                            <h4>Croissants</h4>
-                            <a href="order.html">Order Now</a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
-                            <div>$22</div>
-                            <h4>Muffins (Blueberry, Chocolate Chip)</h4>
-                            <a href="order.html">Order Now</a>
-                        </div>
-                    </div>                    
-                    <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
-                            <div>$22</div>
-                            <h4>Cookies (Chocolate Chip, Oatmeal Raisin)</h4>
-                            <a href="order.html">Order Now</a>
-                        </div>
-                    </div>                    
-                    <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
-                            <div>$22</div>
-                            <h4>Breakfast Sandwiches (Egg & Cheese, Bacon & Egg)</h4>
-                            <a href="order.html">Order Now</a>
-                        </div>
-                    </div>                    
-                    <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
-                            <div>$22</div>
-                            <h4>Granola Bars</h4>
-                            <a href="order.html">Order Now</a>
-                        </div>
-                    </div>                    
-                    <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
-                            <div>$22</div>
-                            <h4>Trail Mix</h4>
-                            <a href="order.html">Order Now</a>
-                        </div>
-                    </div>                    
-                    <div class="col-sm-6 col-md-4 col-lg-3 d-sm-none d-md-block d-lg-none">
-                        <div class="single-menu">
-                            <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
-                            <div>$22</div>
-                            <h4>Fruit Cups</h4>
-                            <a href="order.html">Order Now</a>
-                        </div>
-                    </div>
+                    {%endfor%}
                 </div>
+                
             <div class="single-menu"><a href="{% url 'menu' %}">See More</a></div>
             </div>
         </section>

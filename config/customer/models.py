@@ -29,10 +29,10 @@ class Customer(models.Model):
         updated_at (datetime): The timestamp when the customer was last updated.
     """
 
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100, null=True, blank=True)
+    last_name = models.CharField(max_length=100, null=True, blank=True)
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    table_number = models.CharField(max_length=10, blank=True, null=True)    
+    table_number = models.CharField(max_length=10, blank=True, null=True) 
     phone_number = models.CharField(
         max_length=12, validators=[iran_phone_regex], unique=True, null=True, blank=True
     )

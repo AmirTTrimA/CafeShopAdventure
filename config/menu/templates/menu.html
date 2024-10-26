@@ -14,16 +14,17 @@
     </div>
 
     <div class="row">
+      {%for item in menu_items%}
       <div class="col-sm-6 col-md-4 col-lg-3">
-        {%for item in menu_items%}
         <div class="single-menu">
           <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
           <div>${{item.price}}</div>
-          <h4>{{item.name}}</h4>
-          <a href="{% url 'product' item.id %}">Order Now</a>
+          <h4><a href="{% url 'product' item.pk %}">{{item.name}}</a></h4>
+          <span class="quantity"><input type="text" value="1" /></span>
+          <a href="{% url 'add_to_cart' item.pk %}"><i class="fas fa-shopping-cart"></i> </a>
         </div>
-        {%endfor%}
       </div>
+      {%endfor%}
     </div>
   </div>
 </section>

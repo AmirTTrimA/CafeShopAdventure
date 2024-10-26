@@ -5,6 +5,7 @@ submitting orders, and viewing order history.
 """
 
 import uuid
+import json
 from datetime import timedelta
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -13,40 +14,53 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 from django.utils import timezone
+from http.cookies import SimpleCookie
 from .models import Order, OrderItem, OrderHistory, MenuItem, Customer
 from .forms import OrderForm
 from .utils import get_cart_from_cookies, set_cart_in_cookies
 from django.db import transaction
-import uuid
-
 
 
 DEFAULT_GUEST_CUSTOMER_PHONE = "09123456789"  # Default phone number for guest customer
 
 
-def add_to_cart(request, item_id):
+def add_to_cart(response, request, item_id, quantity):
     """Add a menu item to the cart."""
     menu_item = get_object_or_404(MenuItem, id=item_id)
 
     # Get cart from cookies
+    cookie = SimpleCookie()
+    cookie.load(request.COOKIES.get("cart"))
+    print(f"cookie: {cookie}")
     cart = get_cart_from_cookies(request)
 
+    # response = HttpResponse()  # Create a response object
+    if not cart:
+        set_cart_in_cookies(response, {})
     # Add item to cart
     if str(menu_item.id) in cart:
-        cart[str(menu_item.id)]["quantity"] += 1
+        cart[str(menu_item.id)]["quantity"] += quantity
     else:
         cart[str(menu_item.id)] = {
             "name": menu_item.name,
             "price": str(menu_item.price),
-            "quantity": 1,
+            "quantity": quantity,
         }
 
     # Save updated cart in cookies
-    
-def set_cart_in_cookies(response, cart):
-    """Set the cart in cookies."""
-    response.set_cookie('cart', cart)  # تنظیم کوکی
-    return response  # برگرداندن پاسخ
+    response.set_cookie("cart", json.dumps(cart), max_age=60 * 60 * 24 * 30)
+    print(response.cookies)
+
+    return response
+
+
+def add_to_cart_view(request, item_id):
+    if request.method == "GET":
+        quantity = int(request.GET.get("quantity", 1))  # Default to 1 if not specified
+        response = redirect("menu")
+        response = add_to_cart(response, request, item_id, quantity)
+        return response
+    return redirect("menu")
 
 
 def cart_view(request):
@@ -62,7 +76,6 @@ def cart_view(request):
     return render(request, "cart.html", {"cart": cart})
 
 
-
 def submit_order(request):
     """Submit an order based on the items in the cart."""
     cart = get_cart_from_cookies(request)
@@ -75,11 +88,12 @@ def submit_order(request):
 
             if request.user.is_authenticated:
                 customer, created = Customer.objects.get_or_create(
-                    user=request.user,
-                    defaults={'phone_number': phone_number}
+                    user=request.user, defaults={"phone_number": phone_number}
                 )
             else:
-                customer = Customer.objects.create(phone_number=phone_number)  # ایجاد مشتری ناشناس
+                customer = Customer.objects.create(
+                    phone_number=phone_number
+                )  # ایجاد مشتری ناشناس
 
             # ایجاد سفارش
             order = Order.objects.create(customer=customer)
@@ -99,15 +113,17 @@ def submit_order(request):
             set_cart_in_cookies(response, {})  # تنظیم کوکی‌ها
             messages.success(request, "Your order has been submitted successfully!")
 
-            return redirect('order_success')  # هدایت به صفحه موفقیت
+            return redirect("order_success")  # هدایت به صفحه موفقیت
     else:
         form = OrderForm()
 
     return render(request, "submit_order.html", {"form": form, "cart": cart})
 
+
 def order_success(request):
     """Render the order success page."""
     return render(request, "order_success.html")  # نام قالب را به‌روز کنید
+
 
 # مدیریت آیتم‌های سفارش توسط کاربران Staff
 @login_required
@@ -183,20 +199,22 @@ def change_order_status(request, order_id):
 @login_required
 def checkout(request):
     """Handle the checkout process, calculate the total price, and create an order."""
-    
+
     try:
         customer = request.user.customer
     except Customer.DoesNotExist:
         messages.error(request, "You are not associated with a customer account.")
         return redirect("menu")
 
-    order_items = OrderItem.objects.filter(order__customer=customer, order__status="Pending")
+    order_items = OrderItem.objects.filter(
+        order__customer=customer, order__status="Pending"
+    )
     total_price = sum(item.item.price * item.quantity for item in order_items)
 
     if request.method == "POST":
         # به‌روزرسانی وضعیت‌های سفارشات
         for order_item in order_items:
-            status_key = f'status_{order_item.order.id}'
+            status_key = f"status_{order_item.order.id}"
             new_status = request.POST.get(status_key)
             if new_status:
                 order_item.order.status = new_status  # به‌روزرسانی وضعیت
@@ -206,8 +224,11 @@ def checkout(request):
         return redirect("checkout")  # به‌روز رسانی مجدد صفحه
 
     return render(
-        request, "checkout.html", {"order_items": order_items, "total_price": total_price}
+        request,
+        "checkout.html",
+        {"order_items": order_items, "total_price": total_price},
     )
+
 
 # تأیید سفارش
 @login_required
@@ -280,7 +301,6 @@ def change_item_quantity(request, order_id, item_id):
     return render(
         request, "change_item_quantity.html", {"order": order, "order_item": order_item}
     )
-
 
 
 def order_history_view(request):

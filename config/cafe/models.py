@@ -22,7 +22,7 @@ class Cafe(models.Model):
     created_at = models.TimeField()
 
     def __str__(self):
-        return f"{self.name} owned by {self.owner.username}"
+        return f"{self.name} owned by {self.owner.first_name} {self.owner.last_name}"
 
     def is_open(self, current_time):
         """

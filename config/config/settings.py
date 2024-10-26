@@ -151,3 +151,5 @@ AUTHENTICATION_BACKENDS = [
     "staff.backends.PhoneNumberBackend",  # Replace 'your_app' with your actual app name
     "django.contrib.auth.backends.ModelBackend",  # Keep the default backend as a fallback
 ]
+
+SESSION_COOKIE_AGE = 60 * 60  # an hour

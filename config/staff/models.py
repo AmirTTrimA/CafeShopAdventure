@@ -43,7 +43,7 @@ class StaffManager(BaseUserManager):
         return user
 
 
-class Staff(AbstractBaseUser, PermissionsMixin, models.Model):
+class Staff(AbstractBaseUser, PermissionsMixin):
     """
     Model representing a staff member.
 
