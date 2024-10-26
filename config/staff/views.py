@@ -1,5 +1,6 @@
 """views.py"""
 
+from decimal import Decimal
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -13,70 +14,6 @@ from customer.models import Customer
 from menu.models import MenuItem, Category
 from .forms import OrderFilterForm
 from .forms import StaffRegistrationForm
-
-
-# class RegisterView(FormView):
-#     template_name = "staff/register.html"
-#     form_class = StaffRegistrationForm
-#     success_url = reverse_lazy("login")
-
-#     def form_valid(self, form):
-#         form.save()
-#         messages.success(self.request, "Staff registered successfully!")
-#         return super().form_valid(form)
-
-#     def form_invalid(self, form):
-#         messages.error(self.request, "There was an error in the registration form.")
-#         return super().form_invalid(form)
-
-
-# class LoginView(View):
-#     template_name = "staff/login.html"
-
-#     def get(self, request):
-#         return render(request, self.template_name)
-
-#     def post(self, request):
-#         phone_number = request.POST.get("phone_number")
-#         password = request.POST.get("password")
-#         user = authenticate(request, phone_number=phone_number, password=password)
-
-#         if user is not None:
-#             login(request, user)
-#             return redirect("staff")
-#         else:
-#             messages.error(request, "Invalid phone number or password.")
-#             return render(request, self.template_name)
-
-
-# @method_decorator(login_required, name="dispatch")
-# class LogoutView(View):
-#     """
-#     Handle staff logout.
-
-#     Logs out the user and redirects to the login page.
-#     """
-
-#     def get(self, request):
-#         logout(request)
-#         return redirect("login")
-
-
-# @method_decorator(login_required, name="dispatch")
-# class StaffView(View):
-#     """
-#     Render the staff page.
-#     """
-
-#     template_name = "staff.html"
-
-#     def get(self, request):
-#         context = self.get_context_data()
-#         return render(request, self.template_name, context)
-
-#     def get_context_data(self, **kwargs):
-#         context = {}
-#         return context
 
 
 class RegisterView(FormView):
@@ -177,15 +114,19 @@ class OrderFilterView(View):
 
     def post(self, request):
         form = OrderFilterForm()
-        if request.POST.get('form_type')=='change_status':
-            data=request.POST
-            order_id=data.get('order_id')
+        if request.POST.get("form_type") == "change_status":
+            data = request.POST
+            order_id = data.get("order_id")
             print(order_id)
-            new_status=data.get('status')
+            new_status = data.get("status")
             order = Order.objects.get(id=order_id)
-            order.status=new_status
+            order.status = new_status
             order.save()
-            return render(request, self.template_name, {"form": form,'massage':'Status change was done successfully'})
+            return render(
+                request,
+                self.template_name,
+                {"form": form, "massage": "Status change was done successfully"},
+            )
         else:
             form = OrderFilterForm(request.POST)
             if form.is_valid():
@@ -225,11 +166,9 @@ class OrderFilterView(View):
                     )
 
                 return render(request, self.template_name, {"form": form})
-    
 
 
 class EditProduct(View):
-
     def get(self, request):
         items = MenuItem.objects.all()
         cats = Category.objects.all()
@@ -238,95 +177,143 @@ class EditProduct(View):
         )
 
     def post(self, request):
-         name_e=request.POST.get('Product')
-         name_i = request.POST.get('Prodcut Name')
-         item=MenuItem.objects.get(name=name_e)
-         items=MenuItem.objects.all()
-         cats=Category.objects.all()
-         if item:
-            if name_i is not '':
-                item.name=name_i
-            price =request.POST.get('Product Price')
-            if price is not '':
-                item.price=Decimal(price)
-            item_cat = request.POST.get('Product cat')
-            if item_cat is not ['']:
-                item.category=Category.objects.get(id=item_cat)
-            if request.POST.get("Product description") is not ['']:
-                item.description=request.POST.get("Product description")
+        name_e = request.POST.get("Product")
+        name_i = request.POST.get("Prodcut Name")
+        item = MenuItem.objects.get(name=name_e)
+        items = MenuItem.objects.all()
+        cats = Category.objects.all()
+        if item:
+            if name_i is not "":
+                item.name = name_i
+            price = request.POST.get("Product Price")
+            if price is not "":
+                item.price = Decimal(price)
+            item_cat = request.POST.get("Product cat")
+            if item_cat is not [""]:
+                item.category = Category.objects.get(id=item_cat)
+            if request.POST.get("Product description") is not [""]:
+                item.description = request.POST.get("Product description")
             item.save()
-            return render(request,'Edit-product.html',{'items':items,'cats':cats,'massage':'Changes saved successfully'})
-         else:
-            return render(request,'Edit-product.html',{'items':items,'cats':cats,'massage':'product dose not exist'})
-        
-class Add_product(View):
-
-    def get(self, request):
-        cats=Category.objects.all()
-        return render(request, "add-product.html",{'cats':cats})
-    
-    def post(self, request):
-        data=request.POST
-        cats=Category.objects.all()
-        Product_Name=(data.getlist('Prodcut Name'))[0]
-         
-        Product_cat=(data.getlist('Product cat'))[0]
-        category_p=Category.objects.get(id=Product_cat)
-        Product_description = data.get('Product description')
-        Product_Price=data.get('Product Price')
-        check_item=MenuItem.objects.filter(name=Product_Name,category=category_p)
-        if check_item:
-            return render(request, "add-product.html",{'cats':cats,'massage':'There is a product with this title and category'})
+            return render(
+                request,
+                "Edit-product.html",
+                {"items": items, "cats": cats, "massage": "Changes saved successfully"},
+            )
         else:
-            item=MenuItem.objects.create(name=Product_Name,description=Product_description,price=Decimal(Product_Price),category=category_p)
+            return render(
+                request,
+                "Edit-product.html",
+                {"items": items, "cats": cats, "massage": "product dose not exist"},
+            )
+
+
+class Add_product(View):
+    def get(self, request):
+        cats = Category.objects.all()
+        return render(request, "add-product.html", {"cats": cats})
+
+    def post(self, request):
+        data = request.POST
+        cats = Category.objects.all()
+        product_name = (data.getlist("Prodcut Name"))[0]
+
+        product_cat = (data.getlist("Product cat"))[0]
+        category_p = Category.objects.get(id=product_cat)
+        product_description = data.get("Product description")
+        product_price = data.get("Product Price")
+        check_item = MenuItem.objects.filter(name=product_name, category=category_p)
+        if check_item:
+            return render(
+                request,
+                "add-product.html",
+                {
+                    "cats": cats,
+                    "massage": "There is a product with this title and category",
+                },
+            )
+        else:
+            item = MenuItem.objects.create(
+                name=product_name,
+                description=product_description,
+                price=Decimal(product_price),
+                category=category_p,
+            )
             item.save()
-            return render(request, "add-product.html",{'cats':cats,'massage':'saved!!'})
+            return render(
+                request, "add-product.html", {"cats": cats, "massage": "saved!!"}
+            )
+
 
 class RemoveProduct(View):
     def get(self, request):
-        cats=Category.objects.all()
-        return render(request, "remove-p.html",{'cats':cats})
-    
+        cats = Category.objects.all()
+        return render(request, "remove-p.html", {"cats": cats})
+
     def post(self, request):
-        data=request.POST
-        cats=Category.objects.all()
-        Product_Name=(data.getlist('Prodcut Name'))[0]
-        Product_cat=(data.getlist('Product cat'))[0]
-        category_p=Category.objects.get(id=Product_cat)
-        item=MenuItem.objects.filter(name=Product_Name,category=category_p)
+        data = request.POST
+        cats = Category.objects.all()
+        product_name = (data.getlist("Prodcut Name"))[0]
+        product_cat = (data.getlist("Product cat"))[0]
+        category_p = Category.objects.get(id=product_cat)
+        item = MenuItem.objects.filter(name=product_name, category=category_p)
         if item:
             item.delete()
-            return render(request, "remove-p.html",{'cats':cats,'massage':'Product removal was successful'})
+            return render(
+                request,
+                "remove-p.html",
+                {"cats": cats, "massage": "Product removal was successful"},
+            )
         else:
-             return render(request, "remove-p.html",{'cats':cats,'massage':'this product dose not exist!'})
-        
+            return render(
+                request,
+                "remove-p.html",
+                {"cats": cats, "massage": "this product dose not exist!"},
+            )
+
+
 class AddCategory(View):
     def get(self, request):
         return render(request, "Add-category.html")
-    
+
     def post(self, request):
-        data=request.POST
-        Category_Name=data.get('Category Name')
-        item=Category.objects.filter(name=Category_Name)
+        data = request.POST
+        category_name = data.get("Category Name")
+        item = Category.objects.filter(name=category_name)
         if item:
-            return render(request, "Add-category.html",{'massage':'There is a category with this title'})
+            return render(
+                request,
+                "Add-category.html",
+                {"massage": "There is a category with this title"},
+            )
         else:
-            new_item=Category.objects.create(name=Category_Name)
+            new_item = Category.objects.create(name=category_name)
             new_item.save()
-            return render(request, "Add-category.html",{'massage':'Information saved successfully'})
-    
+            return render(
+                request,
+                "Add-category.html",
+                {"massage": "Information saved successfully"},
+            )
+
+
 class RemoveCategory(View):
     def get(self, request):
         return render(request, "remove-c.html")
-    
+
     def post(self, request):
-        data=request.POST
-        Category_Name=data.get('Category Name')
-        item=Category.objects.filter(name=Category_Name)
+        data = request.POST
+        category_name = data.get("Category Name")
+        item = Category.objects.filter(name=category_name)
         if item:
             item.delete()
 
-            return render(request, "Add-category.html",{'massage':'Information saved successfully'})
+            return render(
+                request,
+                "Add-category.html",
+                {"massage": "Information saved successfully"},
+            )
         else:
-            return render(request, "Add-category.html",{'massage':'There is no category with this title'})
-    
+            return render(
+                request,
+                "Add-category.html",
+                {"massage": "There is no category with this title"},
+            )

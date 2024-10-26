@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from config import settings
 from staff.models import Staff
+
+
 class Cafe(models.Model):
     """
     Represents a Cafe in the system.
@@ -12,15 +14,16 @@ class Cafe(models.Model):
         owner (ForeignKey): The owner (User) of the cafe.
         opening_time (TimeField): The time the cafe opens.
         closing_time (TimeField): The time the cafe closes.
-      
+
     """
+
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=255)
-    # owner = models.ForeignKey(User, on_delete=models.CASCADE) 
-    owner = models.ForeignKey(Staff, on_delete=models.CASCADE) 
-    number_of_tables=models.PositiveIntegerField(default=1)
-    opening_time = models.TimeField()  
-    closing_time = models.TimeField()  
+    # owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    number_of_tables = models.PositiveIntegerField(default=1)
+    opening_time = models.TimeField()
+    closing_time = models.TimeField()
     created_at = models.TimeField()
 
     def __str__(self):

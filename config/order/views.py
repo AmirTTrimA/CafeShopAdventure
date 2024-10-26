@@ -200,33 +200,33 @@ def change_order_status(request, order_id):
 def checkout(request):
     """Handle the checkout process, calculate the total price, and create an order."""
 
-    try:
-        customer = request.user.customer
-    except Customer.DoesNotExist:
-        messages.error(request, "You are not associated with a customer account.")
-        return redirect("menu")
+    # try:
+    #     customer = request.user.customer
+    # except Customer.DoesNotExist:
+    #     messages.error(request, "You are not associated with a customer account.")
+    #     return redirect("menu")
 
-    order_items = OrderItem.objects.filter(
-        order__customer=customer, order__status="Pending"
-    )
-    total_price = sum(item.item.price * item.quantity for item in order_items)
+    # order_items = OrderItem.objects.filter(
+    #     order__customer=customer, order__status="Pending"
+    # )
+    # total_price = sum(item.item.price * item.quantity for item in order_items)
 
-    if request.method == "POST":
-        # به‌روزرسانی وضعیت‌های سفارشات
-        for order_item in order_items:
-            status_key = f"status_{order_item.order.id}"
-            new_status = request.POST.get(status_key)
-            if new_status:
-                order_item.order.status = new_status  # به‌روزرسانی وضعیت
-                order_item.order.save()
+    # if request.method == "POST":
+    #     # به‌روزرسانی وضعیت‌های سفارشات
+    #     for order_item in order_items:
+    #         status_key = f"status_{order_item.order.id}"
+    #         new_status = request.POST.get(status_key)
+    #         if new_status:
+    #             order_item.order.status = new_status  # به‌روزرسانی وضعیت
+    #             order_item.order.save()
 
-        messages.success(request, "Order statuses have been updated successfully!")
-        return redirect("checkout")  # به‌روز رسانی مجدد صفحه
+    #     messages.success(request, "Order statuses have been updated successfully!")
+    #     return redirect("checkout")  # به‌روز رسانی مجدد صفحه
 
     return render(
         request,
         "checkout.html",
-        {"order_items": order_items, "total_price": total_price},
+        # {"order_items": order_items, "total_price": total_price},
     )
 
 
