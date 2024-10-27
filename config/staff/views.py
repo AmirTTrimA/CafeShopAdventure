@@ -325,3 +325,7 @@ class RemoveCategory(View):
 class ViewManager(View):
      def get(self, request):
         return render(request, "Manager.html")
+
+class StaffAccess(View):
+     def get(self, request):
+        return render(request, "staff-access.html")
