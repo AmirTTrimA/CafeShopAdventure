@@ -7,6 +7,7 @@ submitting orders, and viewing order history.
 import uuid
 import json
 from datetime import timedelta
+from decimal import Decimal
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
@@ -28,28 +29,20 @@ def add_to_cart(response, request, item_id, quantity):
     """Add a menu item to the cart."""
     menu_item = get_object_or_404(MenuItem, id=item_id)
 
-    # Get cart from cookies
-    cookie = SimpleCookie()
-    cookie.load(request.COOKIES.get("cart"))
-    print(f"cookie: {cookie}")
-    cart = get_cart_from_cookies(request)
+    cart = request.COOKIES.get("cart", "{}")
+    cart = json.loads(cart)
 
-    # response = HttpResponse()  # Create a response object
-    if not cart:
-        set_cart_in_cookies(response, {})
-    # Add item to cart
-    if str(menu_item.id) in cart:
-        cart[str(menu_item.id)]["quantity"] += quantity
+    if item_id in cart:
+        cart[item_id]["quantity"] += quantity
     else:
-        cart[str(menu_item.id)] = {
+        cart[item_id] = {
             "name": menu_item.name,
-            "price": str(menu_item.price),
             "quantity": quantity,
+            "price": str(menu_item.price),
         }
 
-    # Save updated cart in cookies
-    response.set_cookie("cart", json.dumps(cart), max_age=60 * 60 * 24 * 30)
-    print(response.cookies)
+    response = HttpResponse("Item added to cart")
+    response.set_cookie("cart", json.dumps(cart), max_age=3600)
 
     return response
 
@@ -63,6 +56,22 @@ def add_to_cart_view(request, item_id):
     return redirect("menu")
 
 
+def remove_from_cart(request, item_id):
+    # Check if the cart exists in the session
+    cart = request.COOKIES.get("cart", "{}")
+    cart = json.loads(cart)
+
+    # Remove the item if it exists in the cart
+    if item_id in cart:
+        del cart[item_id]
+        response = HttpResponse("Item removed from cart")
+        response.set_cookie("cart", json.dumps(cart), max_age=3600)
+    else:
+        return HttpResponse("Item not found in cart.", status=404)
+
+    return redirect("cart")  # Redirect back to the cart page
+
+
 def cart_view(request):
     """Display the contents of the cart.
 
@@ -72,57 +81,64 @@ def cart_view(request):
     Returns:
         HttpResponse: Rendered cart view.
     """
-    cart = get_cart_from_cookies(request)
+    cart = request.COOKIES.get("cart", "{}")
+    cart = json.loads(cart)
+    print(f"cart: {cart}")
     return render(request, "cart.html", {"cart": cart})
 
 
 def submit_order(request):
-    """Submit an order based on the items in the cart."""
-    cart = get_cart_from_cookies(request)
-
     if request.method == "POST":
-        form = OrderForm(request.POST)
+        # Retrieve form data
+        table_number = request.POST.get("table_number")
+        phone_number = request.POST.get("phone_number")
 
-        if form.is_valid():
-            phone_number = form.cleaned_data.get("phone_number")
+        # Create or get the customer
+        customer, created = Customer.objects.get_or_create(
+            phone_number=phone_number,
+            # defaults={
+            #     "first_name": "Default First Name",
+            #     "last_name": "Default Last Name",
+            # },
+        )
 
-            if request.user.is_authenticated:
-                customer, created = Customer.objects.get_or_create(
-                    user=request.user, defaults={"phone_number": phone_number}
-                )
-            else:
-                customer = Customer.objects.create(
-                    phone_number=phone_number
-                )  # ایجاد مشتری ناشناس
+        # Create the order instance
+        order = Order.objects.create(
+            customer=customer,
+            # staff=Staff.objects.first(),  # Replace with actual logic to assign staff
+            order_date=timezone.now(),
+            total_price=0.00,  # Will be calculated later
+        )
 
-            # ایجاد سفارش
-            order = Order.objects.create(customer=customer)
+        # Add order items based on the cart
+        cart = request.COOKIES.get("cart", "{}")
+        cart = json.loads(cart)
+        for item_id, item in cart.items():
+            menu_item = MenuItem.objects.get(id=item_id)  # Get the MenuItem instance
+            quantity = item["quantity"]
 
-            # ایجاد آیتم‌های سفارش
-            for item_id, item_data in cart.items():
-                menu_item = MenuItem.objects.get(id=item_id)  # دریافت آیتم منو
-                OrderItem.objects.create(
-                    order=order, item=menu_item, quantity=item_data["quantity"]
-                )
+            # Create OrderItem instance
+            order_item = OrderItem.objects.create(
+                order=order, item=menu_item, quantity=quantity
+            )
 
-            # ذخیره تاریخچه سفارش
-            OrderHistory.objects.create(customer=customer, order_data=cart)
+        # Calculate the total price for the order
+        order.calculate_total_price()
+        order.save()
 
-            # پاک کردن سبد خرید
-            response = HttpResponse()  # ایجاد یک پاسخ جدید
-            set_cart_in_cookies(response, {})  # تنظیم کوکی‌ها
-            messages.success(request, "Your order has been submitted successfully!")
+        # Clear the cart after order submission
+        response = HttpResponse("Order submitted")
+        response.set_cookie("cart", "", max_age=0)
 
-            return redirect("order_success")  # هدایت به صفحه موفقیت
+        messages.success(request, "Order submitted successfully!")
+        return redirect("order_success")
     else:
-        form = OrderForm()
-
-    return render(request, "submit_order.html", {"form": form, "cart": cart})
+        return render(request, "cart.html")
 
 
 def order_success(request):
     """Render the order success page."""
-    return render(request, "order_success.html")  # نام قالب را به‌روز کنید
+    return render(request, "order_success.html")
 
 
 # مدیریت آیتم‌های سفارش توسط کاربران Staff

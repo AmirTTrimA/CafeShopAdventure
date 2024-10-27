@@ -6,7 +6,6 @@ from django.http import HttpResponse
 def get_cart_from_cookies(request):
     """Retrieve the cart from cookies."""
     cart = request.COOKIES.get("cart")
-    print(type(cart))
     if cart:
         return json.loads(cart)
     return {}

@@ -4,6 +4,7 @@
 
 {% block content %}
 {% load static %}
+{% load custom_filters %}  <!-- Load your custom filters here -->
 
 <!-- Cart Section Start -->
 <section id="cart">
@@ -25,13 +26,21 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for item in cart.items.all %}
+                            {% for item_id, item in cart.items %}
                             <tr>
-                                <th scope="row">{{ item.menu_item.name }}</th>
-                                <td>${{ item.menu_item.price }}</td>
-                                <td><div class="quantity"><input type="text" value="{{ item.quantity }}"></div></td>
-                                <td>${{ item.total_price }}</td>
-                                <td><a href=""><i class="fab fa-trash-o"></i></a></td>
+                                <th scope="row">{{ item.name }}</th>
+                                <td>${{ item.price }}</td>
+                                <td>
+                                    <div class="quantity">
+                                        <input type="text" value="{{ item.quantity }}" readonly>
+                                    </div>
+                                </td>
+                                <td>${{ item.price|floatformat:2|mul:item.quantity }}</td>
+                                <td><a href="{% url 'remove_from_cart' item_id %}"><i class="fab fa-trash-o"></i></a></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5">Your cart is empty.</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -62,16 +71,28 @@
                     <div class="form-row">
                         <div class="control-group col-sm-4">
                             <div class="form-group">
+                                <label for="table_number">Table Number</label>
                                 <div class="input-group" id="num" data-target-input="nearest">
                                     <input name="table_number" type="text" class="form-control" placeholder="Table Number" required />
                                 </div>
+                                {% if form.table_number.errors %}
+                                    <div class="alert alert-danger mt-2">
+                                        {{ form.table_number.errors|join:", " }}
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                         <div class="control-group col-sm-4">
                             <div class="form-group">
+                                <label for="phone_number">Phone Number</label>
                                 <div class="input-group" id="num" data-target-input="nearest">
                                     <input name="phone_number" type="text" class="form-control" placeholder="Phone Number" />
                                 </div>
+                                {% if form.phone_number.errors %}
+                                    <div class="alert alert-danger mt-2">
+                                        {{ form.phone_number.errors|join:", " }}
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                         <div class="control-group col-sm-4 button">
@@ -84,5 +105,4 @@
     </div>
 </section>
 <!-- Reservations Section End -->
-
 {% endblock %}

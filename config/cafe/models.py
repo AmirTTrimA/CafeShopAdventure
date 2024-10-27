@@ -19,15 +19,14 @@ class Cafe(models.Model):
 
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=255)
-    # owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    owner = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    # owner = models.ForeignKey(Staff, on_delete=models.CASCADE)
     number_of_tables = models.PositiveIntegerField(default=1)
     opening_time = models.TimeField()
     closing_time = models.TimeField()
     created_at = models.TimeField()
 
     def __str__(self):
-        return f"{self.name} owned by {self.owner.first_name} {self.owner.last_name}"
+        return f"{self.name}"
 
     def is_open(self, current_time):
         """

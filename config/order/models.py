@@ -34,11 +34,13 @@ class Order(models.Model):
         max_length=20,
         choices=[
             ("Pending", "Pending"),
+            ("Processing", "Processing"),
             ("Completed", "Completed"),
             ("Canceled", "Canceled"),
         ],
         default="Pending",
     )
+    table_number = models.CharField(max_length=10, null=True, blank=True)
     total_price = models.DecimalField(
         max_digits=10, decimal_places=2, default=0.00, editable=False
     )
