@@ -2,7 +2,20 @@
 
 {% block title %}Order Details{% endblock %}
 
+{% block login %}logout{% endblock %}
 {% block content %}
+<div class="st-panel">
+    <li><a href="{% url 'checkout' %}">checkout</a></li>
+    <li><a href="{% url 'edit-product' %}">Edit product</a></li>
+    <li><a href="{% url 'add-product' %}">Add product</a></li>
+    <li><a href="{% url 'remove-p' %}">Remove product</a></li>
+    <li><a href="{% url 'filter' %}">filter-form</a></li>
+
+</div>
+
+    <h1>Filter Orders</h1>
+    <form method="post" id="filter-form" >
+ 
 <h1 class="st-h">Order Details for Order #{{ order.id }}</h1>
 
 <div class="container">
@@ -42,6 +55,7 @@
 <!-- Add new item form -->
 <div class="container">
     <form method="POST" action="{% url 'add_order_item' order.id %}">
+
         {% csrf_token %}
         <div class="form-group">
             <label for="product_id">Add Item:</label>
@@ -57,3 +71,4 @@
 </div>
 
 {% endblock %}
+

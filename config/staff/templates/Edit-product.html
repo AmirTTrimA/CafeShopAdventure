@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}Edit Product{% endblock %}
+{% block login %}logout{% endblock %}
 
 {% block content %}
 {% load static %}
@@ -13,9 +14,8 @@
         <li><a href="{% url 'checkout' %}">checkout</a></li>
         <li><a href="{% url 'edit-product' %}">Edit product</a></li>
         <li><a href="{% url 'add-product' %}">Add product</a></li>
-        <li><a href="{% url 'add-category' %}">Add category</a></li>
         <li><a href="{% url 'remove-p' %}">Remove product</a></li>
-        <li><a href="{% url 'remove-c' %}">Remove category</a></li>
+        <li><a href="{% url 'filter' %}">filter-form</a></li>
 
     </div>
         <!-- Add Product Section Start -->
@@ -95,4 +95,5 @@
         <!-- Add Product Section End -->
          
 {% endblock %}
+
 

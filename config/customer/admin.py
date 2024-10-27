@@ -16,6 +16,7 @@ class CustomerAdmin(admin.ModelAdmin):
         "first_name",
         "last_name",
         "phone_number",
+        "table_number",
         "points",
         "is_active",
         "created_at",
@@ -24,7 +25,7 @@ class CustomerAdmin(admin.ModelAdmin):
 
     list_filter = ("is_active",)
 
-    search_fields = ("first_name", "last_name", "phone_number")
+    search_fields = ("first_name", "last_name", "phone_number","table_number")
 
     readonly_fields = ("created_at", "updated_at")
 
@@ -36,6 +37,7 @@ class CustomerAdmin(admin.ModelAdmin):
                     "first_name",
                     "last_name",
                     "phone_number",
+                    "table_number",
                     "points",
                     "is_active",
                 )

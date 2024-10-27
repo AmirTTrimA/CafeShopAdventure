@@ -1,5 +1,9 @@
+# customers/views.py
+
 from django.shortcuts import render
-from order.models import Order  # Import your Order model
+from django.contrib.auth.decorators import user_passes_test
+from order.models import Order
+from .models import Customer
 
 
 def customer_checkout(request):
@@ -15,3 +19,13 @@ def customer_checkout(request):
         orders = []
 
     return render(request, "customer_order_status.html", {"orders": orders})
+
+@user_passes_test(lambda u: u.is_staff)
+def search_customer(request):
+    customers = []
+    if request.method == 'GET':
+        phone_number = request.GET.get('phone_number', '')
+        if phone_number:
+            customers = Customer.objects.filter(phone_number=phone_number)  # جستجوی مشتریان بر اساس شماره تلفن
+    return render(request, 'customers/search_customer.html', {'customers': customers})
+

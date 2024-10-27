@@ -1,0 +1,17 @@
+<h2>جستجوی مشتری بر اساس شماره تلفن</h2>
+
+<form method="get" action="{% url 'search_customer' %}">
+    <input type="text" name="phone_number" placeholder="شماره تلفن" required>
+    <button type="submit">جستجو</button>
+</form>
+
+{% if customers %}
+    <h3>نتایج جستجو:</h3>
+    <ul>
+        {% for customer in customers %}
+            <li>{{ customer.name }} - {{ customer.phone_number }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>مشتری پیدا نشد.</p>
+{% endif %}
