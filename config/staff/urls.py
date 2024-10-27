@@ -13,6 +13,8 @@ from .views import (
     EditProduct,
     RemoveProduct,
     RemoveCategory,
+    ViewManager,
+    StaffAccess
 )
 
 urlpatterns = [
@@ -25,12 +27,14 @@ urlpatterns = [
     # URL pattern for the registration view
     path("register/", RegisterView.as_view(), name="register"),
     path("filter/", OrderFilterView.as_view(), name="filter"),
+    path("manager/", ViewManager.as_view(), name="manager"),
     # URL pattern for the home view
     # path("filter/", OrderFilterView.as_view(), name="filter"),
     path("add-category/", AddCategory.as_view(), name="add-category"),
     path("Add-product.html/", Add_product.as_view(), name="add-product"),
     path("remove-category/", RemoveCategory.as_view(), name="remove-c"),
     path("remove-product/", RemoveProduct.as_view(), name="remove-p"),
+    path("staff-access/", StaffAccess.as_view(), name="staff-access"),
     path("Edit-product.html", EditProduct.as_view(), name="edit-product"),
     # path("manager/", manager, name="manager"),
     # path("", staff, name="staff"),

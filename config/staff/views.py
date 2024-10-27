@@ -247,13 +247,16 @@ class Add_product(View):
 class RemoveProduct(View):
     def get(self, request):
         cats = Category.objects.all()
-        return render(request, "remove-p.html", {"cats": cats})
+        pros=MenuItem.objects.all()
+        return render(request, "remove-p.html", {"cats": cats,"product":pros})
 
     def post(self, request):
         data = request.POST
         cats = Category.objects.all()
-        product_name = (data.getlist("Prodcut Name"))[0]
-        product_cat = (data.getlist("Product cat"))[0]
+        pros=MenuItem.objects.all()
+        print(pros)
+        product_name = (data.get("Product Name"))
+        product_cat = (data.get("Product cat"))
         category_p = Category.objects.get(id=product_cat)
         item = MenuItem.objects.filter(name=product_name, category=category_p)
         if item:
@@ -261,13 +264,13 @@ class RemoveProduct(View):
             return render(
                 request,
                 "remove-p.html",
-                {"cats": cats, "massage": "Product removal was successful"},
+                {"cats": cats,"product":pros, "massage": "Product removal was successful"},
             )
         else:
             return render(
                 request,
                 "remove-p.html",
-                {"cats": cats, "massage": "this product dose not exist!"},
+                {"cats": cats,"product":pros, "massage": "this product dose not exist!"},
             )
 
 
@@ -317,3 +320,12 @@ class RemoveCategory(View):
                 "Add-category.html",
                 {"massage": "There is no category with this title"},
             )
+        
+
+class ViewManager(View):
+     def get(self, request):
+        return render(request, "Manager.html")
+
+class StaffAccess(View):
+     def get(self, request):
+        return render(request, "staff-access.html")
