@@ -33,8 +33,8 @@ class Customer(models.Model):
 
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
+    table_number = models.PositiveIntegerField()
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE, null=True, blank=True)
-    table_number = models.BigIntegerField()
 
     phone_number = models.CharField(
         max_length=12, validators=[iran_phone_regex], unique=True, null=True, blank=True
@@ -51,7 +51,7 @@ class Customer(models.Model):
 
     def save(self, *args, **kwargs):
         # Call clean method before saving
-        self.clean()
+        # self.clean()
         super(Customer, self).save(*args, **kwargs)
 
     def __str__(self):

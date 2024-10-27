@@ -4,22 +4,16 @@ This module defines views for managing orders, including adding items to the car
 submitting orders, and viewing order history.
 """
 
-import uuid
 import json
 from datetime import timedelta
-from decimal import Decimal
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import JsonResponse
 from django.utils import timezone
-from http.cookies import SimpleCookie
+from cafe.models import Cafe
 from .models import Order, OrderItem, OrderHistory, MenuItem, Customer
-from .forms import OrderForm
-from .utils import get_cart_from_cookies, set_cart_in_cookies
-from django.db import transaction
 
 
 DEFAULT_GUEST_CUSTOMER_PHONE = "09123456789"  # Default phone number for guest customer
@@ -96,6 +90,9 @@ def submit_order(request):
         # Create or get the customer
         customer, created = Customer.objects.get_or_create(
             phone_number=phone_number,
+            cafe=Cafe.objects.first(),
+            table_number=table_number,
+            points=0,
             # defaults={
             #     "first_name": "Default First Name",
             #     "last_name": "Default Last Name",
@@ -110,6 +107,8 @@ def submit_order(request):
             total_price=0.00,  # Will be calculated later
         )
 
+        request.session['customer_phone_number'] = order.customer.phone_number
+
         # Add order items based on the cart
         cart = request.COOKIES.get("cart", "{}")
         cart = json.loads(cart)
@@ -121,6 +120,7 @@ def submit_order(request):
             order_item = OrderItem.objects.create(
                 order=order, item=menu_item, quantity=quantity
             )
+            customer.points += menu_item.points * quantity
 
         # Calculate the total price for the order
         order.calculate_total_price()
