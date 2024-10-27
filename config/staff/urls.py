@@ -13,6 +13,7 @@ from .views import (
     EditProduct,
     RemoveProduct,
     RemoveCategory,
+    ViewManager
 )
 
 urlpatterns = [
@@ -25,6 +26,7 @@ urlpatterns = [
     # URL pattern for the registration view
     path("register/", RegisterView.as_view(), name="register"),
     path("filter/", OrderFilterView.as_view(), name="filter"),
+    path("manager/", ViewManager.as_view(), name="manager"),
     # URL pattern for the home view
     # path("filter/", OrderFilterView.as_view(), name="filter"),
     path("add-category/", AddCategory.as_view(), name="add-category"),
