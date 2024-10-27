@@ -11,6 +11,8 @@ from django.core.exceptions import ValidationError
 from cafe.models import Cafe
 # from django.contrib.auth.hashers import make_password
 
+class Cafe(models.Model):
+    name = models.CharField(max_length=100)
 
 class Customer(models.Model):
     """
@@ -31,7 +33,7 @@ class Customer(models.Model):
 
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE, related_name='customers')
+    cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE, null=True, blank=True)
     table_number = models.BigIntegerField()
 
     phone_number = models.CharField(
