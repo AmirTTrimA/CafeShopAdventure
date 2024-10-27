@@ -2,8 +2,18 @@
 
 {% block title %}Filter Orders{% endblock %}
 
+{% block login %}logout{% endblock %}
 {% block content %}
 {% load static %}
+
+<div class="st-panel">
+    <li><a href="{% url 'checkout' %}">checkout</a></li>
+    <li><a href="{% url 'edit-product' %}">Edit product</a></li>
+    <li><a href="{% url 'add-product' %}">Add product</a></li>
+    <li><a href="{% url 'remove-p' %}">Remove product</a></li>
+    <li><a href="{% url 'filter' %}">filter-form</a></li>
+
+</div>
 
     <h1>Filter Orders</h1>
     <form method="post" id="filter-form" >
@@ -36,3 +46,4 @@
     <div>{{massage}}</div>
 
 {% endblock %}
+
