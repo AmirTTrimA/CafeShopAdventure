@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
-{% block title %}Add Product{% endblock %}
+{% block title %}Remove Product{% endblock %}
+{% block login %}logout{% endblock %}
 
 {% block content %}
 {% load static %}
@@ -13,9 +14,8 @@
         <li><a href="{% url 'checkout' %}">checkout</a></li>
         <li><a href="{% url 'edit-product' %}">Edit product</a></li>
         <li><a href="{% url 'add-product' %}">Add product</a></li>
-        <li><a href="{% url 'add-category' %}">Add category</a></li>
         <li><a href="{% url 'remove-p' %}">Remove product</a></li>
-        <li><a href="{% url 'remove-c' %}">Remove category</a></li>
+        <li><a href="{% url 'filter' %}">filter-form</a></li>
 
     </div>
         <!-- Add Product Section Start -->
@@ -27,25 +27,19 @@
                 <div class="row form">
                     <div class="col-md-12">
                         <h4>Remove Product Form</h4>
-                        <!-- <div class="form-group">
-                            <label for ="Product Name">Product Name:</label>
-                            <input name="Prodcut Name" type="text" class="form-control" placeholder="Product Name" />
-                        </div> -->
                         <form class="form-group" method="post">
                             {% csrf_token %}
-                            {{ form.as_p }}
                             <label for ="Product Name">Product Name:</label>
-                            <input name="Prodcut Name" type="text" class="form-control" placeholder="Product Name" />
-                            <label for ="Product">Product Category:</label>
-                                <select name="Product cat" class="form-control">
+                            <select name="Product Name" class="form-control">
+                                {%for pro in product%}
+                                <option value="{{pro.name}}" >{{pro.name}}</option>
+                                {%endfor%}
+                            </select>
+                            <label for ="Product cat">Product Category:</label>
+                            <select name="Product cat" class="form-control">
                                     {%for cat in cats%}
-                                    <option value={{cat.id}} >{{cat.name}}</option>
+                                    <option value="{{cat.id}}" >{{cat.name}}</option>
                                     {%endfor%}
-                                    <!-- <option selected value="0">Coffee</option>
-                                    <option value="1">Teas</option>
-                                    <option value="2">Pastries</option>
-                                    <option value="3">Breakfast Items</option>
-                                    <option value="4">Snacks</option> -->
                                 </select>
                                 <button type="submit">Submit</button>
                         </form>
