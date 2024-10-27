@@ -13,7 +13,8 @@ from .views import (
     EditProduct,
     RemoveProduct,
     RemoveCategory,
-    ViewManager
+    ViewManager,
+    StaffAccess
 )
 
 urlpatterns = [
@@ -33,6 +34,7 @@ urlpatterns = [
     path("Add-product.html/", Add_product.as_view(), name="add-product"),
     path("remove-category/", RemoveCategory.as_view(), name="remove-c"),
     path("remove-product/", RemoveProduct.as_view(), name="remove-p"),
+    path("staff-access/", StaffAccess.as_view(), name="staff-access"),
     path("Edit-product.html", EditProduct.as_view(), name="edit-product"),
     # path("manager/", manager, name="manager"),
     # path("", staff, name="staff"),
