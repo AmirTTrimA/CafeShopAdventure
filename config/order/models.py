@@ -36,7 +36,7 @@ class Order(models.Model):
             ("Pending", "Pending"),
             ("Processing", "Processing"),
             ("Completed", "Completed"),
-            ("Canceled", "Canceled"),
+            ("Cancelled", "Cancelled"),
         ],
         default="Pending",
     )

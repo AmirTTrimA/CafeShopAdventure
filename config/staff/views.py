@@ -9,7 +9,8 @@ from django.contrib import messages
 from django.views.generic.edit import FormView
 from django.views import View
 from django.urls import reverse_lazy
-from order.models import Order
+from django.shortcuts import get_object_or_404
+from order.models import Order, OrderItem
 from customer.models import Customer
 from menu.models import MenuItem, Category
 from .forms import OrderFilterForm
@@ -183,10 +184,10 @@ class EditProduct(View):
         items = MenuItem.objects.all()
         cats = Category.objects.all()
         if item:
-            if name_i is not "":
+            if name_i != "":
                 item.name = name_i
             price = request.POST.get("Product Price")
-            if price is not "":
+            if price != "":
                 item.price = Decimal(price)
             item_cat = request.POST.get("Product cat")
             if item_cat is not [""]:
@@ -317,3 +318,71 @@ class RemoveCategory(View):
                 "Add-category.html",
                 {"massage": "There is no category with this title"},
             )
+
+
+def staff_checkout(request):
+    orders = Order.objects.all()
+    print(f"orders: {orders}")
+    return render(request, "checkout.html", {"orders": orders})
+
+
+def update_order_status(request, order_id):
+    if request.method == "POST":
+        order = get_object_or_404(Order, id=order_id)
+        new_status = request.POST.get("status")
+        order.status = new_status
+        order.save()
+        return redirect("checkout")
+
+
+def order_details(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    order_items = order.order_items.all()
+    products = MenuItem.objects.all()
+
+    return render(
+        request,
+        "order_list.html",
+        {"order": order, "order_items": order_items, "products": products},
+    )
+
+
+def add_order_item(request, order_id):
+    if request.method == "POST":
+        order = get_object_or_404(Order, id=order_id)
+        product_id = request.POST.get("product_id")
+        quantity = int(request.POST.get("quantity"))
+
+        product = get_object_or_404(MenuItem, id=product_id)
+        order_item, created = OrderItem.objects.get_or_create(
+            order=order, product=product
+        )
+
+        if not created:
+            order_item.quantity += quantity
+        else:
+            order_item.quantity = quantity
+
+        order_item.save()
+        return redirect("order_list", order_id=order.id)
+
+
+def update_order_item(request, item_id):
+    if request.method == "POST":
+        order_item = get_object_or_404(OrderItem, id=item_id)
+        new_quantity = int(request.POST.get("quantity"))
+
+        if new_quantity > 0:
+            order_item.quantity = new_quantity
+            order_item.save()
+        else:
+            order_item.delete()
+
+        return redirect("order_list", order_id=order_item.order.id)
+
+
+def remove_order_item(request, item_id):
+    if request.method == "POST":
+        order_item = get_object_or_404(OrderItem, id=item_id)
+        order_item.delete()
+        return redirect("order_list", order_id=order_item.order.id)

@@ -1,38 +1,59 @@
 {% extends 'base.html' %}
 
-{% block title %}Filter Orders{% endblock %}
+{% block title %}Order Details{% endblock %}
 
 {% block content %}
-{% load static %}
+<h1 class="st-h">Order Details for Order #{{ order.id }}</h1>
 
-    <h1>Filter Orders</h1>
-    <form method="post" id="filter-form" >
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Filter</button>
-    </form>
-
-    {% if orders %}
-        <h2>Filtered Orders</h2>
-        <ul>
-            {% for order in orders %}
-                <li>{{order}} in {{order.order_date}} and status is {{order.status}} and {{order.total_price}} price</li>
-                <form method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="order_id" value="{{ order.id }}">
-                    <input type="hidden" name="form_type" value="change_status">
-                    <select class="custom-select" name="status">
-                        <option selected value="Pending">Pending</option>
-                        <option value="Paid">Paid</option>
-                        <option value="Cancel">Cancel</option>
-                    </select>
-                    <button type="submit">change status for this order</button>
-                </form>
-            {% empty %}
-                <li>No results found.</li>
+<div class="container">
+    <div class="table-responsive-sm">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for item in order_items %}
+                <tr>
+                    <td>{{ item.item.name }}</td>
+                    <td>
+                        <form method="POST" action="{% url 'update_order_item' item.id %}">
+                            {% csrf_token %}
+                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" required>
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="POST" action="{% url 'remove_order_item' item.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Remove</button>
+                        </form>
+                    </td>
+                </tr>
             {% endfor %}
-        </ul>
-    {% endif %}
-    <div>{{massage}}</div>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add new item form -->
+<div class="container">
+    <form method="POST" action="{% url 'add_order_item' order.id %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="product_id">Add Item:</label>
+            <select name="product_id" class="form-control">
+                {% for product in products %}
+                    <option value="{{ product.id }}">{{ product.name }}</option>
+                {% endfor %}
+            </select>
+            <input type="number" name="quantity" value="1" min="1" required class="form-control mt-2">
+            <button type="submit" class="btn btn-success mt-2">Add Item</button>
+        </div>
+    </form>
+</div>
 
 {% endblock %}
