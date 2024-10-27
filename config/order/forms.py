@@ -46,3 +46,6 @@ class OrderForm(forms.Form):
             )
 
         return table_number
+
+class AddToCartForm(forms.Form):
+    quantity = forms.IntegerField(min_value=1, initial=1)

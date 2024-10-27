@@ -9,5 +9,5 @@ urlpatterns = [
     path('', include('staff.urls')),
     path('', include('order.urls')),
     path('', include('analytics.urls')),
-    # path('search/', search_products, name='search_products'),  
+    path('', include('customer.urls')),
 ]
