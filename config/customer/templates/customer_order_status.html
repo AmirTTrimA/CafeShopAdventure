@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %}Customer Checkout{% endblock %}
+{% block title %}Order Status{% endblock %}
 
 {% block content %}
 {% load static %}
 
 <h1 class="st-h">Customer Order Status</h1>
 <div class="st-panel">
-    <li><a href="{% url 'customer_checkout' %}">Order Status</a></li>
+    {% comment %} <li><a href="{% url 'customer_checkout' %}">Order Status</a></li> {% endcomment %}
 </div>
 
 <!-- Customer Order Status Section Start -->
@@ -27,7 +27,7 @@
                                 <th scope="col">Table Number</th>
                                 <th scope="col">Phone Number</th>
                                 <th scope="col">Status</th>
-                                <th scope="col">Details</th>
+                                {% comment %} <th scope="col">Details</th> {% endcomment %}
                             </tr>
                         </thead>
                         <tbody>
@@ -45,7 +45,7 @@
         {% endif %}
     </td>
     <td>{{ order.status }}</td>
-    <td><a href="{% url 'order_details' order.id %}">View Details</a></td>
+    {% comment %} <td><a href="{% url 'order_details' order.id %}">View Details</a></td> {% endcomment %}
 </tr>
                             {% endfor %}
                         {% else %}

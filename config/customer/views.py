@@ -14,4 +14,4 @@ def customer_checkout(request):
     else:
         orders = []
 
-    return render(request, "customer_checkout.html", {"orders": orders})
+    return render(request, "customer_order_status.html", {"orders": orders})
