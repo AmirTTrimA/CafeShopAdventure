@@ -18,6 +18,7 @@ from .views import (
     order_details,
     ViewManager,
     StaffAccess,
+    DataAnalysis
 )
 
 urlpatterns = [
@@ -33,6 +34,7 @@ urlpatterns = [
     path("remove-product/", RemoveProduct.as_view(), name="remove-p"),
     path("staff-access/", StaffAccess.as_view(), name="staff-access"),
     path("Edit-product.html", EditProduct.as_view(), name="edit-product"),
+    path("data_analysis.html", DataAnalysis.as_view(), name="data_analysis"),
     path("checkout/", staff_checkout, name="staff_checkout"),
     path("order_list/<int:order_id>/", order_details, name="order_list"),
     path(
