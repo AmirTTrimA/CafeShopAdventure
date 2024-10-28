@@ -1,6 +1,7 @@
 """views.py"""
 
 from decimal import Decimal
+from collections import defaultdict
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -9,12 +10,18 @@ from django.contrib import messages
 from django.views.generic.edit import FormView
 from django.views import View
 from django.urls import reverse_lazy
-from django.shortcuts import get_object_or_404
-from order.models import Order, OrderItem
+from order.models import Order,OrderItem
 from customer.models import Customer
 from menu.models import MenuItem, Category
-from .forms import OrderFilterForm
+from .forms import OrderFilterForm,DataAnalysisForm
 from .forms import StaffRegistrationForm
+from django.db.models import Sum
+from django.utils import timezone
+from django.db.models import Count
+from collections import Counter
+from django.db.models.functions import TruncHour, TruncDay
+from datetime import timedelta,date
+from django.db import models
 
 
 class RegisterView(FormView):
@@ -397,3 +404,152 @@ class ViewManager(View):
 class StaffAccess(View):
      def get(self, request):
         return render(request, "staff-access.html")
+
+class DataAnalysis(View):
+    
+    def get(self, request):
+        form = DataAnalysisForm()
+        return render(request,"data_analysis.html",{'form': form})
+    def post(self,request):
+        form = DataAnalysisForm(request.POST)
+        now = timezone.now()
+        if form.is_valid():
+            filter_type = form.cleaned_data["filter_type"]
+            if filter_type == "most popular caffe items":
+                now = timezone.now()
+                last_month_start = now - timedelta(days=30)
+                start_of_month = now.replace(day=1)
+                # end_of_month = (start_of_month + timezone.timedelta(days=31)).replace(day=1)
+
+                top_products = (
+                OrderItem.objects
+                .filter(created_at__gte=last_month_start)
+                .values('item__name')
+                .annotate(total_orders=Sum('quantity'))
+                .order_by('-total_orders')[:5]
+                )
+                print(top_products)
+                return render(request,"data_analysis.html",{'form': form,'orders':top_products})
+            
+
+            elif filter_type == "peak business hour":
+                now = timezone.now()
+                last_month_start = now - timedelta(days=30)
+
+                # Filter orders from the last month
+                orders = Order.objects.filter(created_at__gte=last_month_start)
+
+                # Extract the hour and day of the week from the orders
+                order_times = defaultdict(lambda: defaultdict(int))
+
+                # Iterate through orders and count occurrences of hour per day
+                for order in orders:
+                    day = order.created_at.strftime('%A')  # Get day of the week
+                    hour = order.created_at.strftime('%H')  # Get hour
+                    order_times[day][hour] += 1
+
+                    # Calculate most frequent hours per day of the week
+                    most_frequent_per_day = {}
+                    total_orders = orders.count()
+                    overall_count = defaultdict(int)
+
+                for day, timestamps in order_times.items():
+                    most_frequent_hour = max(timestamps.items(), key=lambda x: x[1], default=(None, 0))
+                    most_frequent_per_day[day] = {
+                    'hour': most_frequent_hour[0],
+                    'count': most_frequent_hour[1]
+                    }
+        
+                # Aggregate for overall most frequent hour
+                if most_frequent_hour[0] is not None:
+                    overall_count[most_frequent_hour[0]] += most_frequent_hour[1]
+
+                # Calculate the overall most frequent hour in the last month
+                overall_most_frequent_hour = max(overall_count.items(), key=lambda x: x[1], default=(None, 0))
+
+                orders = {
+                    'most_frequent_per_day': most_frequent_per_day,
+                    'overall_most_frequent_hour': {
+                    'hour': overall_most_frequent_hour[0],
+                    'total_orders': overall_most_frequent_hour[1],
+                    'total_orders_month': total_orders,
+                    },
+                    }
+                return render(request,"data_analysis.html", {"form":form,'orders':orders})
+
+            elif filter_type =="customer demographic data" :
+                
+                today = date.today()
+                under_20_females = Customer.objects.filter(
+                gender='female', 
+                date_of_birth__gte=today.replace(year=today.year - 20)
+                ).count()
+
+                between_20_and_40_females = Customer.objects.filter(
+                gender='female', 
+                date_of_birth__lt=today.replace(year=today.year - 20),
+                date_of_birth__gte=today.replace(year=today.year - 40)
+                ).count()
+
+                over_40_females = Customer.objects.filter(
+                gender='female', 
+                date_of_birth__lt=today.replace(year=today.year - 40)
+                ).count()
+
+                under_20_Uncertain = Customer.objects.filter(
+                gender='Uncertain', 
+                date_of_birth__gte=today.replace(year=today.year - 20)
+                ).count()
+
+                between_20_and_40_Uncertain = Customer.objects.filter(
+                gender='Uncertain', 
+                date_of_birth__lt=today.replace(year=today.year - 20),
+                date_of_birth__gte=today.replace(year=today.year - 40)
+                ).count()
+
+                over_40_Uncertain = Customer.objects.filter(
+                gender='Uncertain', 
+                date_of_birth__lt=today.replace(year=today.year - 40)
+                ).count()
+
+                under_20_males = Customer.objects.filter(
+                gender='man', 
+                date_of_birth__gte=today.replace(year=today.year - 20)
+                ).count()
+
+                between_20_and_40_males = Customer.objects.filter(
+                gender='man', 
+                date_of_birth__lt=today.replace(year=today.year - 20),
+                date_of_birth__gte=today.replace(year=today.year - 40)
+                ).count()
+
+                over_40_males = Customer.objects.filter(
+                gender='man', 
+                date_of_birth__lt=today.replace(year=today.year - 40)
+                ).count()
+
+                # Prepare context for rendering in a template
+                context = {
+                'under_20_Uncertain': under_20_Uncertain,
+                'between_20_and_40_Uncertain': between_20_and_40_Uncertain,
+                'over_40_Uncertain':over_40_Uncertain,
+                'under_20_females': under_20_females,
+                'between_20_and_40_females': between_20_and_40_females,
+                'over_40_females': over_40_females,
+                'under_20_males': under_20_males,
+                'between_20_and_40_males': between_20_and_40_males,
+                'over_40_males': over_40_males,
+                'year': today.year,
+                }
+                print(context)
+                return render(request, 'data_analysis.html', {'form':form,'orders':context})
+            else:
+                form.add_error("filter_type", "Please enter a valid value.")
+
+class SalesAnalysis(View):
+    def get(self, request):
+        form = OrderFilterForm()
+        return render(request, "Manager.html",{'form':form})
+    def post(self,request):
+        pass
+
