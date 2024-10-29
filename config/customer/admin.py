@@ -17,6 +17,9 @@ class CustomerAdmin(admin.ModelAdmin):
         "last_name",
         "phone_number",
         "table_number",
+        "date_of_birth",
+        "cafe",
+        "gender",
         "points",
         "is_active",
         "created_at",
@@ -25,7 +28,7 @@ class CustomerAdmin(admin.ModelAdmin):
 
     list_filter = ("is_active",)
 
-    search_fields = ("first_name", "last_name", "phone_number","table_number")
+    search_fields = ("first_name", "last_name", "phone_number","table_number","cafe", "gender","date_of_birth",)
 
     readonly_fields = ("created_at", "updated_at")
 
@@ -38,8 +41,12 @@ class CustomerAdmin(admin.ModelAdmin):
                     "last_name",
                     "phone_number",
                     "table_number",
+                    "cafe",
                     "points",
                     "is_active",
+                    "gender",
+                    "date_of_birth",
+
                 )
             },
         ),
@@ -55,7 +62,7 @@ class CustomerAdmin(admin.ModelAdmin):
         """
         Override the save_model method to ensure a user is created.
         """
-        if not obj.user_id:  # If user is not set
+        if not obj.id:  # If user is not set
             # Create a User instance if it doesn't exist
             user = User.objects.create_user(
                 phone_number=obj.phone_number,  # Assuming phone_number is used for user creation

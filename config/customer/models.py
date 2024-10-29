@@ -34,6 +34,8 @@ class Customer(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     table_number = models.PositiveIntegerField()
+    date_of_birth =models.DateField(null=True,blank=True)
+    gender =models.CharField(max_length=10,choices=gender_choices,null=True,blank=True)
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE, null=True, blank=True)
 
     phone_number = models.CharField(

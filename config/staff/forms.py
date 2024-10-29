@@ -74,3 +74,12 @@ class StaffRegistrationForm(forms.ModelForm):
         if commit:
             staff.save()
         return staff
+
+
+class DataAnalysisForm(forms.Form):
+    FILTER_CHOICES = [
+        ("most popular caffe items","popular items"),
+        ("peak business hour",'peak hour'),
+        ("customer demographic data",'demographic data'),
+    ]
+    filter_type = forms.ChoiceField(choices=FILTER_CHOICES)
