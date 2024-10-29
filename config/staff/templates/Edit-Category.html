@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Category{% endblock %}
+
+{% block content %}
+{% load static %}
+
+    <h1 class="st-h">manager Panel</h1>
+    <div class="st-panel">
+        <li><a href="{% url 'checkout' %}">checkout</a></li>
+        <li><a href="{% url 'edit-product' %}">Edit product</a></li>
+        <li><a href="{% url 'add-product' %}">Add product</a></li>
+        <li><a href="{% url 'add-category' %}">Add category</a></li>
+        <li><a href="{% url 'remove-p' %}">Remove product</a></li>
+        <li><a href="{% url 'remove-c' %}">Remove category</a></li>
+
+    </div>
+        <!-- Edit Category Section Start -->
+        <section id="add-product">
+            <div class="container">
+                <header class="section-header">
+                    <h3>Edit Category</h3>
+                </header>
+                
+                <h4>Edit Category</h4>
+                <div class="row form">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for ="Old Category">Old Category</label>
+                            <select name="Old Category" class="form-control">
+                                <option selected value="0">--</option>
+                                <option value="1">Teas</option>
+                                <option value="2">Pastries</option>
+                                <option value="3">Breakfast Items</option>
+                                <option value="4">Snacks</option>
+                            </select>
+                        </div> 
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+                            <label for ="Category New Name">Category New Name</label>
+                            <input name="Category New Name" type="text" class="form-control" placeholder="Category New Name" />
+                        </div>
+                        <div class="button">
+                            <button type="submit">Submit</button>
+                        </div>
+ 
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div>{{massage}}</div>
+        <!-- Add Product Section End -->
+{% endblock %}

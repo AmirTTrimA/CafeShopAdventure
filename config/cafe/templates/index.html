@@ -1,0 +1,279 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% load static %}
+        
+        <!-- Reservations Section Start -->
+        <section id="reservations">
+            <div class="container">
+                <header class="section-header">
+                        <div class="container">
+                            <h3>Welcome to Maktab CoffeeShop</h3>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas gravida sollicitudin turpis id posuere. Fusce nec rhoncus nibh. Fusce arcu libero, euismod eget commodo at, venenatis a nisi. Sed faucibus metus sed leo vulputate blandit.</p>
+                        </div>
+                </header>
+            </div>
+        </section>
+        <!-- Reservations Section End -->
+
+        <!-- About Section Start-->
+        <section id="about">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="about-col-left"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="about-col-right">
+                            <header class="section-header">
+                                <h3>About Us</h3>
+                            </header>
+                            <ul class="icon">
+                                <li><a href="#" class="fab fa-twitter"></a></li>
+                                <li><a href="#" class="fab fa-facebook"></a></li>
+                                <li><a href="#" class="fab fa-pinterest"></a></li>
+                                <li><a href="#" class="fab fa-google-plus"></a></li>
+                            </ul>
+                            <p>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam convallis quam sed tincidunt accumsan. Aliquam at tincidunt tortor, ac porta turpis. Curabitur lacinia venenatis semper.
+                            </p>
+                            <p>
+                                Aliquam ut nibh ut lacus posuere facilisis. Vestibulum ullamcorper arcu et bibendum ultrices. Suspendisse rutrum turpis vitae.
+                            </p>
+                            <a class="btn" href="{% url 'about' %}">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- About Section End-->
+
+        <!-- Menu Section Start -->
+        <section id="food-menu">
+            <div class="container">
+                
+                <header class="section-header">
+                    <h3><a href="{% url 'menu' %}">delicious Food Menu</a></h3>
+                </header>
+
+                <div class="row">
+                    {%for item in menu_items%}
+                    <div class="col-sm-6 col-md-4 col-lg-3">
+                        <div class="single-menu">
+                        <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
+                        <div>${{item.price}}</div>
+                        <h4><a href="{% url 'product' item.pk %}">{{item.name}}</a></h4>
+                        <span class="quantity"><input type="text" value="1" /></span>
+                        <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i> </a>
+                        </div>
+                    </div>
+                    {%endfor%}
+                </div>
+                
+            <div class="single-menu"><a href="{% url 'menu' %}">See More</a></div>
+            </div>
+        </section>
+        <!-- Menu Section End-->
+
+        <!-- Team Section Start -->
+        <!-- <section id="team">
+            <div class="container">
+                <div class="section-header">
+                    <h3>Meet Our Chef</h3>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6 col-md-3">
+                        <div class="single-team">
+                            <img src="{% static 'img/team-1.jpg' %}" alt="">
+                            <h4>Don Dennis</h4>
+                            <ul class="icon">
+                                <li><a href="#" class="fa fa-twitter"></a></li>
+                                <li><a href="#" class="fa fa-facebook"></a></li>
+                                <li><a href="#" class="fa fa-google-plus"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-md-3">
+                        <div class="single-team">
+                            <img src="{% static 'img/team-2.jpg' %}" alt="">
+                            <h4>Mary Tejeda</h4>
+                            <ul class="icon">
+                                <li><a href="#" class="fa fa-twitter"></a></li>
+                                <li><a href="#" class="fa fa-facebook"></a></li>
+                                <li><a href="#" class="fa fa-google-plus"></a></li>
+                            </ul>
+                        </div>                    
+                    </div>
+
+                    <div class="col-sm-6 col-md-3">
+                        <div class="single-team">
+                            <img src="{% static 'img/team-3.jpg' %}" alt="">
+                            <h4>Scott Williams</h4>
+                            <ul class="icon">
+                                <li><a href="#" class="fa fa-twitter"></a></li>
+                                <li><a href="#" class="fa fa-facebook"></a></li>
+                                <li><a href="#" class="fa fa-google-plus"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-md-3">
+                        <div class="single-team">
+                            <img src="{% static 'img/team-4.jpg' %}" alt="">
+                            <h4>Mary Hall</h4>
+                            <ul class="icon">
+                                <li><a href="#" class="fa fa-twitter"></a></li>
+                                <li><a href="#" class="fa fa-facebook"></a></li>
+                                <li><a href="#" class="fa fa-google-plus"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> -->
+        <!-- Team Section End -->
+
+        <!-- Testimonials Section Start -->
+        <section id="testimonials" class="section-bg wow fadeInUp">
+            <div class="container">
+                <div class="section-header">
+                    <h3>Our Food Lovers</h3>
+                </div>
+
+                <div class="owl-carousel testimonials-carousel">
+                    <div class="row testimonial-item">
+                        <div class="col-sm-4">
+                            <div class="img">
+                                <img src="{% static 'img/testimonial-1.jpg' %}" class="testimonial-img" alt="">
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="testimonial-content">
+                                <div class="content">
+                                    <h4>Jamie Boyd</h4>
+                                    <h5>VIP Client</h5>
+                                    <p>
+                                        <i class="fa fa-quote-left"></i>
+                                        Commodo sed hendrerit id, posuere tempus odio. Phasellus vel leo aliquam, interdum massa quis, aliquam sapien. Aliquam erat volutpat. Etiam nec feugiat libero. Phasellus in ipsum nunc.
+                                        <i class="fa fa-quote-right"></i>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row testimonial-item">
+                        <div class="col-sm-4">
+                            <div class="img">
+                                <img src="{% static 'img/testimonial-2.jpg' %}" class="testimonial-img" alt="">
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="testimonial-content">
+                                <div class="content">
+                                    <h4>Albert Cerrato</h4>
+                                    <h5>Regular Client</h5>
+                                    <p>
+                                        <i class="fa fa-quote-left"></i>
+                                        Proin ut dui dictum ligula condimentum cursus. Ut orci arcu, commodo sed hendrerit id, posuere tempus odio. Phasellus vel leo aliquam, interdum massa quis, aliquam sapien. Aliquam erat volutpat
+                                        <i class="fa fa-quote-right"></i>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row testimonial-item">
+                        <div class="col-sm-4">
+                            <div class="img">
+                                <img src="{% static 'img/testimonial-3.jpg' %}" class="testimonial-img" alt="">
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="testimonial-content">
+                                <div class="content">
+                                    <h4>Theresa Wood</h4>
+                                    <h5>VIP Client</h5>
+                                    <p>
+                                        <i class="fa fa-quote-left"></i>
+                                        Dictum ligula condimentum cursus commodo sed hendrerit id, posuere tempus odio. Phasellus vel leo aliquam, interdum massa quis, aliquam sapien. Aliquam erat volutpat. Etiam nec ultricies semper risus.
+                                        <i class="fa fa-quote-right"></i>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Testimonials Section End -->
+
+        <!-- Contact Section Start -->
+        <section id="contact">
+            <div class="container">
+                <div class="section-header">
+                    <h3>Contact Us</h3>
+                </div>
+                
+                <div class="row contact-detail">
+                    <div class="col-md-6">
+                        <div class="contact-col-1">
+                            <div class="contact-hours">
+                                <h4>Opening Hours</h4>
+                                <p>Monday-Friday: 7am to 12am</p>
+                                <p>Saturday: 5pm to 12am</p>
+                                <p>Sunday: 9am to 12am</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="contact-col-2">
+                            <div class="contact-info">
+                                <h4>Contact Info</h4>
+                                <p>1489 Enghelab Street, Tehran, Iran</p>
+                                <p><a href="tel:+98-021-748-1492">+98-021-748-1492</a></p>
+                                <p><a href="mailto:info@example.com">info@example.com</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="row">
+                    <div class="col-md-6">
+                        <div class="contact-map">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d12623.52751148822!2d-122.47260557388145!3d37.72245039905841!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1s220%2C+San+Francisco%2C+California%2C+USA!5e0!3m2!1sen!2sbd!4v1555690883913!5m2!1sen!2sbd" frameborder="0" style="border:0" allowfullscreen></iframe>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="contact-form">
+                            <form>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <input type="text" class="form-control" placeholder="Your Name" required="required" />
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <input type="email" class="form-control" placeholder="Your Email" required="required" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Subject" required="required" />
+                                </div>
+                                <div class="form-group">
+                                    <textarea class="form-control" rows="5" placeholder="Message" required="required" ></textarea>
+                                </div>
+                                <div><button type="submit">Send Message</button></div>
+                            </form>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+        </section>
+        <!-- Contact Section End -->
+
+{% endblock %}       

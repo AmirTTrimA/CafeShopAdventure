@@ -1,0 +1,34 @@
+{% extends 'base.html' %} {% block title %}Menu{% endblock %} {% block content%}
+{% block login %}login{% endblock %}
+{% load static %}
+
+<!-- Menu Section Start -->
+<section id="food-menu">
+  <div class="container">
+    <header class="section-header">
+      <h3><a href="{% url 'menu' %}">delicious Food Menu</a></h3>
+    </header>
+    <div class="menu-cat">
+      {%for cat in cat_item%}
+      <a href="">{{cat.name}}</a>
+      {%endfor%}
+    </div>
+
+    <div class="row">
+      {%for item in menu_items%}
+      <div class="col-sm-6 col-md-4 col-lg-3">
+        <div class="single-menu">
+          <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
+          <div>${{item.price}}</div>
+          <h4><a href="{% url 'product' item.pk %}">{{item.name}}</a></h4>
+          <span class="quantity"><input type="text" value="1" /></span>
+          <a href="{% url 'add_to_cart' item.pk %}"><i class="fas fa-shopping-cart"></i> </a>
+        </div>
+      </div>
+      {%endfor%}
+    </div>
+  </div>
+</section>
+<!-- Menu Section End-->
+
+{% endblock %}

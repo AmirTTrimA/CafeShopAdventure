@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Staff Order Management{% endblock %}
+
+{% block content %}
+<h1 class="st-h">Staff Order Management</h1>
+<div class="st-panel">
+    <li><a href="{% url 'staff_checkout' %}">Order Management</a></li>
+</div>
+
+<!-- Staff Order Management Section Start -->
+<section id="staff-checkout">
+    <div class="container">
+        <header class="section-header">
+            <h3>Manage Orders</h3>
+        </header>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive-sm">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Order Number</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Table Number</th>
+                                <th scope="col">Phone Number</th>
+                                <th scope="col">Status</th>
+                                {% comment %} <th scope="col">Actions</th> {% endcomment %}
+                                <th scope="col">Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% if orders %}
+                            {% for order in orders %}
+                            <tr>
+                                <th scope="row">{{ order.id }}</th>
+                                <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+                                <td>{{ order.table_number }}</td>
+                                <td>{{ order.customer.phone_number }}</td>
+                                <td>
+                                    <form method="POST" action="{% url 'update_order_status' order.id %}">
+                                        {% csrf_token %}
+                                        <select name="status" onchange="this.form.submit()">
+                                            <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                            <option value="Processing" {% if order.status == 'Processing' %}selected{% endif %}>Processing</option>
+                                            <option value="Completed" {% if order.status == 'Completed' %}selected{% endif %}>Completed</option>
+                                            <option value="Cancelled" {% if order.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                                        </select>
+                                    </form>
+                                </td>
+                                {% comment %} <td>
+                                </td> {% endcomment %}
+                                <td>
+                                    <a href="{% url 'order_list' order.id %}">View Details</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center">No orders available.</td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Staff Order Management Section End -->
+
+{% endblock %}

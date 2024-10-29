@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}About{% endblock %}
+{% block login %}login{% endblock %}
+
+{% block content %}
+{% load static %}
+
+        <!-- Reservations Section Start -->
+        <section id="reservations">
+            <div class="container">
+                <header class="section-header">
+                    <h3>Reservations</h3>
+                </header>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-row">
+                            <div class="control-group col-sm-3">
+                                <div class="form-group">
+                                    <div class="input-group date" id="date" data-target-input="nearest">
+                                        <input type="text" class="form-control datetimepicker-input" placeholder="Date" data-target="#date"/>
+                                        <div class="input-group-append" data-target="#date" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="control-group col-sm-3">
+                                <div class="form-group">
+                                    <div class="input-group date" id="time" data-target-input="nearest">
+                                        <input type="text" class="form-control datetimepicker-input" placeholder="Time" data-target="#time"/>
+                                        <div class="input-group-append" data-target="#time" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="control-group col-sm-3">
+                                <select class="custom-select">
+                                    <option selected>Party Size</option>
+                                    <option value="1">1 Person</option>
+                                    <option value="2">2 People</option>
+                                    <option value="3">3 People</option>
+                                    <option value="4">4 People</option>
+                                    <option value="5">5 People</option>
+                                    <option value="6">6 People</option>
+                                    <option value="7">7 People</option>
+                                    <option value="8">8 People</option>
+                                    <option value="9">9 People</option>
+                                    <option value="10">10 People</option>
+                                </select>
+                            </div>
+                            <div class="control-group col-sm-3">
+                                <button class="btn btn-block btn-book">Book Now</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Reservations Section End -->
+
+        <!-- About Section Start-->
+        <section id="about" style="background: #ffffff;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="about-col-left"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="about-col-right">
+                            <header class="section-header">
+                                <h3>About Us</h3>
+                            </header>
+                            <ul class="icon">
+                                <li><a href="#" class="fa fa-twitter"></a></li>
+                                <li><a href="#" class="fa fa-facebook"></a></li>
+                                <li><a href="#" class="fa fa-pinterest"></a></li>
+                                <li><a href="#" class="fa fa-google-plus"></a></li>
+                            </ul>
+                            <p>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam convallis quam sed tincidunt accumsan. Aliquam at tincidunt tortor, ac porta turpis. Curabitur lacinia venenatis semper.
+                            </p>
+                            <p>
+                                Aliquam ut nibh ut lacus posuere facilisis. Vestibulum ullamcorper arcu et bibendum ultrices. Suspendisse rutrum turpis vitae.
+                            </p>
+                            <a class="btn" href="#">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- About Section End-->
+
+        <!-- Team Section Start -->
+        <section id="team">
+            <div class="container">
+                <div class="section-header">
+                    <h3>Meet Our Chef</h3>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6 col-md-3">
+                        <div class="single-team">
+                            <img src="img/team-1.jpg" alt="">
+                            <h4>Don Dennis</h4>
+                            <ul class="icon">
+                                <li><a href="#" class="fa fa-twitter"></a></li>
+                                <li><a href="#" class="fa fa-facebook"></a></li>
+                                <li><a href="#" class="fa fa-google-plus"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-md-3">
+                        <div class="single-team">
+                            <img src="img/team-2.jpg" alt="">
+                            <h4>Mary Tejeda</h4>
+                            <ul class="icon">
+                                <li><a href="#" class="fa fa-twitter"></a></li>
+                                <li><a href="#" class="fa fa-facebook"></a></li>
+                                <li><a href="#" class="fa fa-google-plus"></a></li>
+                            </ul>
+                        </div>                    
+                    </div>
+
+                    <div class="col-sm-6 col-md-3">
+                        <div class="single-team">
+                            <img src="img/team-3.jpg" alt="">
+                            <h4>Scott Williams</h4>
+                            <ul class="icon">
+                                <li><a href="#" class="fa fa-twitter"></a></li>
+                                <li><a href="#" class="fa fa-facebook"></a></li>
+                                <li><a href="#" class="fa fa-google-plus"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-md-3">
+                        <div class="single-team">
+                            <img src="img/team-4.jpg" alt="">
+                            <h4>Mary Hall</h4>
+                            <ul class="icon">
+                                <li><a href="#" class="fa fa-twitter"></a></li>
+                                <li><a href="#" class="fa fa-facebook"></a></li>
+                                <li><a href="#" class="fa fa-google-plus"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Team Section End -->
+
+{% endblock %}

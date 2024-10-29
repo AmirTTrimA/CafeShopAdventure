@@ -1,0 +1,33 @@
+from django.urls import path
+from. import views
+from .views import (
+    add_to_cart_view,
+    cart_view,
+    remove_from_cart,
+    submit_order,
+    manage_order_items,
+    change_order_status,
+    checkout,
+    order_confirmation,
+)
+
+urlpatterns = [
+    path("add_to_cart/<int:item_id>/", add_to_cart_view, name="add_to_cart"),
+    path("cart/", cart_view, name="cart"),
+    path("remove_from_cart/<int:item_id>/", remove_from_cart, name="remove_from_cart"),
+    path("submit_order/", submit_order, name="submit_order"),
+    path('order_success/', views.order_success, name='order_success'),  # URL جدید
+    # path('order_history/', order_history_view, name='order_history'),
+    path("order/manage/<int:order_id>/", manage_order_items, name="manage_order_items"),
+    path(
+        "order/change_status/<int:order_id>/",
+        change_order_status,
+        name="change_order_status",
+    ),
+    path("checkout/", checkout, name="checkout"),
+    path(
+        "order/confirmation/<int:order_id>/",
+        order_confirmation,
+        name="order_confirmation",
+    ),
+]

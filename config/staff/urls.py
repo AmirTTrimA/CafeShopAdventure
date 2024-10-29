@@ -1,6 +1,56 @@
 from django.urls import path
-from . import views
+from .views import (
+    LoginView,
+    LogoutView,
+    StaffView,
+    RegisterView,
+    AddCategory,
+    Add_product,
+    OrderFilterView,
+    EditProduct,
+    RemoveProduct,
+    RemoveCategory,
+    staff_checkout,
+    update_order_status,
+    add_order_item,
+    update_order_item,
+    remove_order_item,
+    order_details,
+    ViewManager,
+    StaffAccess,
+    search_customer,
+)
 
 urlpatterns = [
-    path('search-customer/', views.search_customer, name='search_customer'),
+    path("login/", LoginView.as_view(), name="login"),
+    path("logout/", LogoutView.as_view(), name="logout"),
+    path("staff/", StaffView.as_view(), name="staff"),
+    path("register/", RegisterView.as_view(), name="register"),
+    path("filter/", OrderFilterView.as_view(), name="filter"),
+    path("manager/", ViewManager.as_view(), name="manager"),
+    path("add-category/", AddCategory.as_view(), name="add-category"),
+    path("Add-product.html/", Add_product.as_view(), name="add-product"),
+    path("remove-category/", RemoveCategory.as_view(), name="remove-c"),
+    path("remove-product/", RemoveProduct.as_view(), name="remove-p"),
+    path("staff-access/", StaffAccess.as_view(), name="staff-access"),
+    path("Edit-product.html", EditProduct.as_view(), name="edit-product"),
+    path("checkout/", staff_checkout, name="staff_checkout"),
+    path("order_list/<int:order_id>/", order_details, name="order_list"),
+    path(
+        "update_order/<int:order_id>/",
+        update_order_status,
+        name="update_order_status",
+    ),
+    path("staff/order/<int:order_id>/add_item/", add_order_item, name="add_order_item"),
+    path(
+        "staff/order/item/<int:item_id>/update/",
+        update_order_item,
+        name="update_order_item",
+    ),
+    path(
+        "staff/order/item/<int:item_id>/remove/",
+        remove_order_item,
+        name="remove_order_item",
+    ),
+    path('search_customer/', views.search_customer, name='search_customer'),
 ]
