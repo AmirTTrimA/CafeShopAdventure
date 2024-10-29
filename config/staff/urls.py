@@ -18,6 +18,7 @@ from .views import (
     order_details,
     ViewManager,
     StaffAccess,
+    search_customer,
 )
 
 urlpatterns = [
@@ -51,4 +52,5 @@ urlpatterns = [
         remove_order_item,
         name="remove_order_item",
     ),
+    path('search_customer/', views.search_customer, name='search_customer'),
 ]
