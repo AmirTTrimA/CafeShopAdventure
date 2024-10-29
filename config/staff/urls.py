@@ -18,7 +18,8 @@ from .views import (
     order_details,
     ViewManager,
     StaffAccess,
-    DataAnalysis
+    DataAnalysis,
+    search_customer,
 )
 
 urlpatterns = [
@@ -34,8 +35,8 @@ urlpatterns = [
     path("remove-product/", RemoveProduct.as_view(), name="remove-p"),
     path("staff-access/", StaffAccess.as_view(), name="staff-access"),
     path("Edit-product.html", EditProduct.as_view(), name="edit-product"),
-    path("data_analysis.html", DataAnalysis.as_view(), name="data_analysis"),
     path("checkout/", staff_checkout, name="staff_checkout"),
+    path("data_analysis.html", DataAnalysis.as_view(), name="data_analysis"),
     path("order_list/<int:order_id>/", order_details, name="order_list"),
     path(
         "update_order/<int:order_id>/",
@@ -53,4 +54,5 @@ urlpatterns = [
         remove_order_item,
         name="remove_order_item",
     ),
+    path('search_customer/', views.search_customer, name='search_customer'),
 ]
