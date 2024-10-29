@@ -6,13 +6,10 @@ including attributes related to customer information and validation.
 """
 
 from django.db import models
-from .validator import iran_phone_regex
 from django.core.exceptions import ValidationError
 from cafe.models import Cafe
+from .validator import iran_phone_regex
 # from django.contrib.auth.hashers import make_password
-
-class Cafe(models.Model):
-    name = models.CharField(max_length=100)
 
 class Customer(models.Model):
     """
@@ -34,8 +31,9 @@ class Customer(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     table_number = models.PositiveIntegerField()
-    date_of_birth =models.DateField(null=True,blank=True)
-    gender =models.CharField(max_length=10,choices=gender_choices,null=True,blank=True)
+    # Doesn't need these two fields for now
+    # date_of_birth =models.DateField(null=True,blank=True)
+    # gender =models.CharField(max_length=10,choices=gender_choices,null=True,blank=True)
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE, null=True, blank=True)
 
     phone_number = models.CharField(
@@ -59,10 +57,3 @@ class Customer(models.Model):
     def __str__(self):
         """Return the full name of the customer."""
         return f"{self.first_name} {self.last_name}"
-
-    # there's no need for password for customers
-    # def save(self, *args, **kwargs):
-    #     """Override save method to hash the password before saving."""
-    #     if self.password:
-    #         self.password = make_password(self.password)
-    #     super(Customer, self).save(*args, **kwargs)

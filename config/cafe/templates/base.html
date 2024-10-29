@@ -77,8 +77,8 @@
 
 {% else %}
 <!--staff Header Start --> 
-<h1 class="st-h">Staff Panel</h1>
 {% if user.is_authenticated %}
+    <h1 class="st-h">Staff Panel</h1>
     <h3 class="st-h" > Welcome {{user.first_name}} {{user.last_name}}!</h3>
 <div class="st-panel">
         <li><a href="{% url 'checkout' %}">checkout</a></li>

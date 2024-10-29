@@ -1,7 +1,6 @@
 """staff/forms.py"""
 
 from django import forms
-from django.contrib.auth.hashers import make_password
 from .models import Staff
 from .validator import iran_phone_regex
 
@@ -78,8 +77,9 @@ class StaffRegistrationForm(forms.ModelForm):
 
 class DataAnalysisForm(forms.Form):
     FILTER_CHOICES = [
-        ("most popular caffe items","popular items"),
-        ("peak business hour",'peak hour'),
-        ("customer demographic data",'demographic data'),
+        ("most popular caffe items", "popular items"),
+        ("peak business hour", "peak hour"),
+        # tested but not active because of the reasons by Mr.Kashi
+        # ("customer demographic data",'demographic data'),
     ]
     filter_type = forms.ChoiceField(choices=FILTER_CHOICES)

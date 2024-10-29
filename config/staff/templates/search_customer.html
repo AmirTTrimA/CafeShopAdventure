@@ -1,11 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Customer Search</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Search Customer{% endblock %}
+{% load static %}
+{% block content %}
     <h2>Search Customer by Phone Number</h2>
 
     <form method="get" action="{% url 'search_customer' %}">
@@ -39,5 +35,4 @@
     {% elif request.GET.phone_number %}
         <p>No customer found with the entered phone number.</p>
     {% endif %}
-</body>
-</html>
+{% endblock %}

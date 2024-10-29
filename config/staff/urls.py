@@ -54,5 +54,5 @@ urlpatterns = [
         remove_order_item,
         name="remove_order_item",
     ),
-    path('search_customer/', views.search_customer, name='search_customer'),
+    path('search_customer/', search_customer, name='search_customer'),
 ]

@@ -17,9 +17,7 @@ class CustomerAdmin(admin.ModelAdmin):
         "last_name",
         "phone_number",
         "table_number",
-        "date_of_birth",
         "cafe",
-        "gender",
         "points",
         "is_active",
         "created_at",
@@ -44,9 +42,6 @@ class CustomerAdmin(admin.ModelAdmin):
                     "cafe",
                     "points",
                     "is_active",
-                    "gender",
-                    "date_of_birth",
-
                 )
             },
         ),

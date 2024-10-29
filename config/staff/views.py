@@ -2,27 +2,27 @@
 
 from decimal import Decimal
 from collections import defaultdict
+from datetime import timedelta, date
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.views.generic.edit import FormView
 from django.views import View
 from django.urls import reverse_lazy
-from order.models import Order,OrderItem
-from customer.models import Customer
-from menu.models import MenuItem, Category
-from .forms import OrderFilterForm,DataAnalysisForm
-from .forms import StaffRegistrationForm
 from django.db.models import Sum
 from django.utils import timezone
-from django.db.models import Count
-from collections import Counter
-from django.db.models.functions import TruncHour, TruncDay
-from datetime import timedelta,date
-from django.db import models
+from order.models import Order, OrderItem
+from customer.models import Customer
+from menu.models import MenuItem, Category
+from .forms import OrderFilterForm, DataAnalysisForm
+from .forms import StaffRegistrationForm
+# from django.db.models import Count
+# from collections import Counter
+# from django.db.models.functions import TruncHour, TruncDay
 
 
 class RegisterView(FormView):
@@ -125,33 +125,41 @@ class OrderFilterView(View):
         form = OrderFilterForm()
         if request.POST.get("form_type") == "change_status":
             data = request.POST
-            order_id = data.get("order_id")
-            print(order_id)
-            new_status = data.get("status")
-            order = Order.objects.get(id=order_id)
-            order.status = new_status
-            order.save()
-            return render(
-                request,
-                self.template_name,
-                {"form": form, "massage": "Status change was done successfully"},
-            )
+            order_id = data.get("order_id") or 1  # Default to 1 if not provided
+            new_status = (
+                data.get("status") or "pending"
+            )  # Default to "pending" if not provided
+
+            try:
+                order = Order.objects.get(id=order_id)
+                order.status = new_status
+                order.save()
+                return render(
+                    request,
+                    self.template_name,
+                    {"form": form, "message": "Status change was done successfully"},
+                )
+            except Order.DoesNotExist:
+                return render(
+                    request,
+                    self.template_name,
+                    {"form": form, "error": "Order not found."},
+                )
+
         else:
             form = OrderFilterForm(request.POST)
             if form.is_valid():
                 filter_type = form.cleaned_data["filter_type"]
                 filter_value = form.cleaned_data["filter_value"]
+
                 if filter_type != "last_order" and filter_value == "":
                     form.add_error("filter_value", "Please enter a valid value.")
-
                 elif filter_type == "last_order":
                     orders = Order.objects.order_by("-order_date")[:1]  # Last order
                     return render(
                         request, self.template_name, {"form": form, "orders": orders}
                     )
-
                 elif filter_type != "last_order" and filter_value != "":
-                    # Apply filtering based on filter type
                     if filter_type == "date":
                         import datetime
 
@@ -170,11 +178,21 @@ class OrderFilterView(View):
                         customers = Customer.objects.filter(table_number=filter_value)
                         orders = Order.objects.filter(customer__in=customers)
 
+                    # Ensure we have an order to work with
+                    if orders.exists():
+                        order = (
+                            orders.first()
+                        )  # Get the first order from the filtered results
+                    else:
+                        order = None  # No orders found
+
                     return render(
-                        request, self.template_name, {"form": form, "orders": orders}
+                        request,
+                        self.template_name,
+                        {"form": form, "orders": orders, "order": order},
                     )
 
-                return render(request, self.template_name, {"form": form})
+            return render(request, self.template_name, {"form": form})
 
 
 class EditProduct(View):
@@ -256,16 +274,16 @@ class Add_product(View):
 class RemoveProduct(View):
     def get(self, request):
         cats = Category.objects.all()
-        pros=MenuItem.objects.all()
-        return render(request, "remove-p.html", {"cats": cats,"product":pros})
+        pros = MenuItem.objects.all()
+        return render(request, "remove-p.html", {"cats": cats, "product": pros})
 
     def post(self, request):
         data = request.POST
         cats = Category.objects.all()
-        pros=MenuItem.objects.all()
+        pros = MenuItem.objects.all()
         print(pros)
-        product_name = (data.get("Product Name"))
-        product_cat = (data.get("Product cat"))
+        product_name = data.get("Product Name")
+        product_cat = data.get("Product cat")
         category_p = Category.objects.get(id=product_cat)
         item = MenuItem.objects.filter(name=product_name, category=category_p)
         if item:
@@ -273,13 +291,21 @@ class RemoveProduct(View):
             return render(
                 request,
                 "remove-p.html",
-                {"cats": cats,"product":pros, "massage": "Product removal was successful"},
+                {
+                    "cats": cats,
+                    "product": pros,
+                    "massage": "Product removal was successful",
+                },
             )
         else:
             return render(
                 request,
                 "remove-p.html",
-                {"cats": cats,"product":pros, "massage": "this product dose not exist!"},
+                {
+                    "cats": cats,
+                    "product": pros,
+                    "massage": "this product dose not exist!",
+                },
             )
 
 
@@ -329,8 +355,8 @@ class RemoveCategory(View):
                 "Add-category.html",
                 {"massage": "There is no category with this title"},
             )
-          
-          
+
+
 def staff_checkout(request):
     orders = Order.objects.all()
     print(f"orders: {orders}")
@@ -398,20 +424,23 @@ def remove_order_item(request, item_id):
         order_item.delete()
         return redirect("order_list", order_id=order_item.order.id)
 
+
 class ViewManager(View):
-     def get(self, request):
+    def get(self, request):
         return render(request, "Manager.html")
 
+
 class StaffAccess(View):
-     def get(self, request):
+    def get(self, request):
         return render(request, "staff-access.html")
 
+
 class DataAnalysis(View):
-    
     def get(self, request):
         form = DataAnalysisForm()
-        return render(request,"data_analysis.html",{'form': form})
-    def post(self,request):
+        return render(request, "data_analysis.html", {"form": form})
+
+    def post(self, request):
         form = DataAnalysisForm(request.POST)
         now = timezone.now()
         if form.is_valid():
@@ -423,15 +452,17 @@ class DataAnalysis(View):
                 # end_of_month = (start_of_month + timezone.timedelta(days=31)).replace(day=1)
 
                 top_products = (
-                OrderItem.objects
-                .filter(created_at__gte=last_month_start)
-                .values('item__name')
-                .annotate(total_orders=Sum('quantity'))
-                .order_by('-total_orders')[:5]
+                    OrderItem.objects.filter(created_at__gte=last_month_start)
+                    .values("item__name")
+                    .annotate(total_orders=Sum("quantity"))
+                    .order_by("-total_orders")[:5]
                 )
                 print(top_products)
-                return render(request,"data_analysis.html",{'form': form,'orders':top_products})
-            
+                return render(
+                    request,
+                    "data_analysis.html",
+                    {"form": form, "orders": top_products},
+                )
 
             elif filter_type == "peak business hour":
                 now = timezone.now()
@@ -445,8 +476,8 @@ class DataAnalysis(View):
 
                 # Iterate through orders and count occurrences of hour per day
                 for order in orders:
-                    day = order.created_at.strftime('%A')  # Get day of the week
-                    hour = order.created_at.strftime('%H')  # Get hour
+                    day = order.created_at.strftime("%A")  # Get day of the week
+                    hour = order.created_at.strftime("%H")  # Get hour
                     order_times[day][hour] += 1
 
                     # Calculate most frequent hours per day of the week
@@ -455,110 +486,118 @@ class DataAnalysis(View):
                     overall_count = defaultdict(int)
 
                 for day, timestamps in order_times.items():
-                    most_frequent_hour = max(timestamps.items(), key=lambda x: x[1], default=(None, 0))
+                    most_frequent_hour = max(
+                        timestamps.items(), key=lambda x: x[1], default=(None, 0)
+                    )
                     most_frequent_per_day[day] = {
-                    'hour': most_frequent_hour[0],
-                    'count': most_frequent_hour[1]
+                        "hour": most_frequent_hour[0],
+                        "count": most_frequent_hour[1],
                     }
-        
+
                 # Aggregate for overall most frequent hour
                 if most_frequent_hour[0] is not None:
                     overall_count[most_frequent_hour[0]] += most_frequent_hour[1]
 
                 # Calculate the overall most frequent hour in the last month
-                overall_most_frequent_hour = max(overall_count.items(), key=lambda x: x[1], default=(None, 0))
+                overall_most_frequent_hour = max(
+                    overall_count.items(), key=lambda x: x[1], default=(None, 0)
+                )
 
                 orders = {
-                    'most_frequent_per_day': most_frequent_per_day,
-                    'overall_most_frequent_hour': {
-                    'hour': overall_most_frequent_hour[0],
-                    'total_orders': overall_most_frequent_hour[1],
-                    'total_orders_month': total_orders,
+                    "most_frequent_per_day": most_frequent_per_day,
+                    "overall_most_frequent_hour": {
+                        "hour": overall_most_frequent_hour[0],
+                        "total_orders": overall_most_frequent_hour[1],
+                        "total_orders_month": total_orders,
                     },
-                    }
-                return render(request,"data_analysis.html", {"form":form,'orders':orders})
+                }
+                return render(
+                    request, "data_analysis.html", {"form": form, "orders": orders}
+                )
 
-            elif filter_type =="customer demographic data" :
-                
+            elif filter_type == "customer demographic data":
                 today = date.today()
                 under_20_females = Customer.objects.filter(
-                gender='female', 
-                date_of_birth__gte=today.replace(year=today.year - 20)
+                    gender="female",
+                    date_of_birth__gte=today.replace(year=today.year - 20),
                 ).count()
 
                 between_20_and_40_females = Customer.objects.filter(
-                gender='female', 
-                date_of_birth__lt=today.replace(year=today.year - 20),
-                date_of_birth__gte=today.replace(year=today.year - 40)
+                    gender="female",
+                    date_of_birth__lt=today.replace(year=today.year - 20),
+                    date_of_birth__gte=today.replace(year=today.year - 40),
                 ).count()
 
                 over_40_females = Customer.objects.filter(
-                gender='female', 
-                date_of_birth__lt=today.replace(year=today.year - 40)
+                    gender="female",
+                    date_of_birth__lt=today.replace(year=today.year - 40),
                 ).count()
 
                 under_20_Uncertain = Customer.objects.filter(
-                gender='Uncertain', 
-                date_of_birth__gte=today.replace(year=today.year - 20)
+                    gender="Uncertain",
+                    date_of_birth__gte=today.replace(year=today.year - 20),
                 ).count()
 
                 between_20_and_40_Uncertain = Customer.objects.filter(
-                gender='Uncertain', 
-                date_of_birth__lt=today.replace(year=today.year - 20),
-                date_of_birth__gte=today.replace(year=today.year - 40)
+                    gender="Uncertain",
+                    date_of_birth__lt=today.replace(year=today.year - 20),
+                    date_of_birth__gte=today.replace(year=today.year - 40),
                 ).count()
 
                 over_40_Uncertain = Customer.objects.filter(
-                gender='Uncertain', 
-                date_of_birth__lt=today.replace(year=today.year - 40)
+                    gender="Uncertain",
+                    date_of_birth__lt=today.replace(year=today.year - 40),
                 ).count()
 
                 under_20_males = Customer.objects.filter(
-                gender='man', 
-                date_of_birth__gte=today.replace(year=today.year - 20)
+                    gender="man", date_of_birth__gte=today.replace(year=today.year - 20)
                 ).count()
 
                 between_20_and_40_males = Customer.objects.filter(
-                gender='man', 
-                date_of_birth__lt=today.replace(year=today.year - 20),
-                date_of_birth__gte=today.replace(year=today.year - 40)
+                    gender="man",
+                    date_of_birth__lt=today.replace(year=today.year - 20),
+                    date_of_birth__gte=today.replace(year=today.year - 40),
                 ).count()
 
                 over_40_males = Customer.objects.filter(
-                gender='man', 
-                date_of_birth__lt=today.replace(year=today.year - 40)
+                    gender="man", date_of_birth__lt=today.replace(year=today.year - 40)
                 ).count()
 
                 # Prepare context for rendering in a template
                 context = {
-                'under_20_Uncertain': under_20_Uncertain,
-                'between_20_and_40_Uncertain': between_20_and_40_Uncertain,
-                'over_40_Uncertain':over_40_Uncertain,
-                'under_20_females': under_20_females,
-                'between_20_and_40_females': between_20_and_40_females,
-                'over_40_females': over_40_females,
-                'under_20_males': under_20_males,
-                'between_20_and_40_males': between_20_and_40_males,
-                'over_40_males': over_40_males,
-                'year': today.year,
+                    "under_20_Uncertain": under_20_Uncertain,
+                    "between_20_and_40_Uncertain": between_20_and_40_Uncertain,
+                    "over_40_Uncertain": over_40_Uncertain,
+                    "under_20_females": under_20_females,
+                    "between_20_and_40_females": between_20_and_40_females,
+                    "over_40_females": over_40_females,
+                    "under_20_males": under_20_males,
+                    "between_20_and_40_males": between_20_and_40_males,
+                    "over_40_males": over_40_males,
+                    "year": today.year,
                 }
                 print(context)
-                return render(request, 'data_analysis.html', {'form':form,'orders':context})
+                return render(
+                    request, "data_analysis.html", {"form": form, "orders": context}
+                )
             else:
                 form.add_error("filter_type", "Please enter a valid value.")
+
 
 class SalesAnalysis(View):
     def get(self, request):
         form = OrderFilterForm()
-        return render(request, "Manager.html",{'form':form})
-    def post(self,request):
+        return render(request, "Manager.html", {"form": form})
+
+    def post(self, request):
         pass
+
 
 @user_passes_test(lambda u: u.is_staff)
 def search_customer(request):
     customers = []
-    if request.method == 'GET':
-        phone_number = request.GET.get('phone_number', '')
+    if request.method == "GET":
+        phone_number = request.GET.get("phone_number", "")
         if phone_number:
             customers = Customer.objects.filter(phone_number=phone_number)
-    return render(request, 'staff/search_customer.html', {'customers': customers})      
+    return render(request, "search_customer.html", {"customers": customers})
