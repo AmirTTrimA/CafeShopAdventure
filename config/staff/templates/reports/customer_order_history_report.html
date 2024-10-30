@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Customer Order History{% endblock %}
+{% load static %}
+
+{% block content %}
+    <h2>Customer Order History</h2>
+
+    <form method="get" action="{% url 'customer_order_history_report' %}">
+        <label for="customer_id">Customer ID:</label>
+        <input type="text" id="customer_id" name="customer_id" required>
+        <button type="submit">View Orders</button>
+    </form>
+
+    {% if orders %}
+        <h3>Orders for Customer ID: {{ customer_id }}</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Order Date</th>
+                    <th>Status</th>
+                    <th>Total price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td>{{ order.order_date }}</td>
+                        <td>{{ order.status }}</td>
+                        <td>{{ order.total_price }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No orders found for this customer.</p>
+    {% endif %}
+{% endblock %}

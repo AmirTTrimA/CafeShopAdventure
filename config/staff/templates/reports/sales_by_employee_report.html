@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Sales by Employee{% endblock %}
+{% load static %}
+
+{% block content %}
+    <h2>Sales by Employee</h2>
+
+    <form method="get" action="{% url 'sales_by_employee_report' %}">
+        <button type="submit">Refresh</button>
+    </form>
+
+    {% if employee_sales %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee Name</th>
+                    <th>Total Sales</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in employee_sales %}
+                    <tr>
+                        <td>{{ sale.staff__first_name }} {{ sale.staff__last_name }}</td>
+                        <td>{{ sale.total_sales }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No sales data available for employees.</p>
+    {% endif %}
+{% endblock %}

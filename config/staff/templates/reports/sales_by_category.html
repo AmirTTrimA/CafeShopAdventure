@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Sales by Category{% endblock %}
+{% load static %}
+
+{% block content %}
+    <h2>Sales by Category</h2>
+
+    <form method="get" action="{% url 'sales_by_category' %}">
+        <button type="submit">Refresh</button>
+    </form>
+
+    {% if sales %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Category Name</th>
+                    <th>Total Sales</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in sales %}
+                    <tr>
+                        <td>{{ sale.item__category__name }}</td>
+                        <td>{{ sale.total_sales }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No sales data available for categories.</p>
+    {% endif %}
+{% endblock %}
