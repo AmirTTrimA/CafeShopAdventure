@@ -8,6 +8,9 @@ class MyView(View):
     def get(self, request):
         menu_items = MenuItem.objects.filter(is_available=True)  # Only get available items
         cat_items=Category.objects.all()
+        # Debugging prints
+        print(menu_items)  # Check if this returns expected items
+        print(cat_items)   # Check if this returns expected items
         context = {
             'cat_item':cat_items,'menu_items': menu_items
         }

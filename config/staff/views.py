@@ -332,6 +332,22 @@ class AddCategory(View):
                 {"massage": "Information saved successfully"},
             )
 
+# class EditCategory(View):
+#     def get(self, request, category_id):
+#         category = get_object_or_404(Category, id=category_id)
+#         form = CategoryForm(instance=category)  # بارگذاری فرم با داده‌های دسته‌بندی
+#         return render(request, "edit_category.html", {"form": form, "category": category})
+
+#     def post(self, request, category_id):
+#         category = get_object_or_404(Category, id=category_id)
+#         form = CategoryForm(request.POST, instance=category)  # بارگذاری فرم با داده‌های POST
+
+#         if form.is_valid():
+#             form.save()  # ذخیره تغییرات
+#             messages.success(request, "Category updated successfully!")
+#             return redirect("some_view_name")  # تغییر نام به نمای مناسب
+
+#         return render(request, "edit_category.html", {"form": form, "category": category})
 
 class RemoveCategory(View):
     def get(self, request):
