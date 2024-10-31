@@ -20,6 +20,7 @@ from .views import (
     StaffAccess,
     DataAnalysis,
     search_customer,
+    SalesAnalysis,
 )
 
 urlpatterns = [
@@ -38,20 +39,22 @@ urlpatterns = [
     path("checkout/", staff_checkout, name="staff_checkout"),
     path("data_analysis.html", DataAnalysis.as_view(), name="data_analysis"),
     path("order_list/<int:order_id>/", order_details, name="order_list"),
+    path("sale_analysis.html", SalesAnalysis.as_view(), name="sale_analysis"),
+
     path(
         "update_order/<int:order_id>/",
-        update_order_status,
+        views.update_order_status,
         name="update_order_status",
     ),
-    path("staff/order/<int:order_id>/add_item/", add_order_item, name="add_order_item"),
+    path("staff/order/<int:order_id>/add_item/", views.add_order_item, name="add_order_item"),
     path(
         "staff/order/item/<int:item_id>/update/",
-        update_order_item,
+        views.update_order_item,
         name="update_order_item",
     ),
     path(
         "staff/order/item/<int:item_id>/remove/",
-        remove_order_item,
+        views.remove_order_item,
         name="remove_order_item",
     ),
     path('search_customer/', search_customer, name='search_customer'),

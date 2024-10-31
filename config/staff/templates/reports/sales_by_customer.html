@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Sales by Customer{% endblock %}
+{% load static %}
+
+{% block content %}
+    <h2>Sales by Customer (Phone Number)</h2>
+
+    <form method="get" action="{% url 'sales_by_customer' %}">
+        <label for="phone_number">Customer Phone Number:</label>
+        <input type="text" id="phone_number" name="phone_number" placeholder="09123456789" required>
+        <button type="submit">Search</button>
+    </form>
+
+    {% if orders %}
+        <h3>Order History for Customer: {{ phone_number }}</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Order Date</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td>{{ order.order_date|date:"Y-m-d H:i" }}</td>
+                        <td>{{ order.total_price }}</td>
+                        <td>{{ order.status }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% elif phone_number %}
+        <p>No orders found for the entered phone number.</p>
+    {% endif %}
+{% endblock %}

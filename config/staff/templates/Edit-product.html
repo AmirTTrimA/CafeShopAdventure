@@ -1,28 +1,16 @@
 {% extends 'base.html' %}
-
 {% block title %}Edit Product{% endblock %}
+{% block h1 %}Edit Product{% endblock %}
+{% block h1staff %}Edit Product{% endblock %}
 {% block login %}logout{% endblock %}
 
 {% block content %}
 {% load static %}
 
-    <h1 class="st-h">Staff Panel</h1>
-    {% if user.is_authenticated %}
-        <h3 class="st-h" > Welcome {{user.first_name}} {{user.last_name}}!</h3>
-    {% endif %}
-    <div class="st-panel">
-        <li><a href="{% url 'checkout' %}">checkout</a></li>
-        <li><a href="{% url 'edit-product' %}">Edit product</a></li>
-        <li><a href="{% url 'add-product' %}">Add product</a></li>
-        <li><a href="{% url 'remove-p' %}">Remove product</a></li>
-        <li><a href="{% url 'filter' %}">filter-form</a></li>
-
-    </div>
         <!-- Add Product Section Start -->
         <section id="add-product">
             <div class="container">
                 <header class="section-header">
-                    <h3>Edit Product</h3>
                 </header>
                 <div class="row form">
                     <div class="col-md-12">
