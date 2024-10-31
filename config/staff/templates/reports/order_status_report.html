@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Order Status Report{% endblock %}
+{% load static %}
+
+{% block content %}
+    <h2>Order Status Report</h2>
+
+    <form method="get" action="{% url 'order_status_report' %}">
+        <label for="date">Select Date:</label>
+        <input type="date" id="date" name="date" value="{{ date }}">
+        <button type="submit">Generate Report</button>
+    </form>
+
+    {% if orders %}
+        <h3>Order Status for {{ date }}</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Total Orders</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>{{ order.status }}</td>
+                        <td>{{ order.total }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No orders found for the selected date.</p>
+    {% endif %}
+{% endblock %}

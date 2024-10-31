@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Sales by Time of Day{% endblock %}
+{% load static %}
+
+{% block content %}
+    <h2>Sales by Time of Day</h2>
+
+    <form method="get" action="{% url 'sales_by_time_of_day' %}">
+        <button type="submit">Refresh</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Time of Day</th>
+                <th>Total Sales</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Morning (Before 12 PM)</td>
+                <td>{{ morning_sales.total_sales|default:"0" }}</td>
+            </tr>
+            <tr>
+                <td>Afternoon (After 12 PM)</td>
+                <td>{{ afternoon_sales.total_sales|default:"0" }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% if not morning_sales.total_sales and not afternoon_sales.total_sales %}
+        <p>No sales data available for this time of day.</p>
+    {% endif %}
+{% endblock %}
