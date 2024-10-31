@@ -20,9 +20,11 @@ from .models import Order, OrderItem, OrderHistory, MenuItem, Customer
 DEFAULT_GUEST_CUSTOMER_PHONE = "09123456789"  # Default phone number for guest customer
 
 
-def add_to_cart(response, request, item_id, quantity):
+def add_to_cart(response, request, item_id):
     """Add a menu item to the cart."""
     menu_item = get_object_or_404(MenuItem, id=item_id)
+
+    quantity = int(request.GET.get('quantity'))
 
     cart = request.COOKIES.get("cart", "{}")
     cart = json.loads(cart)
@@ -44,9 +46,10 @@ def add_to_cart(response, request, item_id, quantity):
 
 def add_to_cart_view(request, item_id):
     if request.method == "GET":
-        quantity = int(request.GET.get("quantity", 1))  # Default to 1 if not specified
+        quantity = int(request.GET.get("quantity"))
+        print(f"Adding item {item_id} with quantity {quantity} to cart.")
         response = redirect("menu")
-        response = add_to_cart(response, request, item_id, quantity)
+        response = add_to_cart(response, request, item_id)
         return response
     return redirect("menu")
 
@@ -78,8 +81,20 @@ def cart_view(request):
     """
     cart = request.COOKIES.get("cart", "{}")
     cart = json.loads(cart)
-    print(f"cart: {cart}")
-    return render(request, "cart.html", {"cart": cart})
+
+    total_price = 0.0
+    for item_id, item in cart.items():
+        item_total = float(item["price"]) * item["quantity"]
+        item["total"] = item_total  # Add item total to each item
+        total_price += item_total
+
+    
+    context = {
+            'cart': cart,
+            'total_price': total_price,
+        }
+
+    return render(request, "cart.html", context)
 
 
 def submit_order(request):

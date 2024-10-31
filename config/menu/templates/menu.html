@@ -24,14 +24,19 @@
           <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
           <div>${{item.price}}</div>
           <h4><a href="{% url 'product' item.pk %}">{{item.name}}</a></h4>
-          <span class="quantity"><input type="text" value="1" /></span>
-          <a href="{% url 'add_to_cart' item.pk %}"><i class="fas fa-shopping-cart"></i> </a>
+          <span class="quantity"><input type="text" value="1" data-item-id="{{ item.pk }}"/></span>
+          <a href="#" onclick="addToCart({{ item.pk }}); return false;">
+            <i class="fas fa-shopping-cart"></i>
+          </a>
         </div>
       </div>
       {%endfor%}
     </div>
   </div>
 </section>
+
+<script src="{% static 'js/cart.js' %}"></script>
+
 <!-- Menu Section End-->
 
 {% endblock %}
