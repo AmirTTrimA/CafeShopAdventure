@@ -5,7 +5,8 @@
 {% block content %}
     <h2>Sales by Customer (Phone Number)</h2>
 
-    <form method="get" action="{% url 'sales_by_customer' %}">
+    <form method="post" action="{% url 'sales_by_customer' %}">
+    {% csrf_token %}
         <label for="phone_number">Customer Phone Number:</label>
         <input type="text" id="phone_number" name="phone_number" placeholder="09123456789" required>
         <button type="submit">Search</button>

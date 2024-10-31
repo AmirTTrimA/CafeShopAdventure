@@ -1,19 +1,26 @@
 {% extends 'base.html' %}
 
 {% block title %}Data Analysis{% endblock %}
-
+{% block h1 %}Data Analysis{% endblock %}
+{% block h1staff %}Data Analysis{% endblock %}
 {% block login %}logout{% endblock %}
+
 {% block content %}
 {% load static %}
-
-
-
-    <h1>Data Analysis</h1>
-    <form method="post" id="filter-form" >
-        {% csrf_token %}
-        {{ form.filter_type }}
-        <button type="submit">Filter</button>
-    </form>
+<section id="add-product">
+    <div class="container">
+        <div class="row form">
+            <div class="col-md-12">
+            <h4>Data Analysis</h4>
+            <form method="post" id="filter-form" >
+                {% csrf_token %}
+                {{ form.filter_type }}
+                <div class="button">
+                    <button type="submit">Filter</button>
+                </div>
+                
+            </form>
+            </div></div>
 
 {% if orders.year %}
 <table>
@@ -86,8 +93,8 @@
         </table>
 
 {% else %}
-<h2>Top Products</h2>
-    <table>
+<h4>Top Products</h4>
+    <table class="data-analy">
         <thead>
             <tr>
                 <th>Product Name</th>
@@ -105,5 +112,6 @@
     </table>
 {% endif %}
     <div>{{massage}}</div>
+</div></div>
 
 {% endblock %}

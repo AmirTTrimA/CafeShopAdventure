@@ -83,3 +83,13 @@ class DataAnalysisForm(forms.Form):
         # ("customer demographic data",'demographic data'),
     ]
     filter_type = forms.ChoiceField(choices=FILTER_CHOICES)
+
+
+class SaleAnalysisForm(forms.Form):
+    FILTER_CHOICES = [
+        ("total sales","total sales"),
+        ("daily sales",'daily sales'),
+        ("monthly sales","monthly sales"),
+        ("yearly sales","yearly sales")
+    ]
+    filter_type = forms.ChoiceField(choices=FILTER_CHOICES)

@@ -1,26 +1,30 @@
 {% extends 'base.html' %}
 
-{% block title %}Order Details{% endblock %}
-
+{% block title %}Filter Orders{% endblock %}
+{% block h1 %}Filter Orders{% endblock %}
+{% block h1staff %}Filter Orders{% endblock %}
 {% block login %}logout{% endblock %}
 
 {% block content %}
-<div class="st-panel">
-    <li><a href="{% url 'checkout' %}">Checkout</a></li>
-    <li><a href="{% url 'edit-product' %}">Edit Product</a></li>
-    <li><a href="{% url 'add-product' %}">Add Product</a></li>
-    <li><a href="{% url 'remove-p' %}">Remove Product</a></li>
-    <li><a href="{% url 'filter' %}">Filter Form</a></li>
-</div>
+{% load static %}
+<section id="filter-ord">
+    <div class="container">
+        <div class="row form">
+            <div class="col-md-12">
+            <h4>Filter Orders</h4>
+            <form method="post" id="filter-form">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="button">
+                <button type="submit">Filter</button>
+                </div>
+            </form>
+            </div>
+        </div>
 
-<h1>Filter Orders</h1>
-<form method="post" id="filter-form">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Filter</button>
-</form>
 
 {% if orders %}
+    {% for order in orders %}
     <h1 class="st-h">Order Details for Order #{{ order.id }}</h1>
     <div class="container">
         <div class="table-responsive-sm">
@@ -55,6 +59,7 @@
             </table>
         </div>
     </div>
+    {% endfor %}
 
     <!-- Add new item form -->
     <div class="container">
@@ -73,7 +78,7 @@
         </form>
     </div>
 {% else %}
-    <h2>No orders found.</h2>
+    <h4>No orders found.</h4>
 {% endif %}
 
 {% if messages %}
@@ -86,6 +91,9 @@
     <div class="alert alert-danger" role="alert">
         {{ form.non_field_errors }}
     </div>
+
 {% endif %}
+</div>
+</div>
 
 {% endblock %}

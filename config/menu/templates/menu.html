@@ -1,4 +1,6 @@
-{% extends 'base.html' %} {% block title %}Menu{% endblock %} {% block content%}
+{% extends 'base.html' %} 
+{% block title %}Menu{% endblock %} 
+{% block content%}
 {% block login %}login{% endblock %}
 {% load static %}
 
@@ -9,8 +11,9 @@
       <h3><a href="{% url 'menu' %}">delicious Food Menu</a></h3>
     </header>
     <div class="menu-cat">
+      <a href="{% url 'menu' %}">All</a>
       {%for cat in cat_item%}
-      <a href="">{{cat.name}}</a>
+      <a href="{% url 'menu_by_category' cat.id %}">{{cat.name}}</a>
       {%endfor%}
     </div>
 

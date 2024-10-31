@@ -17,12 +17,17 @@ urlpatterns = [
     path("checkout/", views.staff_checkout, name="staff_checkout"),
     path("data_analysis.html", views.DataAnalysis.as_view(), name="data_analysis"),
     path("order_list/<int:order_id>/", views.order_details, name="order_list"),
+    path("sale_analysis.html", views.SalesAnalysis.as_view(), name="sale_analysis"),
     path(
         "update_order/<int:order_id>/",
         views.update_order_status,
         name="update_order_status",
     ),
-    path("staff/order/<int:order_id>/add_item/", views.add_order_item, name="add_order_item"),
+    path(
+        "staff/order/<int:order_id>/add_item/",
+        views.add_order_item,
+        name="add_order_item",
+    ),
     path(
         "staff/order/item/<int:item_id>/update/",
         views.update_order_item,
@@ -33,12 +38,34 @@ urlpatterns = [
         views.remove_order_item,
         name="remove_order_item",
     ),
-    path('search_customer/', views.search_customer, name='search_customer'),
-    path('report/top-selling-items/', views.top_selling_items, name='top_selling_items'),
-    path('report/sales-by-category/', views.sales_by_category, name='sales_by_category'),
-    path('report/sales-by-customer/', views.sales_by_customer, name='sales_by_customer'),
-    path('report/sales-by-time-of-day/', views.sales_by_time_of_day, name='sales_by_time_of_day'),
-    path('report/order-status-report/', views.order_status_report, name='order_status_report'),
-    path('report/sales-by-employee/', views.sales_by_employee_report, name='sales_by_employee_report'),
-    path('report/customer-order-history/', views.customer_order_history_report, name='customer_order_history_report'),
+    path("search_customer/", views.search_customer, name="search_customer"),
+    path(
+        "report/top-selling-items/", views.top_selling_items, name="top_selling_items"
+    ),
+    path(
+        "report/sales-by-category/", views.sales_by_category, name="sales_by_category"
+    ),
+    path(
+        "report/sales-by-customer/", views.sales_by_customer, name="sales_by_customer"
+    ),
+    path(
+        "report/sales-by-time-of-day/",
+        views.sales_by_time_of_day,
+        name="sales_by_time_of_day",
+    ),
+    path(
+        "report/order-status-report/",
+        views.order_status_report,
+        name="order_status_report",
+    ),
+    path(
+        "report/sales-by-employee/",
+        views.sales_by_employee_report,
+        name="sales_by_employee_report",
+    ),
+    path(
+        "report/customer-order-history/",
+        views.customer_order_history_report,
+        name="customer_order_history_report",
+    ),
 ]
