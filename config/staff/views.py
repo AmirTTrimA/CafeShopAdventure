@@ -24,7 +24,7 @@ from .forms import StaffRegistrationForm
 # from collections import Counter
 # from django.db.models.functions import TruncHour, TruncDay
 
-
+@method_decorator(login_required, name="dispatch")
 class RegisterView(FormView):
     template_name = "login.html"
     form_class = StaffRegistrationForm
@@ -113,7 +113,7 @@ class StaffView(View):
         context = {}
         return context
 
-
+@method_decorator(login_required, name="dispatch")
 class OrderFilterView(View):
     template_name = "order_list.html"
 
@@ -194,7 +194,7 @@ class OrderFilterView(View):
 
             return render(request, self.template_name, {"form": form})
 
-
+@method_decorator(login_required, name="dispatch")
 class EditProduct(View):
     def get(self, request):
         items = MenuItem.objects.all()
@@ -233,7 +233,7 @@ class EditProduct(View):
                 {"items": items, "cats": cats, "massage": "product dose not exist"},
             )
 
-
+@method_decorator(login_required, name="dispatch")
 class Add_product(View):
     def get(self, request):
         cats = Category.objects.all()
@@ -270,7 +270,7 @@ class Add_product(View):
                 request, "add-product.html", {"cats": cats, "massage": "saved!!"}
             )
 
-
+@method_decorator(login_required, name="dispatch")
 class RemoveProduct(View):
     def get(self, request):
         cats = Category.objects.all()
@@ -308,7 +308,7 @@ class RemoveProduct(View):
                 },
             )
 
-
+@method_decorator(login_required, name="dispatch")
 class AddCategory(View):
     def get(self, request):
         return render(request, "Add-category.html")
@@ -332,7 +332,7 @@ class AddCategory(View):
                 {"massage": "Information saved successfully"},
             )
 
-
+@method_decorator(login_required, name="dispatch")
 class RemoveCategory(View):
     def get(self, request):
         return render(request, "remove-c.html")
@@ -356,13 +356,13 @@ class RemoveCategory(View):
                 {"massage": "There is no category with this title"},
             )
 
-
+@login_required
 def staff_checkout(request):
     orders = Order.objects.all()
     print(f"orders: {orders}")
     return render(request, "checkout.html", {"orders": orders})
 
-
+@login_required
 def update_order_status(request, order_id):
     if request.method == "POST":
         order = get_object_or_404(Order, id=order_id)
@@ -371,7 +371,7 @@ def update_order_status(request, order_id):
         order.save()
         return redirect("checkout")
 
-
+@login_required
 def order_details(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     order_items = order.order_items.all()
@@ -383,7 +383,7 @@ def order_details(request, order_id):
         {"order": order, "order_items": order_items, "products": products},
     )
 
-
+@login_required
 def add_order_item(request, order_id):
     if request.method == "POST":
         order = get_object_or_404(Order, id=order_id)
@@ -403,7 +403,7 @@ def add_order_item(request, order_id):
         order_item.save()
         return redirect("order_list", order_id=order.id)
 
-
+@login_required
 def update_order_item(request, item_id):
     if request.method == "POST":
         order_item = get_object_or_404(OrderItem, id=item_id)
@@ -417,24 +417,24 @@ def update_order_item(request, item_id):
 
         return redirect("order_list", order_id=order_item.order.id)
 
-
+@login_required
 def remove_order_item(request, item_id):
     if request.method == "POST":
         order_item = get_object_or_404(OrderItem, id=item_id)
         order_item.delete()
         return redirect("order_list", order_id=order_item.order.id)
 
-
+@method_decorator(login_required, name="dispatch")
 class ViewManager(View):
     def get(self, request):
         return render(request, "Manager.html")
 
-
+@method_decorator(login_required, name="dispatch")
 class StaffAccess(View):
     def get(self, request):
         return render(request, "staff-access.html")
 
-
+@method_decorator(login_required, name="dispatch")
 class DataAnalysis(View):
     def get(self, request):
         form = DataAnalysisForm()
@@ -583,7 +583,7 @@ class DataAnalysis(View):
             else:
                 form.add_error("filter_type", "Please enter a valid value.")
 
-
+@method_decorator(login_required, name="dispatch")
 class SalesAnalysis(View):
     def get(self, request):
         form = OrderFilterForm()
@@ -603,6 +603,7 @@ def search_customer(request):
     return render(request, "search_customer.html", {"customers": customers})
 
 # گزارش کالاهای پرفروش (فیلتر براساس تاریخ)
+@login_required
 def top_selling_items(request):
     start_date = request.GET.get('start_date', timezone.now() - timedelta(days=30))
     end_date = request.GET.get('end_date', timezone.now())
@@ -611,34 +612,40 @@ def top_selling_items(request):
     return render(request, 'reports/top_selling_items.html', {'top_items': top_items})
 
 # گزارش فروش براساس دسته‌بندی
+@login_required
 def sales_by_category(request):
     sales = OrderItem.objects.values('item__category__name').annotate(total_sales=Sum('quantity'))
     return render(request, 'reports/sales_by_category.html', {'sales': sales})
 
 # گزارش فروش براساس مشتری (شماره تلفن)
+@login_required
 def sales_by_customer(request):
     phone_number = request.GET.get('phone_number')
     customer_orders = Order.objects.filter(customer__phone_number=phone_number)
     return render(request, 'reports/sales_by_customer.html', {'orders': customer_orders})
 
 # گزارش فروش براساس زمان روز
+@login_required
 def sales_by_time_of_day(request):
     morning_sales = Order.objects.filter(order_date__hour__lt=12).aggregate(total_sales=Count('id'))
     afternoon_sales = Order.objects.filter(order_date__hour__gte=12).aggregate(total_sales=Count('id'))
     return render(request, 'reports/sales_by_time_of_day.html', {'morning_sales': morning_sales, 'afternoon_sales': afternoon_sales})
 
 # گزارش وضعیت سفارش‌ها در یک روز خاص
+@login_required
 def order_status_report(request):
     date = request.GET.get('date', timezone.now().date())
     orders = Order.objects.filter(order_date__date=date).values('status').annotate(total=Count('id'))
     return render(request, 'reports/order_status_report.html', {'orders': orders})
 
 # گزارش فروش براساس کارمند
+@login_required
 def sales_by_employee_report(request):
     employee_sales = Order.objects.values('staff__first_name', 'staff__last_name').annotate(total_sales=Count('id'))
     return render(request, 'reports/sales_by_employee_report.html', {'employee_sales': employee_sales})
 
 # گزارش تاریخچه سفارشات مشتری
+@login_required
 def customer_order_history_report(request):
     customer_id = request.GET.get('customer_id')
     orders = Order.objects.filter(customer_id=customer_id).order_by('-order_date')
