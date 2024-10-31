@@ -11,6 +11,7 @@ from django.contrib import messages
 from django.views.generic.edit import FormView
 from django.shortcuts import get_object_or_404
 from django.views import View
+from .models import Staff
 from django.urls import reverse_lazy
 from django.db.models import Sum, Count
 from django.utils import timezone
@@ -431,8 +432,7 @@ class ViewManager(View):
 class StaffAccess(FormView):
     template_name = "staff-access.html"
     form_class = StaffRegistrationForm
-    success_url = reverse_lazy("manager")
-
+    success_url = reverse_lazy("login")
     def form_valid(self, form):
         form.save()
         messages.success(self.request, "Staff registered successfully!")
@@ -441,6 +441,12 @@ class StaffAccess(FormView):
     def form_invalid(self, form):
         messages.error(self.request, "There was an error in the registration form.")
         return super().form_invalid(form)
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['staff_list'] = Staff.objects.all() 
+        return context
 
 @method_decorator(login_required, name="dispatch")
 class DataAnalysis(View):
