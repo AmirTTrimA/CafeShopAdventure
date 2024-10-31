@@ -600,4 +600,5 @@ def search_customer(request):
         phone_number = request.GET.get("phone_number", "")
         if phone_number:
             customers = Customer.objects.filter(phone_number=phone_number)
+            # order = Order.objects.filter(customer__phone_number=phone_number)
     return render(request, "search_customer.html", {"customers": customers})
