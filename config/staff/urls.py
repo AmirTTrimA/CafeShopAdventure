@@ -57,12 +57,5 @@ urlpatterns = [
         views.remove_order_item,
         name="remove_order_item",
     ),
-    path('search_customer/', views.search_customer, name='search_customer'),
-    path('report/top-selling-items/', views.top_selling_items, name='top_selling_items'),
-    path('report/sales-by-category/', views.sales_by_category, name='sales_by_category'),
-    path('report/sales-by-customer/', views.sales_by_customer, name='sales_by_customer'),
-    path('report/sales-by-time-of-day/', views.sales_by_time_of_day, name='sales_by_time_of_day'),
-    path('report/order-status-report/', views.order_status_report, name='order_status_report'),
-    path('report/sales-by-employee/', views.sales_by_employee_report, name='sales_by_employee_report'),
-    path('report/customer-order-history/', views.customer_order_history_report, name='customer_order_history_report'),
+    path('search_customer/', search_customer, name='search_customer'),
 ]

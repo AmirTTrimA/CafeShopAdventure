@@ -1,18 +1,16 @@
 {% extends 'base.html' %}
 
-{% block title %}Staff Order Management{% endblock %}
-
+{% block title %}Staff panel{% endblock %}
+{% block login %}login{% endblock %}
+{% block h1staff %}checkout{% endblock %}
 {% block content %}
-<h1 class="st-h">Staff Order Management</h1>
-<div class="st-panel">
-    <li><a href="{% url 'staff_checkout' %}">Order Management</a></li>
-</div>
+{% load static %}
 
 <!-- Staff Order Management Section Start -->
 <section id="staff-checkout">
     <div class="container">
         <header class="section-header">
-            <h3>Manage Orders</h3>
+            <h3>Staff Order Management</h3>
         </header>
         <div class="row">
             <div class="col-md-12">

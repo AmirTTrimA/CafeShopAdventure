@@ -40,17 +40,19 @@
                         <li class="menu-active"><a href="{% url 'home' %}">Home</a></li>
                         <li><a href="{% url 'menu' %}">Menu</a></li>
                         <li><a href="{% url 'cart' %}">Cart</a></li>
-                        <li><a href="{% url 'login' %}">{% block login %}Default Login{% endblock %}</a></li>
                         <li><a href="{% url 'about' %}">About</a></li>
                         <li><a href="{% url 'contact' %}">Contact</a></li>
                         <li><a href="{% url 'customer_checkout' %}">Order Status</a></li>
+                        <li><a class="log" href="{% url 'login' %}">{% block login %}Default Login{% endblock %}
+                        </a>/<a class="log" href="{% url 'logout' %}">Logout</a></li>
                     </ul>
                 </nav>
             </div>
+            
             <div class="search-container">
-                <form action="{% url 'search' %}">
-                  <input type="text" placeholder="Search.." name="search">
-                  <button type="submit"><i class="fa fa-search"></i></button>
+                <form method="GET" action="{% url 'search' %}">
+                    <input type="text" name="q" placeholder="Search..." />
+                    <button type="submit"><i class="fa fa-search"></i></button>
                 </form>
             </div>
         </header>
@@ -60,33 +62,33 @@
 <!--staff and manager Header Start -->       
 
 {% if user.is_superuser %}
-<h1 class="st-h">manager Panel</h1>
+<h1 class="st-h">{% block h1 %}{% endblock %}</h1>
+<h3 class="st-h" > Welcome {{user.first_name}} {{user.last_name}} to manager Panel!</h3>
 <div class="st-panel">
-        <li><a href="{% url 'staff-access' %}">staff-access</a></li>
+        <li><a href="{% url 'staff-access' %}">Staff Access</a></li>
         <li><a href="{% url 'checkout' %}">Checkout</a></li>
         <li ><a href="{% url 'add-product' %}">Add Product</a></li>
         <li><a href="{% url 'edit-product' %}">Edit Product</a></li>
         <li><a href="{% url 'add-category' %}">Add Category</a></li>
-        <li><a href="{% url 'data_analysis' %}">data-analisis</a></li>
-        <li><a href="{% url 'sale_analysis' %}">sale-analisis</a></li>
+        <li><a href="{% url 'data_analysis' %}">Data Analysis</a></li>
+<!--    <li><a href="{% url 'sale_analysis' %}">sale-analisis</a></li> -->
         <li><a href="{% url 'remove-p' %}">Remove product</a></li>
         <li><a href="{% url 'remove-c' %}">Remove Category</a></li>
-        <li><a href="{% url 'filter' %}">filter-order</a></li>
-        <li><a href="{% url 'logout' %}">logout</a></li>
+        <li><a href="{% url 'filter' %}">Filter Order</a></li>
     
 </div>
 
 {% else %}
 <!--staff Header Start --> 
 {% if user.is_authenticated %}
-    <h1 class="st-h">Staff Panel</h1>
-    <h3 class="st-h" > Welcome {{user.first_name}} {{user.last_name}}!</h3>
+    <h1 class="st-h">{% block h1staff %}{% endblock %}</h1>
+    <h3 class="st-h" > Welcome {{user.first_name}} {{user.last_name}} to Staff Panel!</h3>
 <div class="st-panel">
         <li><a href="{% url 'checkout' %}">checkout</a></li>
         <li><a href="{% url 'edit-product' %}">Edit product</a></li>
         <li><a href="{% url 'add-product' %}">Add product</a></li>
         <li><a href="{% url 'remove-p' %}">Remove product</a></li>
-        <li><a href="{% url 'filter' %}">filter-order</a></li>
+        <li><a href="{% url 'filter' %}">Filter Order</a></li>
 
 </div>
 {% endif %}
