@@ -68,4 +68,5 @@ urlpatterns = [
         views.customer_order_history_report,
         name="customer_order_history_report",
     ),
+    path('download-details/', views.download_details, name='download_details'),
 ]
