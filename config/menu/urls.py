@@ -1,5 +1,5 @@
 from django.urls import path
-from views import SearchView, CafeMenuView, ProductDetailView
+from .views import SearchView, CafeMenuView, ProductDetailView
 
 urlpatterns = [
     path("search/", SearchView.as_view() , name="search"),

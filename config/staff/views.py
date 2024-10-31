@@ -1,6 +1,7 @@
 """views.py"""
 
 from decimal import Decimal
+from datetime import timedelta, date
 from collections import defaultdict
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
@@ -8,19 +9,18 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.views.generic.edit import FormView
+from django.shortcuts import get_object_or_404
 from django.views import View
 from django.urls import reverse_lazy
 from django.db.models import Sum, Count
 from django.utils import timezone
+from django.db.models.functions import TruncDate, TruncMonth, TruncYear
+from django.contrib.auth.decorators import user_passes_test
 from order.models import Order, OrderItem
 from customer.models import Customer
 from menu.models import MenuItem, Category
-from .forms import OrderFilterForm,DataAnalysisForm,SaleAnalysisForm
+from .forms import OrderFilterForm, DataAnalysisForm, SaleAnalysisForm
 from .forms import StaffRegistrationForm
-from django.db.models import Sum
-from django.utils import timezone
-from django.db.models.functions import TruncDate,TruncMonth,TruncYear
-from datetime import timedelta,date
 
 
 class RegisterView(FormView):
@@ -214,9 +214,9 @@ class EditProduct(View):
             if price != "":
                 item.price = Decimal(price)
             item_cat = request.POST.get("Product cat")
-            if item_cat is not [""]:
+            if item_cat != [""]:
                 item.category = Category.objects.get(id=item_cat)
-            if request.POST.get("Product description") is not [""]:
+            if request.POST.get("Product description") != [""]:
                 item.description = request.POST.get("Product description")
             item.save()
             return render(
@@ -330,6 +330,7 @@ class AddCategory(View):
                 {"massage": "Information saved successfully"},
             )
 
+
 # class EditCategory(View):
 #     def get(self, request, category_id):
 #         category = get_object_or_404(Category, id=category_id)
@@ -346,6 +347,7 @@ class AddCategory(View):
 #             return redirect("some_view_name")  # تغییر نام به نمای مناسب
 
 #         return render(request, "edit_category.html", {"form": form, "category": category})
+
 
 class RemoveCategory(View):
     def get(self, request):
@@ -372,8 +374,8 @@ class RemoveCategory(View):
 
 
 def staff_checkout(request):
+    # When each satff change the status, they will be that order's staff
     orders = Order.objects.all()
-    print(f"orders: {orders}")
     return render(request, "checkout.html", {"orders": orders})
 
 
@@ -383,7 +385,7 @@ def update_order_status(request, order_id):
         new_status = request.POST.get("status")
         order.status = new_status
         order.save()
-        return redirect("checkout")
+        return redirect("staff_checkout")
 
 
 def order_details(request, order_id):
@@ -444,9 +446,19 @@ class ViewManager(View):
         return render(request, "Manager.html")
 
 
-class StaffAccess(View):
-    def get(self, request):
-        return render(request, "staff-access.html")
+class StaffAccess(FormView):
+    template_name = "staff-access.html"
+    form_class = StaffRegistrationForm
+    success_url = reverse_lazy("manager")
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, "Staff registered successfully!")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "There was an error in the registration form.")
+        return super().form_invalid(form)
 
 
 class DataAnalysis(View):
@@ -601,134 +613,171 @@ class DataAnalysis(View):
 class SalesAnalysis(View):
     def get(self, request):
         form = SaleAnalysisForm()
-        return render(request, "sale_analysis.html",{'form':form})
-    def post(self,request):
+        return render(request, "sale_analysis.html", {"form": form})
+
+    def post(self, request):
         now = timezone.now()
         form = SaleAnalysisForm(request.POST)
 
         if form.is_valid():
             filter_type = form.cleaned_data["filter_type"]
             if filter_type == "total sales":
-                sales_data = OrderItem.objects.filter(
-                order__status='Completed'
-                ).values(
-                    'item__name'
-                ).annotate(
-                    total_quantity=Sum('quantity'),
-                    total_cost=Sum('subtotal')
+                sales_data = (
+                    OrderItem.objects.filter(order__status="Completed")
+                    .values("item__name")
+                    .annotate(
+                        total_quantity=Sum("quantity"), total_cost=Sum("subtotal")
+                    )
                 )
 
-                total_sales_cost = OrderItem.objects.filter(order__status='Completed').aggregate(
-                    total_sales_cost=Sum('subtotal') or 0,
-                    total_sales_count=Sum('quantity')
+                total_sales_cost = OrderItem.objects.filter(
+                    order__status="Completed"
+                ).aggregate(
+                    total_sales_cost=Sum("subtotal") or 0,
+                    total_sales_count=Sum("quantity"),
                 )
 
                 context = {
-                    'sales_data': sales_data,
-                    'total_sales_cost': total_sales_cost,
+                    "sales_data": sales_data,
+                    "total_sales_cost": total_sales_cost,
                 }
-    
-                return render(request, 'sale_analysis.html', {'orders':context,"form":form})
-            
 
-            elif filter_type =="daily sales":
+                return render(
+                    request, "sale_analysis.html", {"orders": context, "form": form}
+                )
 
+            elif filter_type == "daily sales":
                 results = (
-                     Order.objects.filter(status='Completed')
-                     .annotate(date=TruncDate('created_at')) 
-                     .prefetch_related('order_items_set')  
-                     .values('date')
-                     .annotate(total_sales=Sum('order_items__subtotal'),
-                             total_items=Sum('order_items__quantity'))
+                    Order.objects.filter(status="Completed")
+                    .annotate(date=TruncDate("created_at"))
+                    .prefetch_related("order_items_set")
+                    .values("date")
+                    .annotate(
+                        total_sales=Sum("order_items__subtotal"),
+                        total_items=Sum("order_items__quantity"),
+                    )
                 )
 
-                
                 sales_data = (
-                    OrderItem.objects
-                    .filter(order__status='Completed')
-                    .annotate(date=TruncDate('created_at'))
-                    .values('item__name','date')  
-                    .annotate(total_quantity=Sum('quantity'), total_sales=Sum('subtotal'))
+                    OrderItem.objects.filter(order__status="Completed")
+                    .annotate(date=TruncDate("created_at"))
+                    .values("item__name", "date")
+                    .annotate(
+                        total_quantity=Sum("quantity"), total_sales=Sum("subtotal")
+                    )
                 )
 
-                product_sales_data = defaultdict(lambda: defaultdict(lambda: {'total_quantity': 0, 'total_sales': 0}))
+                product_sales_data = defaultdict(
+                    lambda: defaultdict(lambda: {"total_quantity": 0, "total_sales": 0})
+                )
 
                 for product_sales in sales_data:
-                    date = product_sales['date']
-                    product_name = product_sales['item__name']
-                    product_sales_data[date][product_name]['total_quantity'] += product_sales['total_quantity']
-                    product_sales_data[date][product_name]['total_sales'] += product_sales['total_sales']
+                    date = product_sales["date"]
+                    product_name = product_sales["item__name"]
+                    product_sales_data[date][product_name]["total_quantity"] += (
+                        product_sales["total_quantity"]
+                    )
+                    product_sales_data[date][product_name]["total_sales"] += (
+                        product_sales["total_sales"]
+                    )
 
-                
-                context={'daily_total_sales':results,'daily_product_sales':sales_data,'daily_sortbydate':product_sales_data}
-                return render(request,'sale_analysis.html',{'form':form,'orders':context})
-            
+                context = {
+                    "daily_total_sales": results,
+                    "daily_product_sales": sales_data,
+                    "daily_sortbydate": product_sales_data,
+                }
+                return render(
+                    request, "sale_analysis.html", {"form": form, "orders": context}
+                )
 
-            elif filter_type =="monthly sales":
+            elif filter_type == "monthly sales":
                 results = (
-                     Order.objects.filter(status='Completed')
-                     .annotate(date=TruncMonth('created_at')) 
-                     .prefetch_related('order_items_set')  
-                     .values('date')
-                     .annotate(total_sales=Sum('order_items__subtotal'),
-                             total_items=Sum('order_items__quantity'))
+                    Order.objects.filter(status="Completed")
+                    .annotate(date=TruncMonth("created_at"))
+                    .prefetch_related("order_items_set")
+                    .values("date")
+                    .annotate(
+                        total_sales=Sum("order_items__subtotal"),
+                        total_items=Sum("order_items__quantity"),
+                    )
                 )
 
-                
                 sales_data = (
-                    OrderItem.objects
-                    .filter(order__status='Completed')
-                    .annotate(date=TruncMonth('created_at'))
-                    .values('item__name','date')  
-                    .annotate(total_quantity=Sum('quantity'), total_sales=Sum('subtotal'))
+                    OrderItem.objects.filter(order__status="Completed")
+                    .annotate(date=TruncMonth("created_at"))
+                    .values("item__name", "date")
+                    .annotate(
+                        total_quantity=Sum("quantity"), total_sales=Sum("subtotal")
+                    )
                 )
 
-                product_sales_data = defaultdict(lambda: defaultdict(lambda: {'total_quantity': 0, 'total_sales': 0}))
+                product_sales_data = defaultdict(
+                    lambda: defaultdict(lambda: {"total_quantity": 0, "total_sales": 0})
+                )
 
                 for product_sales in sales_data:
-                    date = product_sales['date']
-                    product_name = product_sales['item__name']
-                    product_sales_data[date][product_name]['total_quantity'] += product_sales['total_quantity']
-                    product_sales_data[date][product_name]['total_sales'] += product_sales['total_sales']
+                    date = product_sales["date"]
+                    product_name = product_sales["item__name"]
+                    product_sales_data[date][product_name]["total_quantity"] += (
+                        product_sales["total_quantity"]
+                    )
+                    product_sales_data[date][product_name]["total_sales"] += (
+                        product_sales["total_sales"]
+                    )
 
-                
-                context={'daily_total_sales':results,'daily_product_sales':sales_data,'daily_sortbydate':product_sales_data}
-                return render(request,'sale_analysis.html',{'form':form,'orders':context})
+                context = {
+                    "daily_total_sales": results,
+                    "daily_product_sales": sales_data,
+                    "daily_sortbydate": product_sales_data,
+                }
+                return render(
+                    request, "sale_analysis.html", {"form": form, "orders": context}
+                )
             elif filter_type == "yearly sales":
                 results = (
-                     Order.objects.filter(status='Completed')
-                     .annotate(date=TruncYear('created_at')) 
-                     .prefetch_related('order_items_set')  
-                     .values('date')
-                     .annotate(total_sales=Sum('order_items__subtotal'),
-                             total_items=Sum('order_items__quantity'))
+                    Order.objects.filter(status="Completed")
+                    .annotate(date=TruncYear("created_at"))
+                    .prefetch_related("order_items_set")
+                    .values("date")
+                    .annotate(
+                        total_sales=Sum("order_items__subtotal"),
+                        total_items=Sum("order_items__quantity"),
+                    )
                 )
 
-                
                 sales_data = (
-                    OrderItem.objects
-                    .filter(order__status='Completed')
-                    .annotate(date=TruncYear('created_at'))
-                    .values('item__name','date')  
-                    .annotate(total_quantity=Sum('quantity'), total_sales=Sum('subtotal'))
+                    OrderItem.objects.filter(order__status="Completed")
+                    .annotate(date=TruncYear("created_at"))
+                    .values("item__name", "date")
+                    .annotate(
+                        total_quantity=Sum("quantity"), total_sales=Sum("subtotal")
+                    )
                 )
 
-                product_sales_data = defaultdict(lambda: defaultdict(lambda: {'total_quantity': 0, 'total_sales': 0}))
+                product_sales_data = defaultdict(
+                    lambda: defaultdict(lambda: {"total_quantity": 0, "total_sales": 0})
+                )
 
                 for product_sales in sales_data:
-                    date = product_sales['date']
-                    product_name = product_sales['item__name']
-                    product_sales_data[date][product_name]['total_quantity'] += product_sales['total_quantity']
-                    product_sales_data[date][product_name]['total_sales'] += product_sales['total_sales']
+                    date = product_sales["date"]
+                    product_name = product_sales["item__name"]
+                    product_sales_data[date][product_name]["total_quantity"] += (
+                        product_sales["total_quantity"]
+                    )
+                    product_sales_data[date][product_name]["total_sales"] += (
+                        product_sales["total_sales"]
+                    )
 
-                
-                context={'daily_total_sales':results,'daily_product_sales':sales_data,'daily_sortbydate':product_sales_data}
-                return render(request,'sale_analysis.html',{'form':form,'orders':context})
+                context = {
+                    "daily_total_sales": results,
+                    "daily_product_sales": sales_data,
+                    "daily_sortbydate": product_sales_data,
+                }
+                return render(
+                    request, "sale_analysis.html", {"form": form, "orders": context}
+                )
             else:
                 form.add_error("filter_type", "Please enter a valid value.")
-
-
-
 
 
 @user_passes_test(lambda u: u.is_staff)
@@ -742,44 +791,83 @@ def search_customer(request):
     return render(request, "search_customer.html", {"customers": customers})
 
 
-# گزارش کالاهای پرفروش (فیلتر براساس تاریخ)
+@login_required
 def top_selling_items(request):
-    start_date = request.GET.get('start_date', timezone.now() - timedelta(days=30))
-    end_date = request.GET.get('end_date', timezone.now())
-    orders = OrderItem.objects.filter(order__order_date__range=[start_date, end_date])
-    top_items = orders.values('item__name').annotate(total_sales=Sum('quantity')).order_by('-total_sales')[:10]
-    return render(request, 'reports/top_selling_items.html', {'top_items': top_items})
+    if request.method == "POST":
+        start_date = request.POST.get("start_date", timezone.now() - timedelta(days=30))
+        end_date = request.POST.get("end_date", timezone.now())
+        orders = OrderItem.objects.filter(
+            order__order_date__range=[start_date, end_date]
+        )
+        top_items = (
+            orders.values("item__name")
+            .annotate(total_sales=Sum("quantity"))
+            .order_by("-total_sales")[:10]
+        )
+        print(top_items)
+        return render(
+            request, "reports/top_selling_items.html", {"top_items": top_items}
+        )
+    elif request.method == "GET":
+        return render(request, "reports/top_selling_items.html")
 
-# گزارش فروش براساس دسته‌بندی
+
 def sales_by_category(request):
-    sales = OrderItem.objects.values('item__category__name').annotate(total_sales=Sum('quantity'))
-    return render(request, 'reports/sales_by_category.html', {'sales': sales})
+    sales = OrderItem.objects.values("item__category__name").annotate(
+        total_sales=Sum("quantity")
+    )
+    return render(request, "reports/sales_by_category.html", {"sales": sales})
 
-# گزارش فروش براساس مشتری (شماره تلفن)
+
 def sales_by_customer(request):
-    phone_number = request.GET.get('phone_number')
-    customer_orders = Order.objects.filter(customer__phone_number=phone_number)
-    return render(request, 'reports/sales_by_customer.html', {'orders': customer_orders})
+    if request.method == "POST":
+        phone_number = request.POST.get("phone_number")
+        customer_orders = Order.objects.filter(customer__phone_number=phone_number)
+        return render(
+            request, "reports/sales_by_customer.html", {"orders": customer_orders}
+        )
+    elif request.method == "GET":
+        return render(request, "reports/sales_by_customer.html")
 
-# گزارش فروش براساس زمان روز
+
 def sales_by_time_of_day(request):
-    morning_sales = Order.objects.filter(order_date__hour__lt=12).aggregate(total_sales=Count('id'))
-    afternoon_sales = Order.objects.filter(order_date__hour__gte=12).aggregate(total_sales=Count('id'))
-    return render(request, 'reports/sales_by_time_of_day.html', {'morning_sales': morning_sales, 'afternoon_sales': afternoon_sales})
+    morning_sales = Order.objects.filter(order_date__hour__lt=12).aggregate(
+        total_sales=Count("id")
+    )
+    afternoon_sales = Order.objects.filter(order_date__hour__gte=12).aggregate(
+        total_sales=Count("id")
+    )
+    return render(
+        request,
+        "reports/sales_by_time_of_day.html",
+        {"morning_sales": morning_sales, "afternoon_sales": afternoon_sales},
+    )
 
-# گزارش وضعیت سفارش‌ها در یک روز خاص
+
 def order_status_report(request):
-    date = request.GET.get('date', timezone.now().date())
-    orders = Order.objects.filter(order_date__date=date).values('status').annotate(total=Count('id'))
-    return render(request, 'reports/order_status_report.html', {'orders': orders})
+    date = request.GET.get("date", timezone.now().date())
+    orders = (
+        Order.objects.filter(order_date__date=date)
+        .values("status")
+        .annotate(total=Count("id"))
+    )
+    return render(request, "reports/order_status_report.html", {"orders": orders})
 
-# گزارش فروش براساس کارمند
+
 def sales_by_employee_report(request):
-    employee_sales = Order.objects.values('staff__first_name', 'staff__last_name').annotate(total_sales=Count('id'))
-    return render(request, 'reports/sales_by_employee_report.html', {'employee_sales': employee_sales})
+    employee_sales = Order.objects.values(
+        "staff__first_name", "staff__last_name"
+    ).annotate(total_sales=Count("id"))
+    return render(
+        request,
+        "reports/sales_by_employee_report.html",
+        {"employee_sales": employee_sales},
+    )
 
-# گزارش تاریخچه سفارشات مشتری
+
 def customer_order_history_report(request):
-    customer_id = request.GET.get('customer_id')
-    orders = Order.objects.filter(customer_id=customer_id).order_by('-order_date')
-    return render(request, 'reports/customer_order_history_report.html', {'orders': orders})
+    customer_id = request.GET.get("customer_id")
+    orders = Order.objects.filter(customer_id=customer_id).order_by("-order_date")
+    return render(
+        request, "reports/customer_order_history_report.html", {"orders": orders}
+    )

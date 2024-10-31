@@ -24,6 +24,7 @@
 
 
 {% if orders %}
+    {% for order in orders %}
     <h1 class="st-h">Order Details for Order #{{ order.id }}</h1>
     <div class="container">
         <div class="table-responsive-sm">
@@ -58,6 +59,7 @@
             </table>
         </div>
     </div>
+    {% endfor %}
 
     <!-- Add new item form -->
     <div class="container">
