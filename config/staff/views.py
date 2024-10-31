@@ -10,7 +10,9 @@ from django.contrib import messages
 from django.views.generic.edit import FormView
 from django.views import View
 from django.urls import reverse_lazy
-from order.models import Order,OrderItem
+from django.db.models import Sum, Count
+from django.utils import timezone
+from order.models import Order, OrderItem
 from customer.models import Customer
 from menu.models import MenuItem, Category
 from .forms import OrderFilterForm,DataAnalysisForm,SaleAnalysisForm
@@ -723,6 +725,44 @@ def search_customer(request):
     return render(request, "search_customer.html", {"customers": customers})
 
 
+# گزارش کالاهای پرفروش (فیلتر براساس تاریخ)
+def top_selling_items(request):
+    start_date = request.GET.get('start_date', timezone.now() - timedelta(days=30))
+    end_date = request.GET.get('end_date', timezone.now())
+    orders = OrderItem.objects.filter(order__order_date__range=[start_date, end_date])
+    top_items = orders.values('item__name').annotate(total_sales=Sum('quantity')).order_by('-total_sales')[:10]
+    return render(request, 'reports/top_selling_items.html', {'top_items': top_items})
 
+# گزارش فروش براساس دسته‌بندی
+def sales_by_category(request):
+    sales = OrderItem.objects.values('item__category__name').annotate(total_sales=Sum('quantity'))
+    return render(request, 'reports/sales_by_category.html', {'sales': sales})
 
+# گزارش فروش براساس مشتری (شماره تلفن)
+def sales_by_customer(request):
+    phone_number = request.GET.get('phone_number')
+    customer_orders = Order.objects.filter(customer__phone_number=phone_number)
+    return render(request, 'reports/sales_by_customer.html', {'orders': customer_orders})
 
+# گزارش فروش براساس زمان روز
+def sales_by_time_of_day(request):
+    morning_sales = Order.objects.filter(order_date__hour__lt=12).aggregate(total_sales=Count('id'))
+    afternoon_sales = Order.objects.filter(order_date__hour__gte=12).aggregate(total_sales=Count('id'))
+    return render(request, 'reports/sales_by_time_of_day.html', {'morning_sales': morning_sales, 'afternoon_sales': afternoon_sales})
+
+# گزارش وضعیت سفارش‌ها در یک روز خاص
+def order_status_report(request):
+    date = request.GET.get('date', timezone.now().date())
+    orders = Order.objects.filter(order_date__date=date).values('status').annotate(total=Count('id'))
+    return render(request, 'reports/order_status_report.html', {'orders': orders})
+
+# گزارش فروش براساس کارمند
+def sales_by_employee_report(request):
+    employee_sales = Order.objects.values('staff__first_name', 'staff__last_name').annotate(total_sales=Count('id'))
+    return render(request, 'reports/sales_by_employee_report.html', {'employee_sales': employee_sales})
+
+# گزارش تاریخچه سفارشات مشتری
+def customer_order_history_report(request):
+    customer_id = request.GET.get('customer_id')
+    orders = Order.objects.filter(customer_id=customer_id).order_by('-order_date')
+    return render(request, 'reports/customer_order_history_report.html', {'orders': orders})
