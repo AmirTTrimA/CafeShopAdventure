@@ -10,6 +10,7 @@ from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.views.generic.edit import FormView
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
 from django.views import View
 from .models import Staff
 from django.urls import reverse_lazy
@@ -17,6 +18,7 @@ from django.db.models import Sum, Count
 from django.utils import timezone
 from django.db.models.functions import TruncDate, TruncMonth, TruncYear
 from django.contrib.auth.decorators import user_passes_test
+from openpyxl import Workbook
 from order.models import Order, OrderItem
 from customer.models import Customer
 from menu.models import MenuItem, Category
@@ -865,3 +867,42 @@ def customer_order_history_report(request):
     return render(
         request, "reports/customer_order_history_report.html", {"orders": orders}
     )
+
+
+def download_details(request):
+    response = HttpResponse(
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+    response["Content-Disposition"] = 'attachment; filename="orders_data.xlsx"'
+
+    workbook = Workbook()
+
+    orders_sheet = workbook.active
+    orders_sheet.title = "Orders"
+    orders_sheet.append(
+        ["Id", "Status", "Total Price", "Customer Phone Number", "Order Date", "Table Number"]
+    )
+
+    orders = Order.objects.all()
+    for order in orders:
+        # Ensure order_date is naive by replacing tzinfo
+        order_date_naive = (
+            order.order_date.replace(tzinfo=None) if order.order_date else None
+        )
+
+        phone_number = order.customer.phone_number if order.customer else ''
+
+        orders_sheet.append(
+            [
+                order.id,
+                order.status,
+                order.total_price,
+                phone_number,
+                order_date_naive,  # Add the naive datetime
+                order.table_number,
+            ]
+        )
+
+    # Save the workbook to the response
+    workbook.save(response)
+    return response
