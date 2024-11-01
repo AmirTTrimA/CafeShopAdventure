@@ -12,10 +12,11 @@ from django.http import HttpResponse
 from django.views import View
 from .models import Staff
 from django.urls import reverse_lazy
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, F
 from django.utils import timezone
 from django.db.models.functions import TruncDate, TruncMonth, TruncYear
 from django.contrib.auth.decorators import user_passes_test
+
 # from openpyxl import Workbook
 from order.models import Order, OrderItem
 from customer.models import Customer
@@ -24,8 +25,7 @@ from .forms import OrderFilterForm, DataAnalysisForm, SaleAnalysisForm
 from .forms import StaffRegistrationForm
 
 
-class ReportViwe(View):
-
+class ReportView(View):
     def top_products():
         now = timezone.now()
         last_month_start = now - timedelta(days=30)
@@ -33,14 +33,15 @@ class ReportViwe(View):
         # # end_of_month = (start_of_month + timezone.timedelta(days=31)).replace(day=1)
 
         top_products = (
-        OrderItem.objects.filter(created_at__gte=last_month_start)
-        .values("item__name")
-        .annotate(total_orders=Sum("quantity"))
-        .order_by("-total_orders")[:5]
+            OrderItem.objects.filter(created_at__gte=last_month_start)
+            .values("item__name", "item__price")
+            .annotate(total_orders=Sum("quantity"))
+            .annotate(total_price=Sum("quantity") * F("item__price"))
+            .order_by("-total_orders")[:5]
         )
 
         return top_products
-    
+
     def peak_business_hour():
         now = timezone.now()
         last_month_start = now - timedelta(days=30)
@@ -64,11 +65,11 @@ class ReportViwe(View):
 
         for day, timestamps in order_times.items():
             most_frequent_hour = max(
-            timestamps.items(), key=lambda x: x[1], default=(None, 0)
+                timestamps.items(), key=lambda x: x[1], default=(None, 0)
             )
             most_frequent_per_day[day] = {
-            "hour": most_frequent_hour[0],
-            "count": most_frequent_hour[1],
+                "hour": most_frequent_hour[0],
+                "count": most_frequent_hour[1],
             }
 
         # Aggregate for overall most frequent hour
@@ -77,67 +78,66 @@ class ReportViwe(View):
 
         # Calculate the overall most frequent hour in the last month
         overall_most_frequent_hour = max(
-        overall_count.items(), key=lambda x: x[1], default=(None, 0)
+            overall_count.items(), key=lambda x: x[1], default=(None, 0)
         )
 
         orders = {
             "most_frequent_per_day": most_frequent_per_day,
             "overall_most_frequent_hour": {
-            "hour": overall_most_frequent_hour[0],
-            "total_orders": overall_most_frequent_hour[1],
-            "total_orders_month": total_orders,
+                "hour": overall_most_frequent_hour[0],
+                "total_orders": overall_most_frequent_hour[1],
+                "total_orders_month": total_orders,
             },
         }
         return orders
-    
+
     def customer_demographic_data():
         today = date.today()
         under_20_females = Customer.objects.filter(
-        gender="female",
-        date_of_birth__gte=today.replace(year=today.year - 20),
+            gender="female",
+            date_of_birth__gte=today.replace(year=today.year - 20),
         ).count()
 
         between_20_and_40_females = Customer.objects.filter(
-        gender="female",
-        date_of_birth__lt=today.replace(year=today.year - 20),
-        date_of_birth__gte=today.replace(year=today.year - 40),
+            gender="female",
+            date_of_birth__lt=today.replace(year=today.year - 20),
+            date_of_birth__gte=today.replace(year=today.year - 40),
         ).count()
 
         over_40_females = Customer.objects.filter(
-        gender="female",
-        date_of_birth__lt=today.replace(year=today.year - 40),
+            gender="female",
+            date_of_birth__lt=today.replace(year=today.year - 40),
         ).count()
 
         under_20_Uncertain = Customer.objects.filter(
-        gender="Uncertain",
-        date_of_birth__gte=today.replace(year=today.year - 20),
+            gender="Uncertain",
+            date_of_birth__gte=today.replace(year=today.year - 20),
         ).count()
 
         between_20_and_40_Uncertain = Customer.objects.filter(
-        gender="Uncertain",
-        date_of_birth__lt=today.replace(year=today.year - 20),
-        date_of_birth__gte=today.replace(year=today.year - 40),
+            gender="Uncertain",
+            date_of_birth__lt=today.replace(year=today.year - 20),
+            date_of_birth__gte=today.replace(year=today.year - 40),
         ).count()
 
         over_40_Uncertain = Customer.objects.filter(
-        gender="Uncertain",
-        date_of_birth__lt=today.replace(year=today.year - 40),
+            gender="Uncertain",
+            date_of_birth__lt=today.replace(year=today.year - 40),
         ).count()
 
         under_20_males = Customer.objects.filter(
-        gender="man", date_of_birth__gte=today.replace(year=today.year - 20)
+            gender="man", date_of_birth__gte=today.replace(year=today.year - 20)
         ).count()
 
         between_20_and_40_males = Customer.objects.filter(
-        gender="man",
-        date_of_birth__lt=today.replace(year=today.year - 20),
-        date_of_birth__gte=today.replace(year=today.year - 40),
+            gender="man",
+            date_of_birth__lt=today.replace(year=today.year - 20),
+            date_of_birth__gte=today.replace(year=today.year - 40),
         ).count()
 
         over_40_males = Customer.objects.filter(
-        gender="man", date_of_birth__lt=today.replace(year=today.year - 40)
+            gender="man", date_of_birth__lt=today.replace(year=today.year - 40)
         ).count()
-
 
         context = {
             "under_20_Uncertain": under_20_Uncertain,
@@ -150,50 +150,46 @@ class ReportViwe(View):
             "between_20_and_40_males": between_20_and_40_males,
             "over_40_males": over_40_males,
             "year": today.year,
-                }
+        }
         return context
-    
+
     def total_sales():
         sales_data = (
-        OrderItem.objects.filter(order__status="Completed")
-        .values("item__name")
-        .annotate(
-        total_quantity=Sum("quantity"), total_cost=Sum("subtotal")
-            )
+            OrderItem.objects.filter(order__status="Completed")
+            .values("item__name")
+            .annotate(total_quantity=Sum("quantity"), total_cost=Sum("subtotal"))
         )
 
         total_sales_cost = OrderItem.objects.filter(
-        order__status="Completed"
+            order__status="Completed"
         ).aggregate(
-        total_sales_cost=Sum("subtotal") or 0,
-        total_sales_count=Sum("quantity"),
+            total_sales_cost=Sum("subtotal") or 0,
+            total_sales_count=Sum("quantity"),
         )
 
         context = {
-        "sales_data": sales_data,
-        "total_sales_cost": total_sales_cost,
+            "sales_data": sales_data,
+            "total_sales_cost": total_sales_cost,
         }
         return context
-    
+
     def daily_sales():
         results = (
-        Order.objects.filter(status="Completed")
-        .annotate(date=TruncDate("created_at"))
-        .prefetch_related("order_items_set")
-        .values("date")
-        .annotate(
-        total_sales=Sum("order_items__subtotal"),
-        total_items=Sum("order_items__quantity"),
+            Order.objects.filter(status="Completed")
+            .annotate(date=TruncDate("created_at"))
+            .prefetch_related("order_items_set")
+            .values("date")
+            .annotate(
+                total_sales=Sum("order_items__subtotal"),
+                total_items=Sum("order_items__quantity"),
             )
         )
 
         sales_data = (
-        OrderItem.objects.filter(order__status="Completed")
-        .annotate(date=TruncDate("created_at"))
-        .values("item__name", "date")
-        .annotate(
-        total_quantity=Sum("quantity"), total_sales=Sum("subtotal")
-            )
+            OrderItem.objects.filter(order__status="Completed")
+            .annotate(date=TruncDate("created_at"))
+            .values("item__name", "date")
+            .annotate(total_quantity=Sum("quantity"), total_sales=Sum("subtotal"))
         )
 
         product_sales_data = defaultdict(
@@ -203,21 +199,21 @@ class ReportViwe(View):
         for product_sales in sales_data:
             date = product_sales["date"]
             product_name = product_sales["item__name"]
-            product_sales_data[date][product_name]["total_quantity"] += (
-            product_sales["total_quantity"]
-            )
-            product_sales_data[date][product_name]["total_sales"] += (
-                product_sales["total_sales"]
-            )
+            product_sales_data[date][product_name]["total_quantity"] += product_sales[
+                "total_quantity"
+            ]
+            product_sales_data[date][product_name]["total_sales"] += product_sales[
+                "total_sales"
+            ]
 
         context = {
             "daily_total_sales": results,
             "daily_product_sales": sales_data,
             "daily_sortbydate": product_sales_data,
-            }
-        
+        }
+
         return context
-    
+
     def monthly_sales():
         results = (
             Order.objects.filter(status="Completed")
@@ -225,8 +221,8 @@ class ReportViwe(View):
             .prefetch_related("order_items_set")
             .values("date")
             .annotate(
-            total_sales=Sum("order_items__subtotal"),
-            total_items=Sum("order_items__quantity"),
+                total_sales=Sum("order_items__subtotal"),
+                total_items=Sum("order_items__quantity"),
             )
         )
 
@@ -234,33 +230,31 @@ class ReportViwe(View):
             OrderItem.objects.filter(order__status="Completed")
             .annotate(date=TruncMonth("created_at"))
             .values("item__name", "date")
-            .annotate(
-            total_quantity=Sum("quantity"), total_sales=Sum("subtotal")
-                )
-            )
+            .annotate(total_quantity=Sum("quantity"), total_sales=Sum("subtotal"))
+        )
 
         product_sales_data = defaultdict(
             lambda: defaultdict(lambda: {"total_quantity": 0, "total_sales": 0})
-            )
+        )
 
         for product_sales in sales_data:
             date = product_sales["date"]
             product_name = product_sales["item__name"]
-            product_sales_data[date][product_name]["total_quantity"] += (
-            product_sales["total_quantity"]
-            )
-            product_sales_data[date][product_name]["total_sales"] += (
-                product_sales["total_sales"]
-            )
+            product_sales_data[date][product_name]["total_quantity"] += product_sales[
+                "total_quantity"
+            ]
+            product_sales_data[date][product_name]["total_sales"] += product_sales[
+                "total_sales"
+            ]
 
         context = {
             "daily_total_sales": results,
             "daily_product_sales": sales_data,
             "daily_sortbydate": product_sales_data,
-            }
-        
+        }
+
         return context
-    
+
     def yearly_sales():
         results = (
             Order.objects.filter(status="Completed")
@@ -268,38 +262,54 @@ class ReportViwe(View):
             .prefetch_related("order_items_set")
             .values("date")
             .annotate(
-            total_sales=Sum("order_items__subtotal"),
-            total_items=Sum("order_items__quantity"),
-                )
+                total_sales=Sum("order_items__subtotal"),
+                total_items=Sum("order_items__quantity"),
             )
+        )
 
         sales_data = (
-        OrderItem.objects.filter(order__status="Completed")
-        .annotate(date=TruncYear("created_at"))
-        .values("item__name", "date")
-        .annotate(
-        total_quantity=Sum("quantity"), total_sales=Sum("subtotal")
-            )
+            OrderItem.objects.filter(order__status="Completed")
+            .annotate(date=TruncYear("created_at"))
+            .values("item__name", "date")
+            .annotate(total_quantity=Sum("quantity"), total_sales=Sum("subtotal"))
         )
 
         product_sales_data = defaultdict(
             lambda: defaultdict(lambda: {"total_quantity": 0, "total_sales": 0})
-            )
+        )
 
         for product_sales in sales_data:
             date = product_sales["date"]
             product_name = product_sales["item__name"]
-            product_sales_data[date][product_name]["total_quantity"] += (
-            product_sales["total_quantity"]
-            )
-            product_sales_data[date][product_name]["total_sales"] += (
-            product_sales["total_sales"]
-            )
+            product_sales_data[date][product_name]["total_quantity"] += product_sales[
+                "total_quantity"
+            ]
+            product_sales_data[date][product_name]["total_sales"] += product_sales[
+                "total_sales"
+            ]
 
         context = {
-        "daily_total_sales": results,
-        "daily_product_sales": sales_data,
-        "daily_sortbydate": product_sales_data,
-            }
-        
+            "daily_total_sales": results,
+            "daily_product_sales": sales_data,
+            "daily_sortbydate": product_sales_data,
+        }
+
         return context
+
+    def customer_analytics():
+        now = timezone.now()
+        last_month_start = now - timedelta(days=30)
+
+        # Get the top 5 customers by number of orders and total spent
+        top_customers = (
+            Order.objects.filter(order_date__gte=last_month_start)
+            .values("customer__phone_number")
+            .annotate(number_of_orders=Count("id"), total_spent=Sum("total_price"))
+            .order_by( "-total_spent", "-number_of_orders")[:5]
+        )
+
+        for customer in top_customers:
+            customer_obj = Customer.objects.get(phone_number=customer['customer__phone_number'])
+            customer['points'] = customer_obj.points
+
+        return top_customers

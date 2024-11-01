@@ -22,13 +22,14 @@ from customer.models import Customer
 from menu.models import MenuItem, Category
 from .forms import OrderFilterForm, DataAnalysisForm, SaleAnalysisForm
 from .forms import StaffRegistrationForm
-from .report import ReportViwe
+from .report import ReportView
 from django.db.models import Sum
 from django.utils import timezone
-from django.db.models.functions import TruncDate,TruncMonth,TruncYear
-from datetime import timedelta,date
+from django.db.models.functions import TruncDate, TruncMonth, TruncYear
+from datetime import timedelta, date
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import get_object_or_404
+
 
 @method_decorator(login_required, name="dispatch")
 class RegisterView(FormView):
@@ -119,6 +120,7 @@ class StaffView(View):
         context = {}
         return context
 
+
 @method_decorator(login_required, name="dispatch")
 class OrderFilterView(View):
     template_name = "order_list.html"
@@ -200,6 +202,7 @@ class OrderFilterView(View):
 
             return render(request, self.template_name, {"form": form})
 
+
 @method_decorator(login_required, name="dispatch")
 class EditProduct(View):
     def get(self, request):
@@ -239,6 +242,7 @@ class EditProduct(View):
                 {"items": items, "cats": cats, "massage": "product dose not exist"},
             )
 
+
 @method_decorator(login_required, name="dispatch")
 class Add_product(View):
     def get(self, request):
@@ -275,6 +279,7 @@ class Add_product(View):
             return render(
                 request, "add-product.html", {"cats": cats, "massage": "saved!!"}
             )
+
 
 @method_decorator(login_required, name="dispatch")
 class RemoveProduct(View):
@@ -314,6 +319,7 @@ class RemoveProduct(View):
                 },
             )
 
+
 @method_decorator(login_required, name="dispatch")
 class AddCategory(View):
     def get(self, request):
@@ -337,6 +343,7 @@ class AddCategory(View):
                 "Add-category.html",
                 {"massage": "Information saved successfully"},
             )
+
 
 @method_decorator(login_required, name="dispatch")
 class RemoveCategory(View):
@@ -362,11 +369,13 @@ class RemoveCategory(View):
                 {"massage": "There is no category with this title"},
             )
 
+
 @login_required
 def staff_checkout(request):
     # When each satff change the status, they will be that order's staff
     orders = Order.objects.all()
     return render(request, "checkout.html", {"orders": orders})
+
 
 @login_required
 def update_order_status(request, order_id):
@@ -376,6 +385,7 @@ def update_order_status(request, order_id):
         order.status = new_status
         order.save()
         return redirect("staff_checkout")
+
 
 @login_required
 def order_details(request, order_id):
@@ -388,6 +398,7 @@ def order_details(request, order_id):
         "order_list.html",
         {"order": order, "order_items": order_items, "products": products},
     )
+
 
 @login_required
 def add_order_item(request, order_id):
@@ -409,6 +420,7 @@ def add_order_item(request, order_id):
         order_item.save()
         return redirect("order_list", order_id=order.id)
 
+
 @login_required
 def update_order_item(request, item_id):
     if request.method == "POST":
@@ -423,6 +435,7 @@ def update_order_item(request, item_id):
 
         return redirect("order_list", order_id=order_item.order.id)
 
+
 @login_required
 def remove_order_item(request, item_id):
     if request.method == "POST":
@@ -430,16 +443,23 @@ def remove_order_item(request, item_id):
         order_item.delete()
         return redirect("order_list", order_id=order_item.order.id)
 
+
 @method_decorator(login_required, name="dispatch")
 class ViewManager(View):
     def get(self, request):
-        return render(request, "Manager.html")
+        context = {
+            'top_products': ReportView.top_products(),
+            'top_customers': ReportView.customer_analytics()
+        }
+        return render(request, "Manager.html", context)
+
 
 @method_decorator(login_required, name="dispatch")
 class StaffAccess(FormView):
     template_name = "staff-access.html"
     form_class = StaffRegistrationForm
     success_url = reverse_lazy("login")
+
     def form_valid(self, form):
         form.save()
         messages.success(self.request, "Staff registered successfully!")
@@ -449,11 +469,11 @@ class StaffAccess(FormView):
         messages.error(self.request, "There was an error in the registration form.")
         return super().form_invalid(form)
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['staff_list'] = Staff.objects.all() 
+        context["staff_list"] = Staff.objects.all()
         return context
+
 
 @method_decorator(login_required, name="dispatch")
 class DataAnalysis(View):
@@ -467,7 +487,7 @@ class DataAnalysis(View):
         if form.is_valid():
             filter_type = form.cleaned_data["filter_type"]
             if filter_type == "most popular caffe items":
-                top_product=ReportViwe.top_products()
+                top_product = ReportView.top_products()
                 return render(
                     request,
                     "data_analysis.html",
@@ -475,18 +495,19 @@ class DataAnalysis(View):
                 )
 
             elif filter_type == "peak business hour":
-               orders=ReportViwe.peak_business_hour()
-               return render(
+                orders = ReportView.peak_business_hour()
+                return render(
                     request, "data_analysis.html", {"form": form, "orders": orders}
                 )
 
             elif filter_type == "customer demographic data":
-                context=ReportViwe.customer_demographic_data()
+                context = ReportView.customer_demographic_data()
                 return render(
                     request, "data_analysis.html", {"form": form, "orders": context}
                 )
             else:
                 form.add_error("filter_type", "Please enter a valid value.")
+
 
 @method_decorator(login_required, name="dispatch")
 class SalesAnalysis(View):
@@ -501,25 +522,25 @@ class SalesAnalysis(View):
         if form.is_valid():
             filter_type = form.cleaned_data["filter_type"]
             if filter_type == "total sales":
-                context=ReportViwe.total_sales()
+                context = ReportView.total_sales()
 
                 return render(
                     request, "sale_analysis.html", {"orders": context, "form": form}
                 )
 
             elif filter_type == "daily sales":
-                context=ReportViwe.daily_sales()
+                context = ReportView.daily_sales()
                 return render(
                     request, "sale_analysis.html", {"form": form, "orders": context}
                 )
 
             elif filter_type == "monthly sales":
-                context=ReportViwe.monthly_sales()
+                context = ReportView.monthly_sales()
                 return render(
                     request, "sale_analysis.html", {"form": form, "orders": context}
                 )
             elif filter_type == "yearly sales":
-                context=ReportViwe.yearly_sales()
+                context = ReportView.yearly_sales()
                 return render(
                     request, "sale_analysis.html", {"form": form, "orders": context}
                 )
@@ -637,7 +658,14 @@ def download_details(request):
     orders_sheet = workbook.active
     orders_sheet.title = "Orders"
     orders_sheet.append(
-        ["Id", "Status", "Total Price", "Customer Phone Number", "Order Date", "Table Number"]
+        [
+            "Id",
+            "Status",
+            "Total Price",
+            "Customer Phone Number",
+            "Order Date",
+            "Table Number",
+        ]
     )
 
     orders = Order.objects.all()
@@ -647,7 +675,7 @@ def download_details(request):
             order.order_date.replace(tzinfo=None) if order.order_date else None
         )
 
-        phone_number = order.customer.phone_number if order.customer else ''
+        phone_number = order.customer.phone_number if order.customer else ""
 
         orders_sheet.append(
             [
@@ -663,4 +691,3 @@ def download_details(request):
     # Save the workbook to the response
     workbook.save(response)
     return response
-

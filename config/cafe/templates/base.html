@@ -49,7 +49,7 @@
                         <li><a href="{% url 'about' %}">About</a></li>
                         <li><a href="{% url 'contact' %}">Contact</a></li>
                         <li><a href="{% url 'customer_checkout' %}">Order Status</a></li>
-                        <li><a class="log" href="{% url 'login' %}">{% block login %}Default Login{% endblock %}
+                        <li><a class="log" href="{% url 'login' %}">{% block login %}Login{% endblock %}
                         </a>/<a class="log" href="{% url 'logout' %}">Logout</a></li>
                     </ul>
                 </nav>
@@ -66,8 +66,9 @@
 <h1 class="st-h">{% block h1 %}{% endblock %}</h1>
 <h3 class="st-h" > Welcome {{user.first_name}} {{user.last_name}} to manager Panel!</h3>
 <div class="st-panel">
+        <li><a href="{% url 'manager' %}">Manager Dashboard</a></li>
         <li><a href="{% url 'staff-access' %}">Staff Access</a></li>
-        <li><a href="{% url 'checkout' %}">Checkout</a></li>
+        <li><a href="{% url 'staff_checkout' %}">Checkout</a></li>
         <li class="menu-has-children">
             <a class="dropdown-toggle" href="#" data-toggle="dropdown">Product</a>
             <ul class="dropdown-menu">
@@ -80,24 +81,30 @@
             <a class="dropdown-toggle" href="#" data-toggle="dropdown">Category</a>
             <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="{% url 'add-category' %}">Add Category</a></li>
-                <li><a class="dropdown-item" href="#">Edit Category</a></li>
+                {% comment %} <li><a class="dropdown-item" href="#">Edit Category</a></li> {% endcomment %}
                 <li><a class="dropdown-item" href="{% url 'remove-c' %}">Remove Category</a></li>
             </ul>
         </li>
         <!-- <li ><a href="{% url 'add-product' %}">Add Product</a></li> -->
         <!-- <li><a href="{% url 'edit-product' %}">Edit Product</a></li> -->
         <!-- <li><a href="{% url 'add-category' %}">Add Category</a></li> -->
-        <li><a href="{% url 'data_analysis' %}">Data Analysis</a></li>
-<!--    <li><a href="{% url 'sale_analysis' %}">sale-analisis</a></li> -->
+        {% comment %} <li><a href="{% url 'data_analysis' %}">Data Analysis</a></li>
+        <li><a href="{% url 'sale_analysis' %}">sale-analisis</a></li> {% endcomment %}
         <!-- <li><a href="{% url 'remove-p' %}">Remove product</a></li> -->
         <!-- <li><a href="{% url 'remove-c' %}">Remove Category</a></li> -->
         <li><a href="{% url 'filter' %}">Filter Order</a></li>
         <li class="menu-has-children">
             <a class="dropdown-toggle" href="#" data-toggle="dropdown">Report</a>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Report 1</a></li>
-                <li><a class="dropdown-item" href="#">Report 2</a></li>
-                <li><a class="dropdown-item" href="#">Report 3</a></li>
+                <li><a class="dropdown-item" href="{% url 'sale_analysis' %}">Sale Analysis</a></li>
+                <li><a class="dropdown-item" href="{% url 'data_analysis' %}">Data Analysis</a></li>
+                <li><a class="dropdown-item" href="{% url 'top_selling_items' %}">Top Selling Items</a></li>
+                <li><a class="dropdown-item" href="{% url 'sales_by_category' %}">Sales By Category</a></li>
+                <li><a class="dropdown-item" href="{% url 'sales_by_customer' %}">Sales By Customer</a></li>
+                <li><a class="dropdown-item" href="{% url 'sales_by_time_of_day' %}">Sales By Time Of Day</a></li>
+                <li><a class="dropdown-item" href="{% url 'order_status_report' %}">Order Status Report</a></li>
+                <li><a class="dropdown-item" href="{% url 'sales_by_employee_report' %}">Sales By Employee</a></li>
+                <li><a class="dropdown-item" href="{% url 'customer_order_history_report' %}">Customer Order History</a></li>
             </ul>
         </li>
         <li><a href="{% url 'download_details' %}">Download Order Detail</a></li>
@@ -109,7 +116,8 @@
     <h1 class="st-h">{% block h1staff %}{% endblock %}</h1>
     <h3 class="st-h" > Welcome {{user.first_name}} {{user.last_name}} to Staff Panel!</h3>
 <div class="st-panel">
-        <li><a href="{% url 'checkout' %}">Checkout</a></li>
+        <li><a href="{% url 'staff' %}">Staff Dashboard</a></li>
+        <li><a href="{% url 'staff_checkout' %}">Checkout</a></li>
         <li class="menu-has-children">
             <a class="dropdown-toggle" href="#" data-toggle="dropdown">Product</a>
             <ul class="dropdown-menu">
@@ -150,7 +158,6 @@
                             <img src="{% static 'img/rb_49164.png' %}" />
                             <p>&copy; Copyright <a href="">Maktab CoffeeShop</a>. All Rights Reserved</p>
                             
-                            <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
                             <p>Designed By <a href="#">group3</a></p>
                         </div>
                     </div>

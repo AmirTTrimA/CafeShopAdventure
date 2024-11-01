@@ -28,24 +28,18 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {% for product in top_products %}
                                     <tr>
-                                        <th scope="row">ICED LATTE MACCHIATO</th>
-                                        <td>$10</td>
-                                        <td>100</td>
-                                        <td>$1000</td>
+                                        <td>{{ product.item__name }}</td>
+                                        <td>{{ product.item__price|floatformat:2 }}</td>
+                                        <td>{{ product.total_orders }}</td>
+                                        <td>{{ product.total_price|floatformat:2 }}</td>
                                     </tr>
+                                    {% empty %}
                                     <tr>
-                                        <th scope="row">PANINI</th>
-                                        <td>$15</td>
-                                        <td>30</td>
-                                        <td>$450</td>
+                                        <td colspan="2">No products found.</td>
                                     </tr>
-                                    <tr>
-                                        <th scope="row">Cappuccino</th>
-                                        <td>$20</td>
-                                        <td>15</td>
-                                        <td>$300</td>
-                                    </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>
@@ -72,27 +66,18 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {% for customer in top_customers %}
                                     <tr>
-                                        <th scope="row">09123456789</th>
-                                        <td>100</td>
-                                        <td>$1000</td>
-                                        <td>98%</td>
-
+                                        <th scope="row">{{ customer.customer__phone_number }}</th>
+                                        <td>{{ customer.number_of_orders }}</td>
+                                        <td>${{ customer.total_spent|floatformat:2 }}</td>
+                                        <td>{{ customer.points }}</td>
                                     </tr>
+                                    {% empty %}
                                     <tr>
-                                        <th scope="row">09378901234</th>
-                                        <td>30</td>
-                                        <td>$450</td>
-                                        <td>100%</td>
-
+                                        <td colspan="4">No customers found.</td>
                                     </tr>
-                                    <tr>
-                                        <th scope="row">09356789999</th>
-                                        <td>15</td>
-                                        <td>$300</td>
-                                        <td>88%</td>
-
-                                    </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>

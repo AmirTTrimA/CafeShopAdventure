@@ -5,7 +5,7 @@
 {% block content %}
 {% load static %}
 
-        </header>
+        {% comment %} </header>
         <!-- Header End -->
         <h1 class="st-h">Staff Access</h1>
         {% if user.is_authenticated %}
@@ -15,10 +15,10 @@
         <h3>Welcom {{staff.first_name}} {{staff.last_name}}</h3>
         {%endif%} -->
         <div class="st-panel">
-            <li><a href="{% url 'checkout' %}">checkout</a></li>
+            <li><a href="{% url 'staff_checkout' %}">checkout</a></li>
             <li><a href="{% url 'edit-product' %}">Edit product</a></li>
             <li><a href="{% url 'add-product' %}">Add product</a></li>
-            <li><a href="{% url 'logout' %}">logout</a></li>
+            <li><a href="{% url 'logout' %}">logout</a></li> {% endcomment %}
 
     </div>
         <!-- staff-access start -->
