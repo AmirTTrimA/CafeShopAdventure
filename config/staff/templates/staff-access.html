@@ -1,12 +1,26 @@
 {% extends 'base.html' %}
 
-{% block title %}Staff Access{% endblock %}
-{% block h1 %}Staff Access{% endblock %}
+{% block title %}staff-access{% endblock %}
+
 {% block content %}
 {% load static %}
 
+        </header>
+        <!-- Header End -->
+        <h1 class="st-h">Staff Access</h1>
+        {% if user.is_authenticated %}
+            <h3 class="st-h" > Welcome {{user.first_name}} {{user.last_name}}!</h3>
+        {% endif %}
+        <!-- {%if user %}
+        <h3>Welcom {{staff.first_name}} {{staff.last_name}}</h3>
+        {%endif%} -->
+        <div class="st-panel">
+            <li><a href="{% url 'checkout' %}">checkout</a></li>
+            <li><a href="{% url 'edit-product' %}">Edit product</a></li>
+            <li><a href="{% url 'add-product' %}">Add product</a></li>
+            <li><a href="{% url 'logout' %}">logout</a></li>
 
-
+    </div>
         <!-- staff-access start -->
         <section id="login">
             <div class="container">
@@ -18,7 +32,7 @@
                     <div class="col-md-8">
                         <div class="login-col-1">
                             <div class="login-form">
-                                <form method="post">
+                                <!-- <form method="post">
                                     {% csrf_token %}
                                     {{ form.as_p }}
                                     <div class="form-row">
@@ -36,9 +50,20 @@
                                         <div class="form-group col-md-6">
                                             <input type="password" class="form-control" placeholder="Repeat Staff Password" required="required" />
                                         </div>
-                                    </div>
+                                    </div> -->
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        {{form.as_p}}
                                     <div><button type="submit">Register</button></div>
                                 </form>
+                                <h4>Staff List</h4>
+                                <ul>
+                                {% for staff in staff_list %}
+                                    <li>*{{ staff.first_name }} {{ staff.last_name }}* role : {{ staff.role }}</li>
+                                {% empty %}
+                                    <li>No staff registered yet.</li>
+                                {% endfor %}
+                                </ul>
                             </div>
                         </div>
                     </div>

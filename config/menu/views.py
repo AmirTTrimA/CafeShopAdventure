@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import MenuItem, Category
 from django.views import View
 
+
 # class ProductDetailView(View):
 #     def get(self, request):
 #         return render(request, 'Product.html')
@@ -12,8 +13,11 @@ class CafeMenuView(View):
         else:
             menu_items = MenuItem.objects.all()
 
-        cat_item = Category.objects.all()  # دریافت همه کتگوری‌ها
-        return render(request, "menu.html", {'menu_items': menu_items, 'cat_item': cat_item})
+        cat_item = Category.objects.all()
+        return render(
+            request, "menu.html", {"menu_items": menu_items, "cat_item": cat_item}
+        )
+
 
 # class CafeMenuView(View):
 #     template_name = "menu.html"
@@ -39,13 +43,13 @@ class ProductDetailView(View):
 # class SearchView(View):
 #     def get(self, request):
 #         return render(request, "search.html")
-    
+
+
 class SearchView(View):
     def get(self, request):
-        query = request.GET.get('q')  # دریافت ورودی جستجو
+        query = request.GET.get("q")
         if query:
-            menu_items = MenuItem.objects.filter(name__icontains=query)  # فیلتر کردن بر اساس ورودی
+            menu_items = MenuItem.objects.filter(name__icontains=query)
         else:
-            menu_items = MenuItem.objects.none()  # اگر ورودی وجود نداشت، هیچ موردی برنگردانید
-
-        return render(request, "search.html", {'menu_items': menu_items})  # ارسال داده‌ها به قالب
+            menu_items = MenuItem.objects.none()
+        return render(request, "search.html", {"menu_items": menu_items})

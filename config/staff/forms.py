@@ -21,19 +21,28 @@ class StaffRegistrationForm(forms.ModelForm):
     A form for registering new staff members.
     """
 
+    first_name = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Enter your first name'}))
+    
+    last_name = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Enter your last name'}))
+    
+
     phone_number = forms.CharField(
-        validators=[iran_phone_regex],
-        help_text="Enter a valid Iranian phone number (e.g., +989123456789 or 09123456789)",
-    )
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Enter a valid Iranian phone number (e.g., +989123456789 or 09123456789'}))
+
     password1 = forms.CharField(
-        widget=forms.PasswordInput,
-        label="Password",
-        help_text="Enter a strong password with at least 8 characters",
-    )
-    password2 = forms.CharField(
-        widget=forms.PasswordInput,
+        widget=forms.PasswordInput(attrs={'placeholder':"Enter a strong password with at least 8 characters"}),
         label="Confirm Password",
-        help_text="Enter the same password as above, for verification",
+    )
+
+    
+    password2 = forms.CharField(
+        widget=forms.PasswordInput(attrs={'placeholder':"Enter the same password as above, for verification"}),
+        label="Confirm Password",
     )
 
     class Meta:
@@ -46,7 +55,7 @@ class StaffRegistrationForm(forms.ModelForm):
         """
 
         model = Staff
-        fields = ["phone_number", "password1", "password2", "role"]
+        fields = ["first_name","last_name","phone_number", "password1", "password2", "role"]
 
     def clean(self):
         """

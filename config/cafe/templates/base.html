@@ -92,7 +92,6 @@
         <!-- <li><a href="{% url 'remove-p' %}">Remove product</a></li> -->
         <!-- <li><a href="{% url 'remove-c' %}">Remove Category</a></li> -->
         <li><a href="{% url 'filter' %}">Filter Order</a></li>
-        
         <li class="menu-has-children">
             <a class="dropdown-toggle" href="#" data-toggle="dropdown">Report</a>
             <ul class="dropdown-menu">
@@ -101,7 +100,7 @@
                 <li><a class="dropdown-item" href="#">Report 3</a></li>
             </ul>
         </li>
-    
+        <li><a href="{% url 'download_details' %}">Download Order Detail</a></li>
 </div>
 
 {% else %}

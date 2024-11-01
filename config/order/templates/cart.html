@@ -35,7 +35,7 @@
                                         <input type="text" value="{{ item.quantity }}" readonly>
                                     </div>
                                 </td>
-                                <td>${{ item.price|floatformat:2|mul:item.quantity }}</td>
+                                <td>${{ item.total|floatformat:2 }}</td>
                                 <td><a href="{% url 'remove_from_cart' item_id %}"><i class="fab fa-trash-o"></i></a></td>
                             </tr>
                             {% empty %}

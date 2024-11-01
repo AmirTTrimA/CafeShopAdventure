@@ -13,15 +13,18 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from cafe.models import Cafe
+from staff.models import Staff
 from .models import Order, OrderItem, OrderHistory, MenuItem, Customer
 
 
 DEFAULT_GUEST_CUSTOMER_PHONE = "09123456789"  # Default phone number for guest customer
 
 
-def add_to_cart(response, request, item_id, quantity):
+def add_to_cart(response, request, item_id):
     """Add a menu item to the cart."""
     menu_item = get_object_or_404(MenuItem, id=item_id)
+
+    quantity = int(request.GET.get('quantity'))
 
     cart = request.COOKIES.get("cart", "{}")
     cart = json.loads(cart)
@@ -43,9 +46,10 @@ def add_to_cart(response, request, item_id, quantity):
 
 def add_to_cart_view(request, item_id):
     if request.method == "GET":
-        quantity = int(request.GET.get("quantity", 1))  # Default to 1 if not specified
+        quantity = int(request.GET.get("quantity"))
+        print(f"Adding item {item_id} with quantity {quantity} to cart.")
         response = redirect("menu")
-        response = add_to_cart(response, request, item_id, quantity)
+        response = add_to_cart(response, request, item_id)
         return response
     return redirect("menu")
 
@@ -77,8 +81,20 @@ def cart_view(request):
     """
     cart = request.COOKIES.get("cart", "{}")
     cart = json.loads(cart)
-    print(f"cart: {cart}")
-    return render(request, "cart.html", {"cart": cart})
+
+    total_price = 0.0
+    for item_id, item in cart.items():
+        item_total = float(item["price"]) * item["quantity"]
+        item["total"] = item_total  # Add item total to each item
+        total_price += item_total
+
+    
+    context = {
+            'cart': cart,
+            'total_price': total_price,
+        }
+
+    return render(request, "cart.html", context)
 
 
 def submit_order(request):
@@ -87,48 +103,61 @@ def submit_order(request):
         table_number = request.POST.get("table_number")
         phone_number = request.POST.get("phone_number")
 
-        # Create or get the customer
+        # Ensure table_number is valid
+        if not table_number:
+            messages.error(request, "Table number is required.")
+            return redirect("order_form")  # Redirect to the form page
+
+        # Create or get the customer (unpack the tuple)
         customer, created = Customer.objects.get_or_create(
             phone_number=phone_number,
-            cafe=Cafe.objects.first(),
-            table_number=table_number,
-            points=0,
-            # defaults={
-            #     "first_name": "Default First Name",
-            #     "last_name": "Default Last Name",
-            # },
+            defaults={
+                "cafe": Cafe.objects.first(),
+                "table_number": table_number,
+                "points": 0,
+            },
         )
 
         # Create the order instance
         order = Order.objects.create(
             customer=customer,
-            # staff=Staff.objects.first(),  # Replace with actual logic to assign staff
+            table_number=table_number,
+            staff=Staff.objects.first(),
             order_date=timezone.now(),
             total_price=0.00,  # Will be calculated later
         )
 
-        request.session['customer_phone_number'] = order.customer.phone_number
+        request.session["customer_phone_number"] = order.customer.phone_number
 
         # Add order items based on the cart
         cart = request.COOKIES.get("cart", "{}")
         cart = json.loads(cart)
         for item_id, item in cart.items():
-            menu_item = MenuItem.objects.get(id=item_id)  # Get the MenuItem instance
-            quantity = item["quantity"]
+            try:
+                menu_item = MenuItem.objects.get(
+                    id=item_id
+                )  # Get the MenuItem instance
+                quantity = item["quantity"]
 
-            # Create OrderItem instance
-            order_item = OrderItem.objects.create(
-                order=order, item=menu_item, quantity=quantity
-            )
-            customer.points += menu_item.points * quantity
+                # Create OrderItem instance
+                order_item = OrderItem.objects.create(
+                    order=order, item=menu_item, quantity=quantity
+                )
+                customer.points += menu_item.points * quantity  # Now this works
+                print(customer.points)
+            except MenuItem.DoesNotExist:
+                messages.error(request, f"Menu item with ID {item_id} does not exist.")
+                continue  # Skip this item and move to the next
 
+        customer.save()
         # Calculate the total price for the order
         order.calculate_total_price()
         order.save()
 
         # Clear the cart after order submission
+        clear_cart = ""
         response = HttpResponse("Order submitted")
-        response.set_cookie("cart", "", max_age=0)
+        response.set_cookie("cart", json.dumps(clear_cart), max_age=0)
 
         messages.success(request, "Order submitted successfully!")
         return redirect("order_success")
@@ -209,41 +238,6 @@ def change_order_status(request, order_id):
         return redirect("order_list")
 
     return render(request, "change_order_status.html", {"order": order})
-
-
-# فرآیند Checkout (پرداخت)
-@login_required
-def checkout(request):
-    """Handle the checkout process, calculate the total price, and create an order."""
-
-    # try:
-    #     customer = request.user.customer
-    # except Customer.DoesNotExist:
-    #     messages.error(request, "You are not associated with a customer account.")
-    #     return redirect("menu")
-
-    # order_items = OrderItem.objects.filter(
-    #     order__customer=customer, order__status="Pending"
-    # )
-    # total_price = sum(item.item.price * item.quantity for item in order_items)
-
-    # if request.method == "POST":
-    #     # به‌روزرسانی وضعیت‌های سفارشات
-    #     for order_item in order_items:
-    #         status_key = f"status_{order_item.order.id}"
-    #         new_status = request.POST.get(status_key)
-    #         if new_status:
-    #             order_item.order.status = new_status  # به‌روزرسانی وضعیت
-    #             order_item.order.save()
-
-    #     messages.success(request, "Order statuses have been updated successfully!")
-    #     return redirect("checkout")  # به‌روز رسانی مجدد صفحه
-
-    return render(
-        request,
-        "checkout.html",
-        # {"order_items": order_items, "total_price": total_price},
-    )
 
 
 # تأیید سفارش
