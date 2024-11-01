@@ -57,31 +57,31 @@
                 {% endfor %}
                 </tbody>
             </table>
+            <div class="container">
+                <form method="POST" action="{% url 'add_order_item' order.id %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="product_id">Add Item:</label>
+                        <select name="product_id" class="form-control">
+                            {% for product in products %}
+                                <option value="{{ product.id }}">{{ product.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="number" name="quantity" value="1" min="1" required class="form-control mt-2">
+                        <button type="submit" class="btn btn-success mt-2">Add Item</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
     {% endfor %}
 
     <!-- Add new item form -->
-    <div class="container">
-        <form method="POST" action="{% url 'add_order_item' order.id %}">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="product_id">Add Item:</label>
-                <select name="product_id" class="form-control">
-                    {% for product in products %}
-                        <option value="{{ product.id }}">{{ product.name }}</option>
-                    {% endfor %}
-                </select>
-                <input type="number" name="quantity" value="1" min="1" required class="form-control mt-2">
-                <button type="submit" class="btn btn-success mt-2">Add Item</button>
-            </div>
-        </form>
-    </div>
 {% else %}
     <h4>No orders found.</h4>
 {% endif %}
 
-{% if messages %}
+{% comment %} {% if messages %}
     <div class="alert alert-success" role="alert">
         {{ messages }}
     </div>
@@ -92,7 +92,7 @@
         {{ form.non_field_errors }}
     </div>
 
-{% endif %}
+{% endif %} {% endcomment %}
 </div>
 </div>
 

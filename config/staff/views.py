@@ -131,6 +131,7 @@ class OrderFilterView(View):
 
     def post(self, request):
         form = OrderFilterForm()
+        products = MenuItem.objects.all()
         if request.POST.get("form_type") == "change_status":
             data = request.POST
             order_id = data.get("order_id") or 1  # Default to 1 if not provided
@@ -145,13 +146,13 @@ class OrderFilterView(View):
                 return render(
                     request,
                     self.template_name,
-                    {"form": form, "message": "Status change was done successfully"},
+                    {"form": form, "products": products, "message": "Status change was done successfully"},
                 )
             except Order.DoesNotExist:
                 return render(
                     request,
                     self.template_name,
-                    {"form": form, "error": "Order not found."},
+                    {"form": form, "products": products, "error": "Order not found."},
                 )
 
         else:
@@ -165,7 +166,7 @@ class OrderFilterView(View):
                 elif filter_type == "last_order":
                     orders = Order.objects.order_by("-order_date")[:1]  # Last order
                     return render(
-                        request, self.template_name, {"form": form, "orders": orders}
+                        request, self.template_name, {"form": form, "products": products, "orders": orders}
                     )
                 elif filter_type != "last_order" and filter_value != "":
                     if filter_type == "date":
@@ -197,10 +198,10 @@ class OrderFilterView(View):
                     return render(
                         request,
                         self.template_name,
-                        {"form": form, "orders": orders, "order": order},
+                        {"form": form, "products": products, "orders": orders, "order": order},
                     )
 
-            return render(request, self.template_name, {"form": form})
+            return render(request, self.template_name, {"form": form, "products": products})
 
 
 @method_decorator(login_required, name="dispatch")
@@ -409,7 +410,7 @@ def add_order_item(request, order_id):
 
         product = get_object_or_404(MenuItem, id=product_id)
         order_item, created = OrderItem.objects.get_or_create(
-            order=order, product=product
+            order=order, item=product
         )
 
         if not created:
@@ -448,8 +449,8 @@ def remove_order_item(request, item_id):
 class ViewManager(View):
     def get(self, request):
         context = {
-            'top_products': ReportView.top_products(),
-            'top_customers': ReportView.customer_analytics()
+            "top_products": ReportView.top_products(),
+            "top_customers": ReportView.customer_analytics(),
         }
         return render(request, "Manager.html", context)
 
@@ -683,8 +684,101 @@ def download_details(request):
                 order.status,
                 order.total_price,
                 phone_number,
-                order_date_naive,  # Add the naive datetime
+                order_date_naive,
                 order.table_number,
+            ]
+        )
+
+    customers_sheet = workbook.create_sheet(title="Customers")
+    customers_sheet.append(
+        [
+            "Customer ID",
+            "First Name",
+            "Last Name",
+            "Phone Number",
+            "Number of Orders",
+            "Total Amount Paid",
+            "Points",
+            "Last Order Date",
+        ]
+    )
+
+    customers = Customer.objects.all()
+    for customer in customers:
+        # Calculate the number of orders and total amount paid by this customer
+        orders_by_customer = Order.objects.filter(customer=customer)
+        number_of_orders = orders_by_customer.count()
+        total_amount_paid = sum(order.total_price for order in orders_by_customer)
+        last_order_date = (
+            orders_by_customer.order_by("-order_date")
+            .first()
+            .order_date.replace(tzinfo=None)
+            if orders_by_customer.exists()
+            else None
+        )
+
+        customers_sheet.append(
+            [
+                customer.id,
+                customer.first_name if hasattr(customer, "first_name") else "",
+                customer.last_name if hasattr(customer, "last_name") else "",
+                customer.phone_number,
+                number_of_orders,
+                total_amount_paid,
+                customer.points,
+                last_order_date,
+            ]
+        )
+
+    staff_sheet = workbook.create_sheet(title="Staff")
+    staff_sheet.append(
+        [
+            "Staff ID",
+            "First Name",
+            "Last Name",
+            "Phone Number",
+            "Number of Orders",
+        ]
+    )
+
+    staff_members = Staff.objects.all()
+    for staff in staff_members:
+        # Calculate the number of orders submitted by this staff member
+        orders_by_staff = Order.objects.filter(staff=staff)
+        number_of_orders = orders_by_staff.count()
+
+        staff_sheet.append(
+            [
+                staff.pk,
+                staff.first_name if hasattr(staff, "first_name") else "",
+                staff.last_name if hasattr(staff, "last_name") else "",
+                staff.phone_number,
+                number_of_orders,
+            ]
+        )
+
+    menu_items_sheet = workbook.create_sheet(title="Menu Items")
+    menu_items_sheet.append(
+        [
+            "Menu Item ID",
+            "Name",
+            "Price",
+            "Points",
+            "Category",
+        ]
+    )
+
+    menu_items = MenuItem.objects.all()
+    for item in menu_items:
+        category_name = item.category.name if item.category else ''
+
+        menu_items_sheet.append(
+            [
+                item.id,
+                item.name,
+                item.price,
+                item.points,
+                category_name,
             ]
         )
 
