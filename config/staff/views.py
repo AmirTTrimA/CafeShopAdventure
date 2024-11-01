@@ -23,6 +23,12 @@ from menu.models import MenuItem, Category
 from .forms import OrderFilterForm, DataAnalysisForm, SaleAnalysisForm
 from .forms import StaffRegistrationForm
 from .report import ReportViwe
+from django.db.models import Sum
+from django.utils import timezone
+from django.db.models.functions import TruncDate,TruncMonth,TruncYear
+from datetime import timedelta,date
+from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import get_object_or_404
 
 @method_decorator(login_required, name="dispatch")
 class RegisterView(FormView):
