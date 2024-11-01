@@ -1,4 +1,5 @@
 from django.urls import path
+from staff import views
 from .views import (
     LoginView,
     LogoutView,
@@ -40,7 +41,6 @@ urlpatterns = [
     path("data_analysis.html", DataAnalysis.as_view(), name="data_analysis"),
     path("order_list/<int:order_id>/", order_details, name="order_list"),
     path("sale_analysis.html", SalesAnalysis.as_view(), name="sale_analysis"),
-
     path(
         "update_order/<int:order_id>/",
         views.update_order_status,
