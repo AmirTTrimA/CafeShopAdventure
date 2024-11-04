@@ -12,6 +12,7 @@ from django.contrib.auth.models import (
     BaseUserManager,
     PermissionsMixin,
 )
+from django.contrib.auth.models import Permission
 from .validator import iran_phone_regex
 
 
@@ -33,6 +34,8 @@ class StaffManager(BaseUserManager):
         user.role = "S"
         user.save(using=self._db)
         return user
+    
+    
 
     def create_superuser(self, phone_number, password=None):
         """Create and return a superuser with admin privileges."""
@@ -41,7 +44,7 @@ class StaffManager(BaseUserManager):
         user.is_superuser = True
         user.save(using=self._db)
         return user
-
+    
 
 class Staff(AbstractBaseUser, PermissionsMixin):
     """
@@ -80,6 +83,11 @@ class Staff(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
 
+    class Meta:
+        permissions = [
+            ('staff_access', 'staff_access'),
+        ]
+
     @property
     def is_staff(self):
         """Check if the staff member has admin privileges."""
@@ -104,6 +112,9 @@ class Staff(AbstractBaseUser, PermissionsMixin):
         if self.password and not self.password.startswith(('pbkdf2_sha256$', 'bcrypt$', 'argon2')):
             self.password = make_password(self.password)
         super().save(*args, **kwargs)
+        if not self.pk:  # Check if the instance is being created
+            permission = Permission.objects.get(codename='staff_access')
+            self.user_permissions.add(permission)
 
     def set_password(self, raw_password):
         """Set the password and mark it as changed."""
