@@ -791,6 +791,7 @@ class SalesAnalysis(View):
 
 
 @user_passes_test(lambda u: u.is_staff)
+@login_required
 def search_customer(request):
      """
     Search for customers based on the provided phone number.
