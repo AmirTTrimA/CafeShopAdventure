@@ -15,7 +15,7 @@ from django.utils import timezone
 from cafe.models import Cafe
 from staff.models import Staff
 from .models import Order, OrderItem, OrderHistory, MenuItem, Customer
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import permission_required
 
 DEFAULT_GUEST_CUSTOMER_PHONE = "09123456789"  # Default phone number for guest customer
 
@@ -195,8 +195,9 @@ def order_success(request):
     """Render the order success page."""
     return render(request, "order_success.html")
 
-@user_passes_test(lambda u: u.is_staff)
+
 # مدیریت آیتم‌های سفارش توسط کاربران Staff
+@permission_required('order.staff_access')
 @login_required
 def manage_order_items(request, order_id):
     """Allow staff to add or remove items from an order."""
@@ -235,8 +236,9 @@ def manage_order_items(request, order_id):
         request, "manage_order_items.html", {"order": order, "order_items": order_items}
     )
 
-@user_passes_test(lambda u: u.is_staff)
+
 # تغییر وضعیت سفارش
+@permission_required('order.staff_access')
 @login_required
 def change_order_status(request, order_id):
     """Allow staff to change the status of an order."""
@@ -265,8 +267,9 @@ def change_order_status(request, order_id):
 
     return render(request, "change_order_status.html", {"order": order})
 
-@user_passes_test(lambda u: u.is_staff)
+
 # تأیید سفارش
+@permission_required('order.staff_access')
 @login_required
 def order_confirmation(request, order_id):
     """Show the order confirmation after checkout."""
@@ -296,7 +299,7 @@ def order_status_cleanup(request):
 
     return redirect("order_list")
 
-@user_passes_test(lambda u: u.is_staff)
+@permission_required('order.staff_access')
 @login_required
 def change_item_quantity(request, order_id, item_id):
     """Allow staff to change the quantity of an item in an order."""
