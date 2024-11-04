@@ -15,7 +15,7 @@ from django.utils import timezone
 from cafe.models import Cafe
 from staff.models import Staff
 from .models import Order, OrderItem, OrderHistory, MenuItem, Customer
-
+from django.contrib.auth.decorators import user_passes_test
 
 DEFAULT_GUEST_CUSTOMER_PHONE = "09123456789"  # Default phone number for guest customer
 
@@ -45,6 +45,15 @@ def add_to_cart(response, request, item_id):
 
 
 def add_to_cart_view(request, item_id):
+    """Handle the request to add a menu item to the cart.
+
+    Args:
+        request (HttpRequest): The HTTP request object containing the quantity.
+        item_id (int): The ID of the menu item to be added.
+
+    Returns:
+        HttpResponse: Redirect response to the menu page.
+    """
     if request.method == "GET":
         quantity = int(request.GET.get("quantity"))
         print(f"Adding item {item_id} with quantity {quantity} to cart.")
@@ -55,6 +64,14 @@ def add_to_cart_view(request, item_id):
 
 
 def remove_from_cart(request, item_id):
+     """Remove an item from the cart.
+
+    Args:
+        request (HttpRequest): The HTTP request object containing the cart.
+
+    Returns:
+        HttpResponse: Redirect response back to the cart page or error message.
+    """
     # Check if the cart exists in the session
     cart = request.COOKIES.get("cart", "{}")
     cart = json.loads(cart)
@@ -98,6 +115,15 @@ def cart_view(request):
 
 
 def submit_order(request):
+    """Submit an order based on the current cart items.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: Redirect response to the order success page, or 
+        render cart view if not a POST request.
+    """
     if request.method == "POST":
         # Retrieve form data
         table_number = request.POST.get("table_number")
@@ -169,7 +195,7 @@ def order_success(request):
     """Render the order success page."""
     return render(request, "order_success.html")
 
-
+@user_passes_test(lambda u: u.is_staff)
 # مدیریت آیتم‌های سفارش توسط کاربران Staff
 @login_required
 def manage_order_items(request, order_id):
@@ -209,7 +235,7 @@ def manage_order_items(request, order_id):
         request, "manage_order_items.html", {"order": order, "order_items": order_items}
     )
 
-
+@user_passes_test(lambda u: u.is_staff)
 # تغییر وضعیت سفارش
 @login_required
 def change_order_status(request, order_id):
@@ -239,7 +265,7 @@ def change_order_status(request, order_id):
 
     return render(request, "change_order_status.html", {"order": order})
 
-
+@user_passes_test(lambda u: u.is_staff)
 # تأیید سفارش
 @login_required
 def order_confirmation(request, order_id):
@@ -270,7 +296,7 @@ def order_status_cleanup(request):
 
     return redirect("order_list")
 
-
+@user_passes_test(lambda u: u.is_staff)
 @login_required
 def change_item_quantity(request, order_id, item_id):
     """Allow staff to change the quantity of an item in an order."""
