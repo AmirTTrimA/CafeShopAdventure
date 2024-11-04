@@ -37,6 +37,13 @@ class OrderForm(forms.Form):
     )
 
     def clean_table_number(self):
+        """Validate that the provided table number does not exceed the number of tables.
+        Returns:
+            int: The validated table number if valid.
+        
+        Raises:
+            ValidationError: If the table number exceeds the available tables for the selected cafe.
+        """
         table_number = self.cleaned_data.get("table_number")
         cafe = self.cleaned_data.get("cafe")
 
@@ -48,4 +55,5 @@ class OrderForm(forms.Form):
         return table_number
 
 class AddToCartForm(forms.Form):
+     """Form for adding items to the cart."""
     quantity = forms.IntegerField(min_value=1, initial=1)
