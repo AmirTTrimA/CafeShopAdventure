@@ -25,10 +25,11 @@ from .forms import StaffRegistrationForm
 from .report import ReportView
 from django.db.models import Sum
 from django.utils import timezone
-from django.db.models.functions import TruncDate, TruncMonth, TruncYear
 from datetime import timedelta, date
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import permission_required
+
 
 
 @method_decorator(login_required, name="dispatch")
@@ -94,20 +95,25 @@ class LogoutView(View):
 class ManagerView(View):
     """Render the manager dashboard."""
 
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return render(request,"login.html")
+        return super().dispatch(request, *args, **kwargs)
+    
+
     template_name = "manager.html"
 
     def get(self, request):
         return render(request, self.template_name)
 
-
+@method_decorator(user_passes_test(lambda u: u.is_staff), name="dispatch")
 @method_decorator(login_required, name="dispatch")
 class StaffView(View):
     """
     Render the staff page.
     """
-
     template_name = "staff.html"
-
+    
     def get(self, request):
         if request.user.is_authenticated:
             """render the staff page"""
@@ -120,11 +126,12 @@ class StaffView(View):
         context = {}
         return context
 
-
+@method_decorator(user_passes_test(lambda u: u.is_staff), name="dispatch")
 @method_decorator(login_required, name="dispatch")
 class OrderFilterView(View):
-    template_name = "order_list.html"
 
+
+    template_name = "order_list.html"
     def get(self, request):
         form = OrderFilterForm()
         return render(request, self.template_name, {"form": form})
@@ -203,9 +210,10 @@ class OrderFilterView(View):
 
             return render(request, self.template_name, {"form": form, "products": products})
 
-
+@method_decorator(user_passes_test(lambda u: u.is_staff), name="dispatch")
 @method_decorator(login_required, name="dispatch")
 class EditProduct(View):
+
     def get(self, request):
         items = MenuItem.objects.all()
         cats = Category.objects.all()
@@ -243,9 +251,10 @@ class EditProduct(View):
                 {"items": items, "cats": cats, "massage": "product dose not exist"},
             )
 
-
+@method_decorator(user_passes_test(lambda u: u.is_staff), name="dispatch")
 @method_decorator(login_required, name="dispatch")
 class Add_product(View):
+
     def get(self, request):
         cats = Category.objects.all()
         return render(request, "add-product.html", {"cats": cats})
@@ -281,9 +290,10 @@ class Add_product(View):
                 request, "add-product.html", {"cats": cats, "massage": "saved!!"}
             )
 
-
+@method_decorator(user_passes_test(lambda u: u.is_staff), name="dispatch")
 @method_decorator(login_required, name="dispatch")
 class RemoveProduct(View):
+
     def get(self, request):
         cats = Category.objects.all()
         pros = MenuItem.objects.all()
@@ -323,6 +333,13 @@ class RemoveProduct(View):
 
 @method_decorator(login_required, name="dispatch")
 class AddCategory(View):
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return render(request,"login.html")
+        return super().dispatch(request, *args, **kwargs)
+    
+
     def get(self, request):
         return render(request, "Add-category.html")
 
@@ -348,6 +365,13 @@ class AddCategory(View):
 
 @method_decorator(login_required, name="dispatch")
 class RemoveCategory(View):
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return render(request,"login.html")
+        return super().dispatch(request, *args, **kwargs)
+    
+
     def get(self, request):
         return render(request, "remove-c.html")
 
@@ -372,6 +396,7 @@ class RemoveCategory(View):
 
 
 @login_required
+@permission_required('staff.staff_access')
 def staff_checkout(request):
     # When each satff change the status, they will be that order's staff
     orders = Order.objects.all()
@@ -379,6 +404,7 @@ def staff_checkout(request):
 
 
 @login_required
+@permission_required('staff.staff_access')
 def update_order_status(request, order_id):
     if request.method == "POST":
         order = get_object_or_404(Order, id=order_id)
@@ -389,6 +415,7 @@ def update_order_status(request, order_id):
 
 
 @login_required
+@permission_required('staff.staff_access')
 def order_details(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     order_items = order.order_items.all()
@@ -402,6 +429,7 @@ def order_details(request, order_id):
 
 
 @login_required
+@permission_required('staff.staff_access')
 def add_order_item(request, order_id):
     if request.method == "POST":
         order = get_object_or_404(Order, id=order_id)
@@ -423,6 +451,7 @@ def add_order_item(request, order_id):
 
 
 @login_required
+@permission_required('staff.staff_access')
 def update_order_item(request, item_id):
     if request.method == "POST":
         order_item = get_object_or_404(OrderItem, id=item_id)
@@ -438,6 +467,7 @@ def update_order_item(request, item_id):
 
 
 @login_required
+@permission_required('staff.staff_access')
 def remove_order_item(request, item_id):
     if request.method == "POST":
         order_item = get_object_or_404(OrderItem, id=item_id)
@@ -447,6 +477,13 @@ def remove_order_item(request, item_id):
 
 @method_decorator(login_required, name="dispatch")
 class ViewManager(View):
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return render(request,"login.html")
+        return super().dispatch(request, *args, **kwargs)
+    
+
     def get(self, request):
         context = {
             "top_products": ReportView.top_products(),
@@ -454,9 +491,14 @@ class ViewManager(View):
         }
         return render(request, "Manager.html", context)
 
-
 @method_decorator(login_required, name="dispatch")
 class StaffAccess(FormView):
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return render(request,"login.html")
+        return super().dispatch(request, *args, **kwargs)
+    
     template_name = "staff-access.html"
     form_class = StaffRegistrationForm
     success_url = reverse_lazy("login")
@@ -478,6 +520,13 @@ class StaffAccess(FormView):
 
 @method_decorator(login_required, name="dispatch")
 class DataAnalysis(View):
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return render(request,"login.html")
+        return super().dispatch(request, *args, **kwargs)
+    
+
     def get(self, request):
         form = DataAnalysisForm()
         return render(request, "data_analysis.html", {"form": form})
@@ -512,6 +561,13 @@ class DataAnalysis(View):
 
 @method_decorator(login_required, name="dispatch")
 class SalesAnalysis(View):
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return render(request,"login.html")
+        return super().dispatch(request, *args, **kwargs)
+    
+
     def get(self, request):
         form = SaleAnalysisForm()
         return render(request, "sale_analysis.html", {"form": form})
@@ -559,7 +615,7 @@ def search_customer(request):
             # order = Order.objects.filter(customer__phone_number=phone_number)
     return render(request, "search_customer.html", {"customers": customers})
 
-
+@user_passes_test(lambda u: u.is_superuser)
 @login_required
 def top_selling_items(request):
     if request.method == "POST":
@@ -580,7 +636,7 @@ def top_selling_items(request):
     elif request.method == "GET":
         return render(request, "reports/top_selling_items.html")
 
-
+@user_passes_test(lambda u: u.is_superuser)
 @login_required
 def sales_by_category(request):
     sales = OrderItem.objects.values("item__category__name").annotate(
@@ -588,7 +644,7 @@ def sales_by_category(request):
     )
     return render(request, "reports/sales_by_category.html", {"sales": sales})
 
-
+@user_passes_test(lambda u: u.is_superuser)
 @login_required
 def sales_by_customer(request):
     if request.method == "POST":
@@ -600,7 +656,7 @@ def sales_by_customer(request):
     elif request.method == "GET":
         return render(request, "reports/sales_by_customer.html")
 
-
+@user_passes_test(lambda u: u.is_superuser)
 @login_required
 def sales_by_time_of_day(request):
     morning_sales = Order.objects.filter(order_date__hour__lt=12).aggregate(
@@ -615,7 +671,7 @@ def sales_by_time_of_day(request):
         {"morning_sales": morning_sales, "afternoon_sales": afternoon_sales},
     )
 
-
+@user_passes_test(lambda u: u.is_superuser)
 @login_required
 def order_status_report(request):
     date = request.GET.get("date", timezone.now().date())
@@ -626,7 +682,7 @@ def order_status_report(request):
     )
     return render(request, "reports/order_status_report.html", {"orders": orders})
 
-
+@user_passes_test(lambda u: u.is_superuser)
 @login_required
 def sales_by_employee_report(request):
     employee_sales = Order.objects.values(
@@ -638,7 +694,7 @@ def sales_by_employee_report(request):
         {"employee_sales": employee_sales},
     )
 
-
+@user_passes_test(lambda u: u.is_superuser)
 @login_required
 def customer_order_history_report(request):
     customer_id = request.GET.get("customer_id")
@@ -647,7 +703,8 @@ def customer_order_history_report(request):
         request, "reports/customer_order_history_report.html", {"orders": orders}
     )
 
-
+@user_passes_test(lambda u: u.is_superuser)
+@login_required
 def download_details(request):
     response = HttpResponse(
         content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -743,7 +800,7 @@ def download_details(request):
 
     staff_members = Staff.objects.all()
     for staff in staff_members:
-        # Calculate the number of orders submitted by this staff member
+        #Calculate the number of orders submitted by this staff member
         orders_by_staff = Order.objects.filter(staff=staff)
         number_of_orders = orders_by_staff.count()
 
