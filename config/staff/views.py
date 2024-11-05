@@ -136,7 +136,6 @@ class ManagerView(View):
     def get(self, request):
         return render(request, self.template_name)
 
-@method_decorator(user_passes_test(lambda u: u.is_staff), name="dispatch")
 @method_decorator(login_required, name="dispatch")
 class StaffView(View):
     """
@@ -164,7 +163,7 @@ class StaffView(View):
         context = {}
         return context
 
-@method_decorator(user_passes_test(lambda u: u.is_staff), name="dispatch")
+
 @method_decorator(login_required, name="dispatch")
 class OrderFilterView(View):
     """
@@ -261,7 +260,7 @@ class OrderFilterView(View):
 
             return render(request, self.template_name, {"form": form, "products": products})
 
-@method_decorator(user_passes_test(lambda u: u.is_staff), name="dispatch")
+
 @method_decorator(login_required, name="dispatch")
 class EditProduct(View):
     """View to handle the editing of menu items.
@@ -307,7 +306,7 @@ class EditProduct(View):
                 {"items": items, "cats": cats, "massage": "product dose not exist"},
             )
 
-@method_decorator(user_passes_test(lambda u: u.is_staff), name="dispatch")
+
 @method_decorator(login_required, name="dispatch")
 class Add_product(View):
     """View to handle the addition of new menu items.
@@ -352,7 +351,7 @@ class Add_product(View):
                 request, "add-product.html", {"cats": cats, "massage": "saved!!"}
             )
 
-@method_decorator(user_passes_test(lambda u: u.is_staff), name="dispatch")
+
 @method_decorator(login_required, name="dispatch")
 class RemoveProduct(View):
     """View to handle the removal of menu items.
@@ -478,7 +477,6 @@ class RemoveCategory(View):
 
 
 @login_required
-@permission_required('staff.staff_access')
 def staff_checkout(request):
     """Renders the staff checkout page with all orders.
     Returns:
@@ -490,7 +488,6 @@ def staff_checkout(request):
 
 
 @login_required
-@permission_required('staff.staff_access')
 def update_order_status(request, order_id):
     """Updates the status of a specific order.
     Returns:
@@ -505,7 +502,6 @@ def update_order_status(request, order_id):
 
 
 @login_required
-@permission_required('staff.staff_access')
 def order_details(request, order_id):
     """Displays detailed information about a specific order.
     Returns:
@@ -523,7 +519,6 @@ def order_details(request, order_id):
 
 
 @login_required
-@permission_required('staff.staff_access')
 def add_order_item(request, order_id):
     """Adds a new item to the specified order.
 
@@ -554,9 +549,8 @@ def add_order_item(request, order_id):
 
 
 @login_required
-@permission_required('staff.staff_access')
 def update_order_item(request, item_id):
-     """Updates the quantity of an order item or deletes it.
+    """Updates the quantity of an order item or deletes it.
     Returns:
         Redirect to the order details page.
     """
@@ -574,7 +568,6 @@ def update_order_item(request, item_id):
 
 
 @login_required
-@permission_required('staff.staff_access')
 def remove_order_item(request, item_id):
     """Removes an item from the specified order.
     Returns:
@@ -657,7 +650,7 @@ class StaffAccess(FormView):
         return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):
-         """
+        """
         Adds the staff list to the context for the template.
         Returns:
             dict: Updated context with the staff list.
@@ -753,7 +746,7 @@ class SalesAnalysis(View):
         return render(request, "sale_analysis.html", {"form": form})
 
     def post(self, request):
-         """
+        """
         Handles POST requests to process the sales analysis form.
         Returns:
             HttpResponse: Renders the sale_analysis.html with analysis results or errors.
@@ -790,10 +783,9 @@ class SalesAnalysis(View):
                 form.add_error("filter_type", "Please enter a valid value.")
 
 
-@user_passes_test(lambda u: u.is_staff)
 @login_required
 def search_customer(request):
-     """
+    """
     Search for customers based on the provided phone number.
     Requires the user to be a staff member.
     Returns:
@@ -851,7 +843,7 @@ def sales_by_category(request):
 @user_passes_test(lambda u: u.is_superuser)
 @login_required
 def sales_by_customer(request):
-     """
+    """
     Displays sales data for a specific customer identified by their phone number.
     Requires the user to be a superuser and logged in.
     Returns:
@@ -939,7 +931,7 @@ def customer_order_history_report(request):
 @user_passes_test(lambda u: u.is_superuser)
 @login_required
 def download_details(request):
-     """
+    """
     Downloads order, customer, staff, and menu item details as an Excel file.
     Requires the user to be a superuser and logged in.
     Returns:
@@ -1081,3 +1073,4 @@ def download_details(request):
     # Save the workbook to the response
     workbook.save(response)
     return response
+
