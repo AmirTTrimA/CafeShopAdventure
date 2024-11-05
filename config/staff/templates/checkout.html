@@ -7,6 +7,23 @@
 {% load static %}
 
 <!-- Staff Order Management Section Start -->
+
+<section id="filter-ord">
+    <div class="container">
+        <div class="row form">
+            <div class="col-md-12">
+            <h4>Filter Orders</h4>
+            <form method="post" id="filter-form">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="button">
+                <button type="submit">Filter</button>
+                </div>
+            </form>
+            </div>
+        </div>
+
+
 <section id="staff-checkout">
     <div class="container">
         <header class="section-header">
@@ -20,9 +37,11 @@
                             <tr>
                                 <th scope="col">Order Number</th>
                                 <th scope="col">Date</th>
+                                <th scope="col">Last update</th>
                                 <th scope="col">Table Number</th>
                                 <th scope="col">Phone Number</th>
                                 <th scope="col">Status</th>
+                                <th scope="col">Staff</th>
                                 {% comment %} <th scope="col">Actions</th> {% endcomment %}
                                 <th scope="col">Details</th>
                             </tr>
@@ -33,6 +52,7 @@
                             <tr>
                                 <th scope="row">{{ order.id }}</th>
                                 <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+                                <td>{{ order.updated_at|date:"Y-m-d H:i" }}</td>
                                 <td>{{ order.table_number }}</td>
                                 <td>{{ order.customer.phone_number }}</td>
                                 <td>
@@ -45,11 +65,18 @@
                                             <option value="Cancelled" {% if order.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
                                         </select>
                                     </form>
+
+                                    <td>{{ order.staff.first_name }} {{ order.staff.last_name }}</td>
+
                                 </td>
                                 {% comment %} <td>
                                 </td> {% endcomment %}
                                 <td>
-                                    <a href="{% url 'order_list' order.id %}">View Details</a>
+                                    <form method="post" action="{% url 'order_details' order.id %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="item_id" value="{{ order.id }}">
+                                        <button type="submit">Details</button>
+                                    </form>
                                 </td>
                             </tr>
                             {% endfor %}
