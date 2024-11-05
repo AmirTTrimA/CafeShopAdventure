@@ -83,10 +83,6 @@ class Staff(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
 
-    class Meta:
-        permissions = [
-            ('staff_access', 'staff_access'),
-        ]
 
     @property
     def is_staff(self):
@@ -112,9 +108,6 @@ class Staff(AbstractBaseUser, PermissionsMixin):
         if self.password and not self.password.startswith(('pbkdf2_sha256$', 'bcrypt$', 'argon2')):
             self.password = make_password(self.password)
         super().save(*args, **kwargs)
-        if not self.pk:  # Check if the instance is being created
-            permission = Permission.objects.get(codename='staff_access')
-            self.user_permissions.add(permission)
 
     def set_password(self, raw_password):
         """Set the password and mark it as changed."""
