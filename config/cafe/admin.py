@@ -3,7 +3,7 @@ from . import models
 
 @admin.register(models.Cafe)
 class CafeAdmin(admin.ModelAdmin):
-        """
+    """
     Admin interface for managing Cafe instances in the Django admin site.
     - Displaying important fields in the list view:
       - Name of the cafe
