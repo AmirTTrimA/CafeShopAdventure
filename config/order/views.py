@@ -64,11 +64,10 @@ def add_to_cart_view(request, item_id):
 
 
 def remove_from_cart(request, item_id):
-     """Remove an item from the cart.
-
+    """
+    Remove an item from the cart.
     Args:
         request (HttpRequest): The HTTP request object containing the cart.
-
     Returns:
         HttpResponse: Redirect response back to the cart page or error message.
     """
@@ -197,7 +196,6 @@ def order_success(request):
 
 
 # مدیریت آیتم‌های سفارش توسط کاربران Staff
-@permission_required('order.staff_access')
 @login_required
 def manage_order_items(request, order_id):
     """Allow staff to add or remove items from an order."""
@@ -238,7 +236,7 @@ def manage_order_items(request, order_id):
 
 
 # تغییر وضعیت سفارش
-@permission_required('order.staff_access')
+
 @login_required
 def change_order_status(request, order_id):
     """Allow staff to change the status of an order."""
@@ -269,7 +267,6 @@ def change_order_status(request, order_id):
 
 
 # تأیید سفارش
-@permission_required('order.staff_access')
 @login_required
 def order_confirmation(request, order_id):
     """Show the order confirmation after checkout."""
@@ -299,7 +296,7 @@ def order_status_cleanup(request):
 
     return redirect("order_list")
 
-@permission_required('order.staff_access')
+
 @login_required
 def change_item_quantity(request, order_id, item_id):
     """Allow staff to change the quantity of an item in an order."""
@@ -372,3 +369,4 @@ def order_history_view(request):
                 "You need to provide a phone number or be logged in to view your order history.",
             )
             return redirect("login")
+
