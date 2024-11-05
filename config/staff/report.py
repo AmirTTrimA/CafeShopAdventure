@@ -308,8 +308,8 @@ class ReportView(View):
             .order_by( "-total_spent", "-number_of_orders")[:5]
         )
 
-        for customer in top_customers:
-            customer_obj = Customer.objects.get(phone_number=customer['customer__phone_number'])
-            customer['points'] = customer_obj.points
+        # for customer in top_customers:
+        #     customer_obj = Customer.objects.get(phone_number=customer['customer__phone_number'])
+        #     customer['points'] = customer_obj.points
 
         return top_customers
