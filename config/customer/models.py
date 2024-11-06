@@ -39,7 +39,7 @@ class Customer(models.Model):
     phone_number = models.CharField(
         max_length=12, validators=[iran_phone_regex], unique=True, null=True, blank=True
     )
-    points = models.IntegerField(default=0)
+    points = models.PositiveIntegerField(default=0) 
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

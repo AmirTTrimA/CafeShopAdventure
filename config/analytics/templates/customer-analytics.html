@@ -10,7 +10,7 @@
         <h3 class="st-h" > Welcome {{user.first_name}} {{user.last_name}}!</h3>
     {% endif %}
     <div class="st-panel">
-        <li><a href="{% url 'checkout' %}">Checkout</a></li>
+        {% comment %} <li><a href="{% url 'checkout' %}">Checkout</a></li> {% endcomment %}
         <li><a href="{% url 'add-product' %}">Add Product</a></li>
         <li><a href="{% url 'edit-product' %}">Edit Product</a></li>
         <li><a href="{% url 'logout' %}">logout</a></li>

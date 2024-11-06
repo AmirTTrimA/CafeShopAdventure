@@ -179,7 +179,8 @@ def manage_order_items(request, order_id):
     # اطمینان از اینکه کاربر یک عضو staff است
     if not request.user.is_staff:
         messages.error(request, "You do not have permission to manage this order.")
-        return redirect("order_list")
+        order = Order.objects.get(id=order_id)
+        return redirect("order_list", order_id=order.id)
 
     if request.method == "POST":
         if "add_item" in request.POST:
