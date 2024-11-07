@@ -27,13 +27,26 @@
                             <p class="price">
                                Price: ${{ product.price }} 
                             </p>
-                            <span class="quantity"><input type="text" value="0"></span>
-                            <a class="btn" href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i></a>
+                            <span class="quantity"><input type="text" value="0" data-item-id="{{ product.pk }}"/></span>
+                                <a href="#" onclick="addToCart({{ product.pk }}); return false;">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </a>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-        <!-- About Section End-->
+
+<section>
+    {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+</section>
+        
+<script src="{% static 'js/cart.js' %}"></script>
 
 {% endblock %}
