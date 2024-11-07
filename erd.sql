@@ -1,79 +1,91 @@
--- Create Customer Table
-CREATE TABLE Customer (
-    customer_id SERIAL PRIMARY KEY,
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    phone_number VARCHAR(15),
-    points INT DEFAULT 0,
+CREATE TABLE cafe_cafe (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    opening_time TIME NOT NULL,
+    closing_time TIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE cafe_table (
+    id SERIAL PRIMARY KEY,
+    cafe_id INTEGER REFERENCES cafe_cafe(id) ON DELETE CASCADE,
+    number INTEGER NOT NULL,
+    status VARCHAR(20) CHECK (status IN ('A', 'U')) DEFAULT 'A',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE customer_customer (
+    id SERIAL PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    table_number INTEGER NOT NULL,
+    cafe_id INTEGER REFERENCES cafe_cafe(id) ON DELETE CASCADE,
+    phone_number VARCHAR(12) UNIQUE,
+    points INTEGER DEFAULT 0,
+    is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create Category Table
-CREATE TABLE Category (
-    category_id SERIAL PRIMARY KEY,
+CREATE TABLE menu_category (
+    id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create MenuItem Table
-CREATE TABLE MenuItem (
-    menu_item_id SERIAL PRIMARY KEY,
+CREATE TABLE menu_menuitem (
+    id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT,
-    price DECIMAL(10, 2) NOT NULL,
-    points INT NOT NULL DEFAULT 0, -- Points awarded for purchasing this item
-    category_id INT REFERENCES Category(category_id),
+    price NUMERIC(10, 2) NOT NULL,
+    points INTEGER DEFAULT 0,
+    category_id INTEGER REFERENCES menu_category(id) ON DELETE CASCADE,
     is_available BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create Staff Table
-CREATE TABLE Staff (
+CREATE TABLE staff_staff (
     staff_id SERIAL PRIMARY KEY,
-    first_name VARCHAR(50) NOT NULL,
+    first_name VARCHAR(40) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    role VARCHAR(20) NOT NULL CHECK (role IN ('Manager', 'Barista')),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    phone_number VARCHAR(12) UNIQUE NOT NULL,
+    role CHAR(1) CHECK (role IN ('M', 'S')),
+    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    password VARCHAR(128) NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    is_superuser BOOLEAN DEFAULT FALSE
 );
 
--- Create Order Table
-CREATE TABLE "Order" (
-    order_id SERIAL PRIMARY KEY,
-    customer_id INT REFERENCES Customer(customer_id),
-    staff_id INT REFERENCES Staff(staff_id), -- Connection to Staff
+CREATE TABLE order_order (
+    id SERIAL PRIMARY KEY,
+    customer_id INTEGER REFERENCES customer_customer(id) ON DELETE SET NULL,
+    staff_id INTEGER REFERENCES staff_staff(staff_id) ON DELETE CASCADE,
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status VARCHAR(20) NOT NULL CHECK (status IN ('Pending', 'Completed', 'Cancelled')),
-    total_amount DECIMAL(10, 2) NOT NULL,
+    status VARCHAR(20) CHECK (status IN ('Pending', 'Processing', 'Completed', 'Cancelled')) DEFAULT 'Pending',
+    table_number VARCHAR(10),
+    total_price NUMERIC(10, 2) DEFAULT 0.00,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create OrderItem Table
-CREATE TABLE OrderItem (
-    order_item_id SERIAL PRIMARY KEY,
-    order_id INT REFERENCES "Order"(order_id),
-    menu_item_id INT REFERENCES MenuItem(menu_item_id),
-    quantity INT NOT NULL,
-    price DECIMAL(10, 2) NOT NULL,
+CREATE TABLE order_orderitem (
+    id SERIAL PRIMARY KEY,
+    order_id INTEGER REFERENCES order_order(id) ON DELETE CASCADE,
+    item_id INTEGER REFERENCES menu_menuitem(id) ON DELETE CASCADE,
+    quantity INTEGER DEFAULT 1,
+    subtotal NUMERIC(10, 2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create SalesAnalytics Table
-CREATE TABLE SalesAnalytics (
-    analytics_id SERIAL PRIMARY KEY,
-    date DATE NOT NULL,
-    total_sales DECIMAL(10, 2) NOT NULL,
-    total_orders INT NOT NULL,
-    staff_id INT REFERENCES Staff(staff_id),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE order_orderhistory (
+    id SERIAL PRIMARY KEY,
+    customer_id INTEGER REFERENCES customer_customer(id) ON DELETE CASCADE,
+    guest_id VARCHAR(36),
+    order_data JSON NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

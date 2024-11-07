@@ -8,7 +8,7 @@ import json
 from datetime import timedelta
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
@@ -20,7 +20,7 @@ from django.contrib.auth.decorators import permission_required
 DEFAULT_GUEST_CUSTOMER_PHONE = "09123456789"  # Default phone number for guest customer
 
 
-def add_to_cart(response, request, item_id):
+def add_to_cart(request, item_id):
     """Add a menu item to the cart."""
     menu_item = get_object_or_404(MenuItem, id=item_id)
 
@@ -38,8 +38,11 @@ def add_to_cart(response, request, item_id):
             "price": str(menu_item.price),
         }
 
-    response = HttpResponse("Item added to cart")
+    response = HttpResponseRedirect("/menu")
     response.set_cookie("cart", json.dumps(cart), max_age=3600)
+    messages.success(
+        request, f"{menu_item.name} * {quantity} has been added to the cart."
+    )
 
     return response
 
@@ -55,11 +58,9 @@ def add_to_cart_view(request, item_id):
         HttpResponse: Redirect response to the menu page.
     """
     if request.method == "GET":
-        quantity = int(request.GET.get("quantity"))
-        print(f"Adding item {item_id} with quantity {quantity} to cart.")
-        response = redirect("menu")
-        response = add_to_cart(response, request, item_id)
+        response = add_to_cart(request, item_id)
         return response
+    messages.error(request, "Invalid request method.")
     return redirect("menu")
 
 
@@ -130,14 +131,13 @@ def submit_order(request):
         # Ensure table_number is valid
         if not table_number:
             messages.error(request, "Table number is required.")
-            return redirect("cart")  # Redirect to the form page
+            return redirect("cart")
 
         # Check if the table is available
         table = get_object_or_404(Table, number=table_number)
         if table.status != "A":
             messages.error(request, "The selected table is not available.")
-            return redirect("menu")  # Redirect to the form page
-
+            return redirect("cart")
 
         # Create or get the customer
         customer, created = Customer.objects.get_or_create(
@@ -186,12 +186,11 @@ def submit_order(request):
         order.save()
 
         # Clear the cart after order submission
-        clear_cart = ""
-        response = HttpResponse("Order submitted")
-        response.set_cookie("cart", json.dumps(clear_cart), max_age=0)
+        response = HttpResponseRedirect("/order_success")
+        response.delete_cookie("cart")
 
         messages.success(request, "Order submitted successfully!")
-        return redirect("order_success")
+        return response
     else:
         return render(request, "cart.html")
 

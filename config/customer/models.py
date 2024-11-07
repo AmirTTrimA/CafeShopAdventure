@@ -68,4 +68,4 @@ class Customer(models.Model):
 
     def __str__(self):
         """Return the full name of the customer."""
-        return f"{self.first_name} {self.last_name}"
+        return str(self.phone_number)
