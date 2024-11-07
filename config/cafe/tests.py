@@ -53,7 +53,6 @@ class CafeModelTests(TestCase):
         self.cafe = Cafe.objects.create(
             name='Test Cafe',
             address='123 Test Street',
-            number_of_tables=5,
             opening_time=time(8, 0),  # Use datetime.time for opening time
             closing_time=time(20, 0),  # Use datetime.time for closing time
         )
@@ -64,8 +63,6 @@ class CafeModelTests(TestCase):
         self.assertEqual(self.cafe.name, 'Test Cafe')
         # Assert that the cafe address is correctly set
         self.assertEqual(self.cafe.address, '123 Test Street')
-        # Assert that the number of tables is correctly set
-        self.assertEqual(self.cafe.number_of_tables, 5)
         # Assert that the opening time is correctly set
         self.assertEqual(self.cafe.opening_time, time(8, 0))  # Compare with datetime.time
         # Assert that the closing time is correctly set
@@ -82,7 +79,6 @@ class CafeModelTests(TestCase):
         cafe = Cafe(
             name='Invalid Cafe',
             address='123 Test Street',
-            number_of_tables=10,
             opening_time='25:00',  # Invalid time
             closing_time='20:00'
         )
@@ -94,7 +90,6 @@ class CafeModelTests(TestCase):
         cafe = Cafe(
             name='',
             address='123 Test Street',
-            number_of_tables=10,
             opening_time='08:00',
             closing_time='20:00',
         )

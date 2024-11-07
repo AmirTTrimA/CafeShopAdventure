@@ -7,7 +7,7 @@ including attributes related to customer information and validation.
 
 from django.db import models
 from django.core.exceptions import ValidationError
-from cafe.models import Cafe
+from cafe.models import Cafe, Table
 from .validator import iran_phone_regex
 # from django.contrib.auth.hashers import make_password
 
@@ -49,8 +49,10 @@ class Customer(models.Model):
         Validate the model's attributes before saving.
         """
         # Validate that the table_number is not greater than the number of tables in the Cafe
-        if self.table_number > self.cafe.number_of_tables:
-            raise ValidationError(f"Table number cannot exceed {self.cafe.number_of_tables} for this cafe.")
+        if self.table_number not in range(1, Table.objects.count() + 1):
+            raise ValidationError(
+                f"Table number must be between 1 and {Table.objects.count()}."
+            )
 
     def save(self, *args, **kwargs):
         """
