@@ -16,7 +16,7 @@ from django.db.models import Sum, Count
 from django.utils import timezone
 from django.db.models.functions import TruncDate, TruncMonth, TruncYear
 from django.contrib.auth.decorators import user_passes_test
-from openpyxl import Workbook
+# from openpyxl import Workbook
 from cafe.models import Table
 from order.models import Order, OrderItem
 from customer.models import Customer

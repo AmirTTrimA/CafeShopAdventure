@@ -7,7 +7,7 @@
 {% load static %}
 
         <!-- Reservations Section Start -->
-        <section id="reservations">
+        <!-- <section id="reservations">
             <div class="container">
                 <header class="section-header">
                     <h3>Reservations</h3>
@@ -20,7 +20,7 @@
                                     <div class="input-group date" id="date" data-target-input="nearest">
                                         <input type="text" class="form-control datetimepicker-input" placeholder="Date" data-target="#date"/>
                                         <div class="input-group-append" data-target="#date" data-toggle="datetimepicker">
-                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            <div class="input-group-text"><i class="fas fa-calendar"></i></div>
                                         </div>
                                     </div>
                                 </div>
@@ -57,7 +57,7 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> -->
         <!-- Reservations Section End -->
 
         <!-- About Section Start-->
@@ -72,21 +72,25 @@
                         <div class="about-col-right">
                             <header class="section-header">
                                 <h3>About Us</h3>
+                                
                             </header>
                             <ul class="icon">
-                                <li><a href="#" class="fa fa-twitter"></a></li>
-                                <li><a href="#" class="fa fa-facebook"></a></li>
-                                <li><a href="#" class="fa fa-pinterest"></a></li>
-                                <li><a href="#" class="fa fa-google-plus"></a></li>
+                                <li><a href="https://www.twitter.com" class="fab fa-twitter"></a></li>
+                                <li><a href="https://www.facebook.com" class="fab fa-facebook"></a></li>
+                                <li><a href="https://www.pinterest.com" class="fab fa-pinterest"></a></li>
+                                <!-- <li><a href="#" class="fab fa-google-plus"></a></li> -->
                             </ul>
+                            <h4>Our Story</h4>
                             <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam convallis quam sed tincidunt accumsan. Aliquam at tincidunt tortor, ac porta turpis. Curabitur lacinia venenatis semper.
+                            Founded in 2024, Maktab CoffeeShop was born out of a passion for quality coffee and a love for bringing people together. Our founder, Mr. Tehrani, envisioned a cozy space where everyone feels at home. Since then, we have been dedicated to sourcing the finest coffee beans from around the world, ensuring that every cup is crafted to perfection.</p>
+                            <h4>What We Offer</h4>
+                            <p>
+                                We take pride in our diverse menu, featuring a wide range of specialty coffees, teas, and freshly baked pastries. Whether you’re in the mood for a classic espresso, a creamy latte, or a refreshing iced tea, we have something to satisfy every palate. Our baristas are trained to provide you with the best experience, and they are always happy to recommend their favorites.
                             </p>
                             <p>
-                                Aliquam ut nibh ut lacus posuere facilisis. Vestibulum ullamcorper arcu et bibendum ultrices. Suspendisse rutrum turpis vitae.
+                                In addition to our beverages, we offer a selection of delicious snacks and light meals made from locally sourced ingredients. Our goal is to support local farmers and businesses while providing you with the freshest options available.
                             </p>
-                            <a class="btn" href="#">Learn More</a>
-                        </div>
+                            </div>
                     </div>
                 </div>
             </div>
@@ -103,49 +107,29 @@
                 <div class="row">
                     <div class="col-sm-6 col-md-3">
                         <div class="single-team">
-                            <img src="img/team-1.jpg" alt="">
+                            <img src="{% static 'img/team-1.jpg' %}" alt="Don Dennis">
                             <h4>Don Dennis</h4>
-                            <ul class="icon">
-                                <li><a href="#" class="fa fa-twitter"></a></li>
-                                <li><a href="#" class="fa fa-facebook"></a></li>
-                                <li><a href="#" class="fa fa-google-plus"></a></li>
-                            </ul>
                         </div>
                     </div>
 
                     <div class="col-sm-6 col-md-3">
                         <div class="single-team">
-                            <img src="img/team-2.jpg" alt="">
+                            <img src="{% static 'img/team-2.jpg' %}" alt="Mary Tejeda">
                             <h4>Mary Tejeda</h4>
-                            <ul class="icon">
-                                <li><a href="#" class="fa fa-twitter"></a></li>
-                                <li><a href="#" class="fa fa-facebook"></a></li>
-                                <li><a href="#" class="fa fa-google-plus"></a></li>
-                            </ul>
                         </div>                    
                     </div>
 
                     <div class="col-sm-6 col-md-3">
                         <div class="single-team">
-                            <img src="img/team-3.jpg" alt="">
+                            <img src="{% static 'img/team-3.jpg' %}" alt="Scott Williams">
                             <h4>Scott Williams</h4>
-                            <ul class="icon">
-                                <li><a href="#" class="fa fa-twitter"></a></li>
-                                <li><a href="#" class="fa fa-facebook"></a></li>
-                                <li><a href="#" class="fa fa-google-plus"></a></li>
-                            </ul>
                         </div>
                     </div>
 
                     <div class="col-sm-6 col-md-3">
                         <div class="single-team">
-                            <img src="img/team-4.jpg" alt="">
+                            <img src="{% static 'img/team-4.jpg' %}" alt="Mary Hall">
                             <h4>Mary Hall</h4>
-                            <ul class="icon">
-                                <li><a href="#" class="fa fa-twitter"></a></li>
-                                <li><a href="#" class="fa fa-facebook"></a></li>
-                                <li><a href="#" class="fa fa-google-plus"></a></li>
-                            </ul>
                         </div>
                     </div>
                 </div>
