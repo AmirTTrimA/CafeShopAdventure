@@ -648,7 +648,7 @@ body.mobile-nav-active #mobile-nav-toggle {
 #about .about-col-left {
     position: relative;
     width: 100%;
-    height: 100vh;
+    height: 80vh;
     border-radius: 6px;
     background: url("../img/about-us.jpg") left top no-repeat fixed;
     background-size: contain;
@@ -705,9 +705,10 @@ body.mobile-nav-active #mobile-nav-toggle {
 
 #about .about-col-right p {
     color: #353535;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 300;
     margin-bottom: 15px;
+    text-align: justify;
 }
 
 #about .about-col-right p:last-child {
@@ -740,9 +741,6 @@ body.mobile-nav-active #mobile-nav-toggle {
         margin-bottom: 30px;
     }
     
-    #about .about-col-right p {
-        font-size: 16px;
-    }
 }
 
 /* ================================================= */
@@ -947,7 +945,7 @@ span.quantity {
 #team h4 {
     position: absolute;
     width: 100%;
-    bottom: 85px;
+    bottom: 0;
     padding: 10px;
     color: #353535;
     background: rgba(188, 155, 93, .8);
@@ -1332,6 +1330,12 @@ span.quantity {
     width: 440px;
     margin: 0 auto;
 }
+.form-group label {
+    color: #fff;
+}
+span.required {
+    color: red;
+}
 
 #subscriber .form-group {
     margin-bottom: 0;
@@ -1646,6 +1650,7 @@ span.quantity {
     color: #353535;
     background: #BC9B5D;
     cursor: pointer;
+    margin-top: 25px;
 }
 
 #reservations .button button:hover {

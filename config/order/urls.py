@@ -20,4 +20,6 @@ urlpatterns = [
         views.order_confirmation,
         name="order_confirmation",
     ),
+    path('order_history/', views.order_history_view, name='order_history_view'),  # افزودن این خط
+
 ]

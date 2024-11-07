@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Details{% endblock %}
+{% block h1 %}Order Details{% endblock %}
+{% block h1staff %}Order Details{% endblock %}
+{% block login %}logout{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<section id="filter-ord">
+    <div class="container">
+        <div class="row form">
+            <div class="col-md-12">
+            </div>
+        </div>
+
+<h1 class="st-h">Order Details for Order #{{ order.id }}</h1>
+    <div class="container">
+        <div class="table-responsive-sm">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for item in orders.order_items.all %}
+                    <tr>
+                        <td>{{ item.item.name }}</td>
+                        <td>
+                            <form method="POST" action="{% url 'update_order_item' item.id %}">
+                                {% csrf_token %}
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" required>
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form method="POST" action="{% url 'remove_order_item' item.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="container">
+                <form method="POST" action="{% url 'add_order_item' orders.id %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="product_id">Add Item:</label>
+                        <select name="product_id" class="form-control">
+                            {% for product in products %}
+                                <option value="{{ product.id }}">{{ product.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="number" name="quantity" value="1" min="1" required class="form-control mt-2">
+                        <button type="submit" class="btn btn-success mt-2">Add Item</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add new item form -->
+{% if form.non_field_errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ form.non_field_errors }}
+    </div>
+    
+{% endif %}
+</div>
+</div>
+    
+{% endblock %}
+    

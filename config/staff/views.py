@@ -16,33 +16,64 @@ from django.db.models import Sum, Count
 from django.utils import timezone
 from django.db.models.functions import TruncDate, TruncMonth, TruncYear
 from django.contrib.auth.decorators import user_passes_test
-from openpyxl import Workbook
+
+# from openpyxl import Workbook
+from cafe.models import Table
 from order.models import Order, OrderItem
 from customer.models import Customer
 from menu.models import MenuItem, Category
-from .forms import OrderFilterForm, DataAnalysisForm, SaleAnalysisForm
+from .forms import (
+    OrderFilterForm,
+    DataAnalysisForm,
+    SaleAnalysisForm,
+    OrderFilterFormManager,
+)
 from .forms import StaffRegistrationForm
 from .report import ReportView
+from .export import (
+    create_orders_sheet,
+    create_customers_sheet,
+    create_staff_sheet,
+    create_menu_items_sheet,
+    generate_excel_response,
+)
 from django.db.models import Sum
 from django.utils import timezone
-from django.db.models.functions import TruncDate, TruncMonth, TruncYear
 from datetime import timedelta, date
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import permission_required
 
 
 @method_decorator(login_required, name="dispatch")
 class RegisterView(FormView):
+    """
+    View for staff registration.
+
+    This view handles the registration of new staff members.
+
+    Attributes:
+        template_name (str): The name of the template to be rendered.
+        form_class (Type[StaffRegistrationForm]): The form class used for registration.
+        success_url (str): URL to redirect to upon successful registration.
+    """
+
     template_name = "login.html"
     form_class = StaffRegistrationForm
     success_url = reverse_lazy("login")
 
     def form_valid(self, form):
+        """
+        Handles the valid submission of the registration form.
+        """
         form.save()
         messages.success(self.request, "Staff registered successfully!")
         return super().form_valid(form)
 
     def form_invalid(self, form):
+        """
+        Handles an invalid registration form submission.
+        """
         messages.error(self.request, "There was an error in the registration form.")
         return super().form_invalid(form)
 
@@ -53,9 +84,15 @@ class LoginView(View):
     template_name = "login.html"
 
     def get(self, request):
+        """
+        Renders the login template.
+        """
         return render(request, self.template_name)
 
     def post(self, request):
+        """
+        Handles the login form submission.
+        """
         phone_number = request.POST.get("phone_number")
         password = request.POST.get("password")
         user = authenticate(
@@ -85,6 +122,9 @@ class LogoutView(View):
     """
 
     def get(self, request):
+        """
+        Logs out the staff member and redirects to the login page.
+        """
         logout(request)
         messages.success(request, "You have been logged out successfully.")
         return redirect("login")
@@ -93,6 +133,16 @@ class LogoutView(View):
 @method_decorator(login_required, name="dispatch")
 class ManagerView(View):
     """Render the manager dashboard."""
+
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Checks if the user is a superuser before dispatching the request.
+        Returns:
+            HttpResponse: Redirects to the login page if the user is not a superuser.
+        """
+        if not request.user.is_superuser:
+            return render(request, "login.html")
+        return super().dispatch(request, *args, **kwargs)
 
     template_name = "manager.html"
 
@@ -109,6 +159,9 @@ class StaffView(View):
     template_name = "staff.html"
 
     def get(self, request):
+        """
+        Renders the manager dashboard view.
+        """
         if request.user.is_authenticated:
             """render the staff page"""
             # context = self.get_context_data()
@@ -117,95 +170,121 @@ class StaffView(View):
             return render(request, self.template_name, {"login_logout": "login"})
 
     def get_context_data(self, **kwargs):
+        """
+        Provides the context data for rendering.
+        Returns:
+            dict: Context data for rendering the staff page.
+        """
         context = {}
         return context
 
 
-@method_decorator(login_required, name="dispatch")
-class OrderFilterView(View):
-    template_name = "order_list.html"
+# @method_decorator(login_required, name="dispatch")
+# class OrderFilterView(View):
+#     """
+#     View to filter orders based on user inputs.
+#     """
 
-    def get(self, request):
-        form = OrderFilterForm()
-        return render(request, self.template_name, {"form": form})
+#     template_name = "order_list.html"
+#     def get(self, request):
+#         """
+#         Renders the order filter form.
+#         Returns:
+#             HttpResponse: The rendered order filter form.
+#         """
+#         form = OrderFilterForm()
+#         return render(request, self.template_name, {"form": form})
 
-    def post(self, request):
-        form = OrderFilterForm()
-        products = MenuItem.objects.all()
-        if request.POST.get("form_type") == "change_status":
-            data = request.POST
-            order_id = data.get("order_id") or 1  # Default to 1 if not provided
-            new_status = (
-                data.get("status") or "pending"
-            )  # Default to "pending" if not provided
+#     def post(self, request):
+#         """
+#         Handles the order filter form submission.
+#         Returns:
+#             HttpResponse: Renders the order list based on the filter criteria or shows
+#                           appropriate messages.
+#         """
+#         form = OrderFilterForm()
+#         products = MenuItem.objects.all()
+#         if request.POST.get("form_type") == "change_status":
+#             data = request.POST
+#             order_id = data.get("order_id") or 1  # Default to 1 if not provided
+#             new_status = (
+#                 data.get("status") or "pending"
+#             )  # Default to "pending" if not provided
 
-            try:
-                order = Order.objects.get(id=order_id)
-                order.status = new_status
-                order.save()
-                return render(
-                    request,
-                    self.template_name,
-                    {"form": form, "products": products, "message": "Status change was done successfully"},
-                )
-            except Order.DoesNotExist:
-                return render(
-                    request,
-                    self.template_name,
-                    {"form": form, "products": products, "error": "Order not found."},
-                )
+#             try:
+#                 order = Order.objects.get(id=order_id)
+#                 order.status = new_status
+#                 order.save()
+#                 return render(
+#                     request,
+#                     self.template_name,
+#                     {"form": form, "products": products, "message": "Status change was done successfully"},
+#                 )
+#             except Order.DoesNotExist:
+#                 return render(
+#                     request,
+#                     self.template_name,
+#                     {"form": form, "products": products, "error": "Order not found."},
+#                 )
 
-        else:
-            form = OrderFilterForm(request.POST)
-            if form.is_valid():
-                filter_type = form.cleaned_data["filter_type"]
-                filter_value = form.cleaned_data["filter_value"]
+#         else:
+#             form = OrderFilterForm(request.POST)
+#             if form.is_valid():
+#                 filter_type = form.cleaned_data["filter_type"]
+#                 filter_value = form.cleaned_data["filter_value"]
 
-                if filter_type != "last_order" and filter_value == "":
-                    form.add_error("filter_value", "Please enter a valid value.")
-                elif filter_type == "last_order":
-                    orders = Order.objects.order_by("-order_date")[:1]  # Last order
-                    return render(
-                        request, self.template_name, {"form": form, "products": products, "orders": orders}
-                    )
-                elif filter_type != "last_order" and filter_value != "":
-                    if filter_type == "date":
-                        import datetime
+#                 if filter_type != "last_order" and filter_value == "":
+#                     form.add_error("filter_value", "Please enter a valid value.")
+#                 elif filter_type == "last_order":
+#                     orders = Order.objects.order_by("-order_date")[:1]  # Last order
+#                     return render(
+#                         request, self.template_name, {"form": form, "products": products, "orders": orders}
+#                     )
+#                 elif filter_type != "last_order" and filter_value != "":
+#                     if filter_type == "date":
+#                         import datetime
 
-                        try:
-                            date_filter = datetime.datetime.strptime(
-                                filter_value, "%Y-%m-%d"
-                            )
-                            orders = Order.objects.filter(order_date__date=date_filter)
-                        except ValueError:
-                            orders = (
-                                Order.objects.none()
-                            )  # Return no results on invalid date
-                    elif filter_type == "status":
-                        orders = Order.objects.filter(status=filter_value)
-                    elif filter_type == "table_number":
-                        customers = Customer.objects.filter(table_number=filter_value)
-                        orders = Order.objects.filter(customer__in=customers)
+#                         try:
+#                             date_filter = datetime.datetime.strptime(
+#                                 filter_value, "%Y-%m-%d"
+#                             )
+#                             orders = Order.objects.filter(order_date__date=date_filter)
+#                         except ValueError:
+#                             orders = (
+#                                 Order.objects.none()
+#                             )  # Return no results on invalid date
+#                     elif filter_type == "status":
+#                         orders = Order.objects.filter(status=filter_value)
+#                     elif filter_type == "table_number":
+#                         customers = Customer.objects.filter(table_number=filter_value)
+#                         orders = Order.objects.filter(customer__in=customers)
 
-                    # Ensure we have an order to work with
-                    if orders.exists():
-                        order = (
-                            orders.first()
-                        )  # Get the first order from the filtered results
-                    else:
-                        order = None  # No orders found
+#                     # Ensure we have an order to work with
+#                     if orders.exists():
+#                         order = (
+#                             orders.first()
+#                         )  # Get the first order from the filtered results
+#                     else:
+#                         order = None  # No orders found
 
-                    return render(
-                        request,
-                        self.template_name,
-                        {"form": form, "products": products, "orders": orders, "order": order},
-                    )
+#                     return render(
+#                         request,
+#                         self.template_name,
+#                         {"form": form, "products": products, "orders": orders, "order": order},
+#                     )
 
-            return render(request, self.template_name, {"form": form, "products": products})
+#             return render(request, self.template_name, {"form": form, "products": products})
 
 
 @method_decorator(login_required, name="dispatch")
 class EditProduct(View):
+    """View to handle the editing of menu items.
+
+    Methods:
+        get: Renders the edit product page with existing items and categories.
+        post: Updates the product details based on user input from the form.
+    """
+
     def get(self, request):
         items = MenuItem.objects.all()
         cats = Category.objects.all()
@@ -225,6 +304,9 @@ class EditProduct(View):
             price = request.POST.get("Product Price")
             if price != "":
                 item.price = Decimal(price)
+            point = request.POST.get("Product Point")
+            if point != "":
+                item.point = int(point)
             item_cat = request.POST.get("Product cat")
             if item_cat != [""]:
                 item.category = Category.objects.get(id=item_cat)
@@ -246,6 +328,13 @@ class EditProduct(View):
 
 @method_decorator(login_required, name="dispatch")
 class Add_product(View):
+    """View to handle the addition of new menu items.
+
+    Methods:
+        get: Renders the add product page with categories.
+        post: Creates a new product based on user input from the form.
+    """
+
     def get(self, request):
         cats = Category.objects.all()
         return render(request, "add-product.html", {"cats": cats})
@@ -259,6 +348,7 @@ class Add_product(View):
         category_p = Category.objects.get(id=product_cat)
         product_description = data.get("Product description")
         product_price = data.get("Product Price")
+        product_point = data.get("Product Point")
         check_item = MenuItem.objects.filter(name=product_name, category=category_p)
         if check_item:
             return render(
@@ -275,6 +365,7 @@ class Add_product(View):
                 description=product_description,
                 price=Decimal(product_price),
                 category=category_p,
+                points=product_point,
             )
             item.save()
             return render(
@@ -284,6 +375,13 @@ class Add_product(View):
 
 @method_decorator(login_required, name="dispatch")
 class RemoveProduct(View):
+    """View to handle the removal of menu items.
+
+    Methods:
+        get: Renders the remove product page with product list.
+        post: Deletes a specified product based on user input from the form.
+    """
+
     def get(self, request):
         cats = Category.objects.all()
         pros = MenuItem.objects.all()
@@ -323,6 +421,19 @@ class RemoveProduct(View):
 
 @method_decorator(login_required, name="dispatch")
 class AddCategory(View):
+    """View to handle the addition of new categories.
+
+    Methods:
+        dispatch: Checks if the user is a superuser.
+        get: Renders the add category page.
+        post: Creates a new category based on user input from the form.
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return render(request, "login.html")
+        return super().dispatch(request, *args, **kwargs)
+
     def get(self, request):
         return render(request, "Add-category.html")
 
@@ -348,6 +459,19 @@ class AddCategory(View):
 
 @method_decorator(login_required, name="dispatch")
 class RemoveCategory(View):
+    """View to handle the removal of categories.
+
+    Methods:
+        dispatch: Checks if the user is a superuser.
+        get: Renders the remove category page.
+        post: Deletes a specified category based on user input from the form.
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return render(request, "login.html")
+        return super().dispatch(request, *args, **kwargs)
+
     def get(self, request):
         return render(request, "remove-c.html")
 
@@ -373,45 +497,247 @@ class RemoveCategory(View):
 
 @login_required
 def staff_checkout(request):
+    """Renders the staff checkout page with all orders.
+    Returns:
+        Rendered staff checkout page with order details.
+    """
     # When each satff change the status, they will be that order's staff
-    orders = Order.objects.all()
-    return render(request, "checkout.html", {"orders": orders})
+    if request.method == "GET":
+        form = OrderFilterForm()
+        # orders = Order.objects.all()
+        return render(request, "checkout.html", {"form": form})
+    elif request.method == "POST":
+        form = OrderFilterForm(request.POST)
+        template_name = "checkout.html"
+        if form.is_valid():
+            filter_type = form.cleaned_data["filter_type"]
+            filter_value = form.cleaned_data["filter_value"]
+
+            if (
+                filter_type not in ("last_order", "my_orders", "all")
+                and filter_value == ""
+            ):
+                form.add_error("filter_value", "Please enter a valid value.")
+            elif filter_type == "last_order":
+                orders = Order.objects.order_by("-order_date")[:1]  # Last order
+                return render(request, template_name, {"form": form, "orders": orders})
+            elif filter_type == "all":
+                orders = Order.objects.all()
+                return render(request, template_name, {"form": form, "orders": orders})
+            elif filter_type == "my_orders":
+                user_firstname = request.user.first_name
+                user_lastname = request.user.last_name
+
+                orders = Order.objects.filter(
+                    staff__first_name=user_firstname, staff__last_name=user_lastname
+                )
+                return render(request, template_name, {"form": form, "orders": orders})
+            elif (
+                filter_type not in ("last_order", "my_orders", "all")
+                and filter_value != ""
+            ):
+                if filter_type == "date":
+                    import datetime
+
+                    try:
+                        date_filter = datetime.datetime.strptime(
+                            filter_value, "%Y-%m-%d"
+                        )
+                        orders = Order.objects.filter(order_date__date=date_filter)
+                    except ValueError:
+                        orders = (
+                            Order.objects.none()
+                        )  # Return no results on invalid date
+                elif filter_type == "status":
+                    orders = Order.objects.filter(status=filter_value)
+                elif filter_type == "table_number":
+                    customers = Customer.objects.filter(table_number=filter_value)
+                    orders = Order.objects.filter(customer__in=customers)
+
+                # Ensure we have an order to work with
+                if orders.exists():
+                    order = (
+                        orders.first()
+                    )  # Get the first order from the filtered results
+                else:
+                    order = None  # No orders found
+
+                return render(
+                    request,
+                    template_name,
+                    {"form": form, "orders": orders, "order": order},
+                )
+
+        return render(request, template_name, {"form": form})
+
+
+@user_passes_test(lambda u: u.is_superuser)
+@login_required
+def manager_checkout(request):
+    """Renders the manager checkout page with all orders.
+    Returns:
+        Rendered manager checkout page with order details.
+    """
+    # When each satff change the status, they will be that order's staff
+    if request.method == "GET":
+        form = OrderFilterFormManager()
+        # orders = Order.objects.all()
+        return render(request, "checkoutmanager.html", {"form": form})
+    elif request.method == "POST":
+        staffs = Staff.objects.all()
+        form = OrderFilterFormManager(request.POST)
+        template_name = "checkoutmanager.html"
+        if form.is_valid():
+            filter_type = form.cleaned_data["filter_type"]
+            filter_value = form.cleaned_data["filter_value"]
+
+            if (
+                filter_type not in ("last_order", "my_orders", "all", "staff_null")
+                and filter_value == ""
+            ):
+                form.add_error("filter_value", "Please enter a valid value.")
+            elif filter_type == "last_order":
+                orders = Order.objects.order_by("-order_date")[:1]  # Last order
+                return render(
+                    request,
+                    template_name,
+                    {"form": form, "orders": orders, "staffs": staffs},
+                )
+            elif filter_type == "staff_null":
+                orders = Order.objects.filter(staff_id__isnull=True)
+                return render(
+                    request,
+                    template_name,
+                    {"form": form, "orders": orders, "staffs": staffs},
+                )
+            elif filter_type == "all":
+                orders = Order.objects.all()
+                return render(
+                    request,
+                    template_name,
+                    {"form": form, "orders": orders, "staffs": staffs},
+                )
+            elif filter_type == "my_orders":
+                user_firstname = request.user.first_name
+                user_lastname = request.user.last_name
+                orders = Order.objects.filter(
+                    staff__first_name=user_firstname, staff__last_name=user_lastname
+                )
+
+                return render(
+                    request,
+                    template_name,
+                    {"form": form, "orders": orders, "staffs": staffs},
+                )
+            elif (
+                filter_type not in ("last_order", "my_orders", "all")
+                and filter_value != ""
+            ):
+                if filter_type == "date":
+                    import datetime
+
+                    try:
+                        date_filter = datetime.datetime.strptime(
+                            filter_value, "%Y-%m-%d"
+                        )
+                        orders = Order.objects.filter(order_date__date=date_filter)
+                    except ValueError:
+                        orders = (
+                            Order.objects.none()
+                        )  # Return no results on invalid date
+                elif filter_type == "status":
+                    orders = Order.objects.filter(status=filter_value)
+                elif filter_type == "table_number":
+                    customers = Customer.objects.filter(table_number=filter_value)
+                    orders = Order.objects.filter(customer__in=customers)
+
+                # Ensure we have an order to work with
+                if orders.exists():
+                    order = (
+                        orders.first()
+                    )  # Get the first order from the filtered results
+                else:
+                    order = None  # No orders found
+
+                return render(
+                    request,
+                    template_name,
+                    {"form": form, "orders": orders, "order": order, "staffs": staffs},
+                )
+
+        return render(request, template_name, {"form": form, "staffs": staffs})
 
 
 @login_required
 def update_order_status(request, order_id):
+    """Updates the status of a specific order.
+    Returns:
+        Redirect to the staff checkout page.
+    """
     if request.method == "POST":
         order = get_object_or_404(Order, id=order_id)
         new_status = request.POST.get("status")
         order.status = new_status
+        if new_status == "Completed":
+            table = Table.objects.get(number=order.customer.table_number)
+            print(table.number)
+            table.status = "A"
+            table.save()
         order.save()
         return redirect("staff_checkout")
 
 
 @login_required
+def update_order_staff(request, order_id):
+    """Updates the staff of a specific order.
+    Returns:
+        Redirect to the manager checkout page.
+    """
+    if request.method == "POST":
+        order = get_object_or_404(Order, id=order_id)
+        print(request.POST)
+        new_staff = request.POST.get("staff")
+        print(new_staff)
+        order.staff_id = new_staff
+        order.save()
+        return redirect("manager_checkout")
+
+
+@login_required
 def order_details(request, order_id):
+    """Displays detailed information about a specific order.
+    Returns:
+        Rendered order details page with order information and items.
+    """
     order = get_object_or_404(Order, id=order_id)
     order_items = order.order_items.all()
     products = MenuItem.objects.all()
 
     return render(
         request,
-        "order_list.html",
-        {"order": order, "order_items": order_items, "products": products},
+        "order_details.html",
+        {"orders": order, "order": order_items, "products": products},
     )
 
 
 @login_required
 def add_order_item(request, order_id):
+    """Adds a new item to the specified order.
+
+    Args:
+        request: The HTTP request object.
+        order_id: ID of the order to add an item to.
+
+    Returns:
+        Redirect to the order details page.
+    """
     if request.method == "POST":
         order = get_object_or_404(Order, id=order_id)
         product_id = request.POST.get("product_id")
         quantity = int(request.POST.get("quantity"))
 
         product = get_object_or_404(MenuItem, id=product_id)
-        order_item, created = OrderItem.objects.get_or_create(
-            order=order, item=product
-        )
+        order_item, created = OrderItem.objects.get_or_create(order=order, item=product)
 
         if not created:
             order_item.quantity += quantity
@@ -419,11 +745,15 @@ def add_order_item(request, order_id):
             order_item.quantity = quantity
 
         order_item.save()
-        return redirect("order_list", order_id=order.id)
+        return redirect("order_details", order_id=order.id)
 
 
 @login_required
 def update_order_item(request, item_id):
+    """Updates the quantity of an order item or deletes it.
+    Returns:
+        Redirect to the order details page.
+    """
     if request.method == "POST":
         order_item = get_object_or_404(OrderItem, id=item_id)
         new_quantity = int(request.POST.get("quantity"))
@@ -434,43 +764,98 @@ def update_order_item(request, item_id):
         else:
             order_item.delete()
 
-        return redirect("order_list", order_id=order_item.order.id)
+        return redirect("order_details", order_id=order_item.order.id)
 
 
 @login_required
 def remove_order_item(request, item_id):
+    """Removes an item from the specified order.
+    Returns:
+        Redirect to the order details page.
+    """
     if request.method == "POST":
         order_item = get_object_or_404(OrderItem, id=item_id)
         order_item.delete()
-        return redirect("order_list", order_id=order_item.order.id)
+        return redirect("order_details", order_id=order_item.order.id)
 
 
 @method_decorator(login_required, name="dispatch")
 class ViewManager(View):
+    """
+    ViewManager handles the main manager view for superusers.
+
+    Requires the user to be logged in and a superuser to access the dispatch method.
+
+    Methods:
+        get: Returns the manager HTML with top products and top customers context.
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Ensures that only superusers can access the view.
+        """
+        if not request.user.is_superuser:
+            return render(request, "login.html")
+        return super().dispatch(request, *args, **kwargs)
+
     def get(self, request):
+        """
+        Handles GET requests to retrieve top products and top customers.
+        """
         context = {
-            "top_products": ReportView.top_products(),
-            "top_customers": ReportView.customer_analytics(),
+            "top_products": ReportView.top_products(self),
+            "top_customers": ReportView.customer_analytics(self),
         }
         return render(request, "Manager.html", context)
 
 
 @method_decorator(login_required, name="dispatch")
 class StaffAccess(FormView):
+    """
+    StaffAccess enables superusers to register new staff members.
+    Requires user to be logged in and a superuser to access the dispatch method.
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Ensures that only superusers can access the view.
+        Returns:
+            HttpResponse: Renders the login page if the user is not a superuser,
+                        else proceeds with the dispatch.
+        """
+        if not request.user.is_superuser:
+            return render(request, "login.html")
+        return super().dispatch(request, *args, **kwargs)
+
     template_name = "staff-access.html"
     form_class = StaffRegistrationForm
     success_url = reverse_lazy("login")
 
     def form_valid(self, form):
+        """
+        Handles the submission of a valid registration forme
+        Returns:
+            HttpResponse: Redirects to the success URL after saving the form.
+        """
         form.save()
         messages.success(self.request, "Staff registered successfully!")
         return super().form_valid(form)
 
     def form_invalid(self, form):
+        """
+        Handles the submission of an invalid registration form.
+        Returns:
+            HttpResponse: Renders the form with error messages.
+        """
         messages.error(self.request, "There was an error in the registration form.")
         return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):
+        """
+        Adds the staff list to the context for the template.
+        Returns:
+            dict: Updated context with the staff list.
+        """
         context = super().get_context_data(**kwargs)
         context["staff_list"] = Staff.objects.all()
         return context
@@ -478,17 +863,42 @@ class StaffAccess(FormView):
 
 @method_decorator(login_required, name="dispatch")
 class DataAnalysis(View):
+    """
+    DataAnalysis handles data analysis requests for superusers.
+    Requires user to be logged in and a superuser to access the dispatch method.
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Ensures that only superusers can access the view.
+            HttpResponse: Renders the login page if the user is not a superuser,
+                        else proceeds with the dispatch.
+        """
+        if not request.user.is_superuser:
+            return render(request, "login.html")
+        return super().dispatch(request, *args, **kwargs)
+
     def get(self, request):
+        """
+        Handles GET requests to display the data analysis form.
+        Returns:
+            HttpResponse: Renders the data_analysis.html template with an empty form.
+        """
         form = DataAnalysisForm()
         return render(request, "data_analysis.html", {"form": form})
 
     def post(self, request):
+        """
+        Handles POST requests to process the data analysis form.
+        Returns:
+            HttpResponse: Renders the data_analysis.html with analysis results or errors.
+        """
         form = DataAnalysisForm(request.POST)
         now = timezone.now()
         if form.is_valid():
             filter_type = form.cleaned_data["filter_type"]
             if filter_type == "most popular caffe items":
-                top_product = ReportView.top_products()
+                top_product = ReportView.top_products(self)
                 return render(
                     request,
                     "data_analysis.html",
@@ -496,13 +906,13 @@ class DataAnalysis(View):
                 )
 
             elif filter_type == "peak business hour":
-                orders = ReportView.peak_business_hour()
+                orders = ReportView.peak_business_hour(self)
                 return render(
                     request, "data_analysis.html", {"form": form, "orders": orders}
                 )
 
             elif filter_type == "customer demographic data":
-                context = ReportView.customer_demographic_data()
+                context = ReportView.customer_demographic_data(self)
                 return render(
                     request, "data_analysis.html", {"form": form, "orders": context}
                 )
@@ -512,36 +922,61 @@ class DataAnalysis(View):
 
 @method_decorator(login_required, name="dispatch")
 class SalesAnalysis(View):
+    """
+    SalesAnalysis handles sales analysis requests for superusers.
+    Requires user to be logged in and a superuser to access the dispatch method.
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Ensures that only superusers can access the view.
+            HttpResponse: Renders the login page if the user is not a superuser,
+                        else proceeds with the dispatch.
+        """
+        if not request.user.is_superuser:
+            return render(request, "login.html")
+        return super().dispatch(request, *args, **kwargs)
+
     def get(self, request):
+        """
+        Handles GET requests to display the sales analysis form.
+        Returns:
+            HttpResponse: Renders the sale_analysis.html template with an empty form.
+        """
         form = SaleAnalysisForm()
         return render(request, "sale_analysis.html", {"form": form})
 
     def post(self, request):
+        """
+        Handles POST requests to process the sales analysis form.
+        Returns:
+            HttpResponse: Renders the sale_analysis.html with analysis results or errors.
+        """
         now = timezone.now()
         form = SaleAnalysisForm(request.POST)
 
         if form.is_valid():
             filter_type = form.cleaned_data["filter_type"]
             if filter_type == "total sales":
-                context = ReportView.total_sales()
+                context = ReportView.total_sales(self)
 
                 return render(
                     request, "sale_analysis.html", {"orders": context, "form": form}
                 )
 
             elif filter_type == "daily sales":
-                context = ReportView.daily_sales()
+                context = ReportView.daily_sales(self)
                 return render(
                     request, "sale_analysis.html", {"form": form, "orders": context}
                 )
 
             elif filter_type == "monthly sales":
-                context = ReportView.monthly_sales()
+                context = ReportView.monthly_sales(self)
                 return render(
                     request, "sale_analysis.html", {"form": form, "orders": context}
                 )
             elif filter_type == "yearly sales":
-                context = ReportView.yearly_sales()
+                context = ReportView.yearly_sales(self)
                 return render(
                     request, "sale_analysis.html", {"form": form, "orders": context}
                 )
@@ -549,8 +984,16 @@ class SalesAnalysis(View):
                 form.add_error("filter_type", "Please enter a valid value.")
 
 
-@user_passes_test(lambda u: u.is_staff)
+@login_required
 def search_customer(request):
+    """
+    Search for customers based on the provided phone number.
+    Requires the user to be a staff member.
+    Returns:
+        HttpResponse: Renders the search_customer.html with customer data.
+    """
+    if not request.user.is_staff:
+        return redirect('login')
     customers = []
     if request.method == "GET":
         phone_number = request.GET.get("phone_number", "")
@@ -560,8 +1003,15 @@ def search_customer(request):
     return render(request, "search_customer.html", {"customers": customers})
 
 
+@user_passes_test(lambda u: u.is_superuser)
 @login_required
 def top_selling_items(request):
+    """
+    Generates and displays the top-selling items within a specified date range.
+    Requires the user to be a superuser and logged in.
+    Returns:
+        HttpResponse: Renders the top selling items report based on POST data or an empty view.
+    """
     if request.method == "POST":
         start_date = request.POST.get("start_date", timezone.now() - timedelta(days=30))
         end_date = request.POST.get("end_date", timezone.now())
@@ -581,16 +1031,30 @@ def top_selling_items(request):
         return render(request, "reports/top_selling_items.html")
 
 
+@user_passes_test(lambda u: u.is_superuser)
 @login_required
 def sales_by_category(request):
+    """
+    Provides a report on total sales categorized by menu items.
+    Requires the user to be a superuser and logged in.
+    Returns:
+        HttpResponse: Renders the sales_by_category.html with sales data.
+    """
     sales = OrderItem.objects.values("item__category__name").annotate(
         total_sales=Sum("quantity")
     )
     return render(request, "reports/sales_by_category.html", {"sales": sales})
 
 
+@user_passes_test(lambda u: u.is_superuser)
 @login_required
 def sales_by_customer(request):
+    """
+    Displays sales data for a specific customer identified by their phone number.
+    Requires the user to be a superuser and logged in.
+    Returns:
+        HttpResponse: Renders the sales_by_customer.html with orders data if POST; otherwise, renders the empty view.
+    """
     if request.method == "POST":
         phone_number = request.POST.get("phone_number")
         customer_orders = Order.objects.filter(customer__phone_number=phone_number)
@@ -601,8 +1065,15 @@ def sales_by_customer(request):
         return render(request, "reports/sales_by_customer.html")
 
 
+@user_passes_test(lambda u: u.is_superuser)
 @login_required
 def sales_by_time_of_day(request):
+    """
+    Provides a report on sales segmented by time of day.
+    Requires the user to be a superuser and logged in.
+    Returns:
+        HttpResponse: Renders the sales_by_time_of_day.html with sales data.
+    """
     morning_sales = Order.objects.filter(order_date__hour__lt=12).aggregate(
         total_sales=Count("id")
     )
@@ -616,8 +1087,15 @@ def sales_by_time_of_day(request):
     )
 
 
+@user_passes_test(lambda u: u.is_superuser)
 @login_required
 def order_status_report(request):
+    """
+    Generates a report on the status of orders for a specific date.
+    Requires the user to be a superuser and logged in.
+    Returns:
+        HttpResponse: Renders the order_status_report.html with order statuses for the specified date.
+    """
     date = request.GET.get("date", timezone.now().date())
     orders = (
         Order.objects.filter(order_date__date=date)
@@ -627,8 +1105,15 @@ def order_status_report(request):
     return render(request, "reports/order_status_report.html", {"orders": orders})
 
 
+@user_passes_test(lambda u: u.is_superuser)
 @login_required
 def sales_by_employee_report(request):
+    """
+    Provides a report of total sales categorized by employee.
+    Requires the user to be a superuser and logged in.
+    Returns:
+        HttpResponse: Renders the sales_by_employee_report.html with sales data by employee.
+    """
     employee_sales = Order.objects.values(
         "staff__first_name", "staff__last_name"
     ).annotate(total_sales=Count("id"))
@@ -639,8 +1124,14 @@ def sales_by_employee_report(request):
     )
 
 
+@user_passes_test(lambda u: u.is_superuser)
 @login_required
 def customer_order_history_report(request):
+    """
+    Shows the order history for a specific customer identified by customer_id.
+    Returns:
+        HttpResponse: Renders the customer_order_history_report.html with customer order data.
+    """
     customer_id = request.GET.get("customer_id")
     orders = Order.objects.filter(customer_id=customer_id).order_by("-order_date")
     return render(
@@ -648,140 +1139,29 @@ def customer_order_history_report(request):
     )
 
 
-def download_details(request):
-    response = HttpResponse(
-        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
-    response["Content-Disposition"] = 'attachment; filename="orders_data.xlsx"'
+@user_passes_test(lambda u: u.is_superuser)
+@login_required
+def download_orders(request):
+    workbook = create_orders_sheet()
+    return generate_excel_response(workbook, "orders_data.xlsx")
 
-    workbook = Workbook()
 
-    orders_sheet = workbook.active
-    orders_sheet.title = "Orders"
-    orders_sheet.append(
-        [
-            "Id",
-            "Status",
-            "Total Price",
-            "Customer Phone Number",
-            "Order Date",
-            "Table Number",
-        ]
-    )
+@user_passes_test(lambda u: u.is_superuser)
+@login_required
+def download_customers(request):
+    workbook = create_customers_sheet()
+    return generate_excel_response(workbook, "customers_data.xlsx")
 
-    orders = Order.objects.all()
-    for order in orders:
-        # Ensure order_date is naive by replacing tzinfo
-        order_date_naive = (
-            order.order_date.replace(tzinfo=None) if order.order_date else None
-        )
 
-        phone_number = order.customer.phone_number if order.customer else ""
+@user_passes_test(lambda u: u.is_superuser)
+@login_required
+def download_staff(request):
+    workbook = create_staff_sheet()
+    return generate_excel_response(workbook, "staff_data.xlsx")
 
-        orders_sheet.append(
-            [
-                order.id,
-                order.status,
-                order.total_price,
-                phone_number,
-                order_date_naive,
-                order.table_number,
-            ]
-        )
 
-    customers_sheet = workbook.create_sheet(title="Customers")
-    customers_sheet.append(
-        [
-            "Customer ID",
-            "First Name",
-            "Last Name",
-            "Phone Number",
-            "Number of Orders",
-            "Total Amount Paid",
-            "Points",
-            "Last Order Date",
-        ]
-    )
-
-    customers = Customer.objects.all()
-    for customer in customers:
-        # Calculate the number of orders and total amount paid by this customer
-        orders_by_customer = Order.objects.filter(customer=customer)
-        number_of_orders = orders_by_customer.count()
-        total_amount_paid = sum(order.total_price for order in orders_by_customer)
-        last_order_date = (
-            orders_by_customer.order_by("-order_date")
-            .first()
-            .order_date.replace(tzinfo=None)
-            if orders_by_customer.exists()
-            else None
-        )
-
-        customers_sheet.append(
-            [
-                customer.id,
-                customer.first_name if hasattr(customer, "first_name") else "",
-                customer.last_name if hasattr(customer, "last_name") else "",
-                customer.phone_number,
-                number_of_orders,
-                total_amount_paid,
-                customer.points,
-                last_order_date,
-            ]
-        )
-
-    staff_sheet = workbook.create_sheet(title="Staff")
-    staff_sheet.append(
-        [
-            "Staff ID",
-            "First Name",
-            "Last Name",
-            "Phone Number",
-            "Number of Orders",
-        ]
-    )
-
-    staff_members = Staff.objects.all()
-    for staff in staff_members:
-        # Calculate the number of orders submitted by this staff member
-        orders_by_staff = Order.objects.filter(staff=staff)
-        number_of_orders = orders_by_staff.count()
-
-        staff_sheet.append(
-            [
-                staff.pk,
-                staff.first_name if hasattr(staff, "first_name") else "",
-                staff.last_name if hasattr(staff, "last_name") else "",
-                staff.phone_number,
-                number_of_orders,
-            ]
-        )
-
-    menu_items_sheet = workbook.create_sheet(title="Menu Items")
-    menu_items_sheet.append(
-        [
-            "Menu Item ID",
-            "Name",
-            "Price",
-            "Points",
-            "Category",
-        ]
-    )
-
-    menu_items = MenuItem.objects.all()
-    for item in menu_items:
-        category_name = item.category.name if item.category else ''
-
-        menu_items_sheet.append(
-            [
-                item.id,
-                item.name,
-                item.price,
-                item.points,
-                category_name,
-            ]
-        )
-
-    # Save the workbook to the response
-    workbook.save(response)
-    return response
+@user_passes_test(lambda u: u.is_superuser)
+@login_required
+def download_menu_items(request):
+    workbook = create_menu_items_sheet()
+    return generate_excel_response(workbook, "menu_items_data.xlsx")

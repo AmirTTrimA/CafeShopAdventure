@@ -26,7 +26,19 @@ from .forms import StaffRegistrationForm
 
 
 class ReportView(View):
-    def top_products():
+    """
+    A class that generates various reports related to sales, customer demographics,
+    and orders for a specific period.
+    """
+
+    def top_products(self):
+        """
+        Retrieves the top 5 products sold in the last month.
+
+        Returns:
+            QuerySet: A queryset containing the top products with their names,
+            prices, total orders, and total sales amount.
+        """
         now = timezone.now()
         last_month_start = now - timedelta(days=30)
         # start_of_month = now.replace(day=1)
@@ -42,7 +54,14 @@ class ReportView(View):
 
         return top_products
 
-    def peak_business_hour():
+    def peak_business_hour(self):
+        """
+        Analyzes peak business hours based on orders extracted from the last month.
+
+        Returns:
+            dict: A dictionary containing the most frequent hour of orders per day
+            and overall most frequent hour across all days in the last month.
+        """
         now = timezone.now()
         last_month_start = now - timedelta(days=30)
 
@@ -91,7 +110,13 @@ class ReportView(View):
         }
         return orders
 
-    def customer_demographic_data():
+    def customer_demographic_data(self):
+        """
+        Collects demographic data regarding customers based on age and gender.
+
+        Returns:
+            dict: A dictionary summarizing customer counts by gender and age group.
+        """
         today = date.today()
         under_20_females = Customer.objects.filter(
             gender="female",
@@ -153,7 +178,14 @@ class ReportView(View):
         }
         return context
 
-    def total_sales():
+    def total_sales(self):
+        """
+        Computes total sales data including individual items and overall totals.
+
+        Returns:
+            dict: A dictionary containing sales data for each item
+            and the overall sales cost and count.
+        """
         sales_data = (
             OrderItem.objects.filter(order__status="Completed")
             .values("item__name")
@@ -173,7 +205,14 @@ class ReportView(View):
         }
         return context
 
-    def daily_sales():
+    def daily_sales(self):
+        """
+        Retrieves daily sales figures across all completed orders.
+
+        Returns:
+            dict: A dictionary containing daily total sales and product sales
+            data organized by date.
+        """
         results = (
             Order.objects.filter(status="Completed")
             .annotate(date=TruncDate("created_at"))
@@ -214,7 +253,14 @@ class ReportView(View):
 
         return context
 
-    def monthly_sales():
+    def monthly_sales(self):
+        """
+        Retrieves monthly sales figures across all completed orders.
+
+        Returns:
+            dict: A dictionary containing daily total sales and product sales
+            data organized by date.
+        """
         results = (
             Order.objects.filter(status="Completed")
             .annotate(date=TruncMonth("created_at"))
@@ -255,7 +301,14 @@ class ReportView(View):
 
         return context
 
-    def yearly_sales():
+    def yearly_sales(self):
+        """
+        Retrieves yearly sales figures across all completed orders.
+
+        Returns:
+            dict: A dictionary containing daily total sales and product sales
+            data organized by date.
+        """
         results = (
             Order.objects.filter(status="Completed")
             .annotate(date=TruncYear("created_at"))
@@ -296,7 +349,19 @@ class ReportView(View):
 
         return context
 
-    def customer_analytics():
+    def customer_analytics(self):
+        """
+        Retrieves the top 5 customers based on their order activity within the last month.
+
+        This function filters orders from the last 30 days, aggregates the number of orders
+        and total spending for each customer, and sorts them in descending order of total
+        spent and number of orders. It then retrieves the associated points of each top customer
+        based on their phone number.
+
+        Returns:
+            list: A list of dictionaries, each containing the customer's phone number,
+                  number of orders, total spent, and loyalty points.
+        """
         now = timezone.now()
         last_month_start = now - timedelta(days=30)
 
@@ -305,11 +370,14 @@ class ReportView(View):
             Order.objects.filter(order_date__gte=last_month_start)
             .values("customer__phone_number")
             .annotate(number_of_orders=Count("id"), total_spent=Sum("total_price"))
-            .order_by( "-total_spent", "-number_of_orders")[:5]
+            .order_by("-total_spent", "-number_of_orders")[:5]
         )
 
-        # for customer in top_customers:
-        #     customer_obj = Customer.objects.get(phone_number=customer['customer__phone_number'])
-        #     customer['points'] = customer_obj.points
+        for customer in top_customers:
+            if customer['customer__phone_number'] == None:
+                continue
+            else:
+                customer_obj = Customer.objects.get(phone_number=customer['customer__phone_number'])
+            customer['points'] = customer_obj.points
 
         return top_customers

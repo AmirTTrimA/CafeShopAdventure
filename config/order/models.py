@@ -9,7 +9,7 @@ from django.db import models
 from staff.models import Staff
 from customer.models import Customer
 from menu.models import MenuItem
-
+from django.core.exceptions import ValidationError
 
 class Order(models.Model):
     """
@@ -57,6 +57,12 @@ class Order(models.Model):
         return f"Order {self.id} by {self.customer.phone_number if self.customer else 'Guest'}"
 
     def calculate_total_price(self):
+        """
+        Calculates the total price of the order based on the subtotal of all order items.
+
+        This method sums the subtotals of all associated OrderItem instances and updates
+        the total_price attribute of the Order instance.
+        """
         total = sum(item.subtotal for item in self.order_items.all())
         self.total_price = total
 
@@ -74,6 +80,13 @@ class Order(models.Model):
         # Now that the Order is saved, you can access the order_items
         self.calculate_total_price()
 
+
+    def clean(self):       
+        if self.total_price < 0:
+            raise ValidationError("قیمت کل نمی‌تواند منفی باشد.")  
+          
+        if not self.table_number or not self.table_number.isdigit():
+            raise ValidationError("شماره میز الزامی است و باید عددی باشد.")
 
 class OrderItem(models.Model):
     """

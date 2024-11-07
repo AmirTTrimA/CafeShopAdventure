@@ -36,7 +36,7 @@
                                     </div>
                                 </td>
                                 <td>${{ item.total|floatformat:2 }}</td>
-                                <td><a href="{% url 'remove_from_cart' item_id %}"><i class="fab fa-trash-o"></i></a></td>
+                                <td><a href="{% url 'remove_from_cart' item_id %}"><i class="fas fa-trash-o"></i></a></td>
                             </tr>
                             {% empty %}
                             <tr>
@@ -71,9 +71,9 @@
                     <div class="form-row">
                         <div class="control-group col-sm-4">
                             <div class="form-group">
-                                <label for="table_number"></label>
+                                <label for="table_number">Table Number (required)<span class="required">*</span>:</label>
                                 <div class="input-group" id="num" data-target-input="nearest">
-                                    <input name="table_number" type="text" class="form-control" placeholder="Table Number" required />
+                                    <input name="table_number" type="text" class="form-control" placeholder="exp: 12" required />
                                 </div>
                                 {% if form.table_number.errors %}
                                     <div class="alert alert-danger mt-2">
@@ -84,9 +84,9 @@
                         </div>
                         <div class="control-group col-sm-4">
                             <div class="form-group">
-                                <label for="phone_number"></label>
+                                <label for="phone_number">Phone Number:</label>
                                 <div class="input-group" id="num" data-target-input="nearest">
-                                    <input name="phone_number" type="text" class="form-control" placeholder="Phone Number" />
+                                    <input name="phone_number" type="text" class="form-control" placeholder="09120001234" />
                                 </div>
                                 {% if form.phone_number.errors %}
                                     <div class="alert alert-danger mt-2">
@@ -103,6 +103,16 @@
             </div>
         </div>
     </div>
+</section>
+
+<section>
+    {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
 </section>
 <!-- Reservations Section End -->
 {% endblock %}
