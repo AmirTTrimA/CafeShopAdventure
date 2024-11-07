@@ -6,7 +6,6 @@ urlpatterns = [
     path("logout/", views.LogoutView.as_view(), name="logout"),
     path("staff/", views.StaffView.as_view(), name="staff"),
     path("register/", views.RegisterView.as_view(), name="register"),
-    path("filter/", views.OrderFilterView.as_view(), name="filter"),
     path("manager/", views.ViewManager.as_view(), name="manager"),
     path("add-category/", views.AddCategory.as_view(), name="add-category"),
     path("Add-product.html/", views.Add_product.as_view(), name="add-product"),
@@ -15,8 +14,10 @@ urlpatterns = [
     path("staff-access/", views.StaffAccess.as_view(), name="staff-access"),
     path("Edit-product.html", views.EditProduct.as_view(), name="edit-product"),
     path("checkout/", views.staff_checkout, name="staff_checkout"),
+    path("manager_checkout/", views.manager_checkout, name="manager_checkout"),
+    path("update_staff/<int:order_id>/", views.update_order_staff, name="update_staff"),
     path("data_analysis.html", views.DataAnalysis.as_view(), name="data_analysis"),
-    path("order_list/<int:order_id>/", views.order_details, name="order_list"),
+    path("order_details/<int:order_id>/", views.order_details, name="order_details"),
     path("sale_analysis.html", views.SalesAnalysis.as_view(), name="sale_analysis"),
     path(
         "update_order/<int:order_id>/",
@@ -24,7 +25,7 @@ urlpatterns = [
         name="update_order_status",
     ),
     path(
-        "staff/order/<int:order_id>/add_item/",
+        "staff/order/item/<int:order_id>/add_item/",
         views.add_order_item,
         name="add_order_item",
     ),
@@ -70,3 +71,4 @@ urlpatterns = [
     ),
     path('download-details/', views.download_details, name='download_details'),
 ]
+

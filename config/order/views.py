@@ -147,7 +147,6 @@ def submit_order(request):
         order = Order.objects.create(
             customer=customer,
             table_number=table_number,
-            staff=Staff.objects.first(),
             order_date=timezone.now(),
             total_price=0.00,  # Will be calculated later
         )

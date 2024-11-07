@@ -68,7 +68,7 @@
 <div class="st-panel">
         <li><a href="{% url 'manager' %}">Manager Dashboard</a></li>
         <li><a href="{% url 'staff-access' %}">Staff Access</a></li>
-        <li><a href="{% url 'staff_checkout' %}">Checkout</a></li>
+        <li><a href="{% url 'manager_checkout' %}">Checkout</a></li>
         <li class="menu-has-children">
             <a class="dropdown-toggle" href="#" data-toggle="dropdown">Product</a>
             <ul class="dropdown-menu">
@@ -92,7 +92,6 @@
         <li><a href="{% url 'sale_analysis' %}">sale-analisis</a></li> {% endcomment %}
         <!-- <li><a href="{% url 'remove-p' %}">Remove product</a></li> -->
         <!-- <li><a href="{% url 'remove-c' %}">Remove Category</a></li> -->
-        <li><a href="{% url 'filter' %}">Filter Order</a></li>
         <li class="menu-has-children">
             <a class="dropdown-toggle" href="#" data-toggle="dropdown">Report</a>
             <ul class="dropdown-menu">
@@ -126,7 +125,6 @@
                 <li><a class="dropdown-item" href="{% url 'remove-p' %}">Remove product</a></li>
             </ul>
         </li>
-        <li><a href="{% url 'filter' %}">Filter Order</a></li>
 
 </div>
 {% endif %}
@@ -195,4 +193,6 @@
 
     </body>
 </html>
+
+
 

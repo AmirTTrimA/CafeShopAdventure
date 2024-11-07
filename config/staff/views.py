@@ -20,7 +20,7 @@ from openpyxl import Workbook
 from order.models import Order, OrderItem
 from customer.models import Customer
 from menu.models import MenuItem, Category
-from .forms import OrderFilterForm, DataAnalysisForm, SaleAnalysisForm
+from .forms import OrderFilterForm, DataAnalysisForm, SaleAnalysisForm,OrderFilterFormManager
 from .forms import StaffRegistrationForm
 from .report import ReportView
 from django.db.models import Sum
@@ -162,103 +162,103 @@ class StaffView(View):
         """
         context = {}
         return context
+      
 
+# @method_decorator(login_required, name="dispatch")
+# class OrderFilterView(View):
+#     """
+#     View to filter orders based on user inputs.
+#     """
 
-@method_decorator(login_required, name="dispatch")
-class OrderFilterView(View):
-    """
-    View to filter orders based on user inputs.
-    """
+#     template_name = "order_list.html"
+#     def get(self, request):
+#         """
+#         Renders the order filter form.
+#         Returns:
+#             HttpResponse: The rendered order filter form.
+#         """
+#         form = OrderFilterForm()
+#         return render(request, self.template_name, {"form": form})
 
-    template_name = "order_list.html"
-    def get(self, request):
-        """
-        Renders the order filter form.
-        Returns:
-            HttpResponse: The rendered order filter form.
-        """
-        form = OrderFilterForm()
-        return render(request, self.template_name, {"form": form})
+#     def post(self, request):
+#         """
+#         Handles the order filter form submission.
+#         Returns:
+#             HttpResponse: Renders the order list based on the filter criteria or shows 
+#                           appropriate messages.
+#         """
+#         form = OrderFilterForm()
+#         products = MenuItem.objects.all()
+#         if request.POST.get("form_type") == "change_status":
+#             data = request.POST
+#             order_id = data.get("order_id") or 1  # Default to 1 if not provided
+#             new_status = (
+#                 data.get("status") or "pending"
+#             )  # Default to "pending" if not provided
 
-    def post(self, request):
-        """
-        Handles the order filter form submission.
-        Returns:
-            HttpResponse: Renders the order list based on the filter criteria or shows 
-                          appropriate messages.
-        """
-        form = OrderFilterForm()
-        products = MenuItem.objects.all()
-        if request.POST.get("form_type") == "change_status":
-            data = request.POST
-            order_id = data.get("order_id") or 1  # Default to 1 if not provided
-            new_status = (
-                data.get("status") or "pending"
-            )  # Default to "pending" if not provided
+#             try:
+#                 order = Order.objects.get(id=order_id)
+#                 order.status = new_status
+#                 order.save()
+#                 return render(
+#                     request,
+#                     self.template_name,
+#                     {"form": form, "products": products, "message": "Status change was done successfully"},
+#                 )
+#             except Order.DoesNotExist:
+#                 return render(
+#                     request,
+#                     self.template_name,
+#                     {"form": form, "products": products, "error": "Order not found."},
+#                 )
 
-            try:
-                order = Order.objects.get(id=order_id)
-                order.status = new_status
-                order.save()
-                return render(
-                    request,
-                    self.template_name,
-                    {"form": form, "products": products, "message": "Status change was done successfully"},
-                )
-            except Order.DoesNotExist:
-                return render(
-                    request,
-                    self.template_name,
-                    {"form": form, "products": products, "error": "Order not found."},
-                )
+#         else:
+#             form = OrderFilterForm(request.POST)
+#             if form.is_valid():
+#                 filter_type = form.cleaned_data["filter_type"]
+#                 filter_value = form.cleaned_data["filter_value"]
 
-        else:
-            form = OrderFilterForm(request.POST)
-            if form.is_valid():
-                filter_type = form.cleaned_data["filter_type"]
-                filter_value = form.cleaned_data["filter_value"]
+#                 if filter_type != "last_order" and filter_value == "":
+#                     form.add_error("filter_value", "Please enter a valid value.")
+#                 elif filter_type == "last_order":
+#                     orders = Order.objects.order_by("-order_date")[:1]  # Last order
+#                     return render(
+#                         request, self.template_name, {"form": form, "products": products, "orders": orders}
+#                     )
+#                 elif filter_type != "last_order" and filter_value != "":
+#                     if filter_type == "date":
+#                         import datetime
 
-                if filter_type != "last_order" and filter_value == "":
-                    form.add_error("filter_value", "Please enter a valid value.")
-                elif filter_type == "last_order":
-                    orders = Order.objects.order_by("-order_date")[:1]  # Last order
-                    return render(
-                        request, self.template_name, {"form": form, "products": products, "orders": orders}
-                    )
-                elif filter_type != "last_order" and filter_value != "":
-                    if filter_type == "date":
-                        import datetime
+#                         try:
+#                             date_filter = datetime.datetime.strptime(
+#                                 filter_value, "%Y-%m-%d"
+#                             )
+#                             orders = Order.objects.filter(order_date__date=date_filter)
+#                         except ValueError:
+#                             orders = (
+#                                 Order.objects.none()
+#                             )  # Return no results on invalid date
+#                     elif filter_type == "status":
+#                         orders = Order.objects.filter(status=filter_value)
+#                     elif filter_type == "table_number":
+#                         customers = Customer.objects.filter(table_number=filter_value)
+#                         orders = Order.objects.filter(customer__in=customers)
 
-                        try:
-                            date_filter = datetime.datetime.strptime(
-                                filter_value, "%Y-%m-%d"
-                            )
-                            orders = Order.objects.filter(order_date__date=date_filter)
-                        except ValueError:
-                            orders = (
-                                Order.objects.none()
-                            )  # Return no results on invalid date
-                    elif filter_type == "status":
-                        orders = Order.objects.filter(status=filter_value)
-                    elif filter_type == "table_number":
-                        customers = Customer.objects.filter(table_number=filter_value)
-                        orders = Order.objects.filter(customer__in=customers)
+#                     # Ensure we have an order to work with
+#                     if orders.exists():
+#                         order = (
+#                             orders.first()
+#                         )  # Get the first order from the filtered results
+#                     else:
+#                         order = None  # No orders found
 
-                    # Ensure we have an order to work with
-                    if orders.exists():
-                        order = (
-                            orders.first()
-                        )  # Get the first order from the filtered results
-                    else:
-                        order = None  # No orders found
+#                     return render(
+#                         request,
+#                         self.template_name,
+#                         {"form": form, "products": products, "orders": orders, "order": order},
+#                     )
 
-                    return render(
-                        request,
-                        self.template_name,
-                        {"form": form, "products": products, "orders": orders, "order": order},
-                    )
-
-            return render(request, self.template_name, {"form": form, "products": products})
+#             return render(request, self.template_name, {"form": form, "products": products})
 
 
 @method_decorator(login_required, name="dispatch")
@@ -483,8 +483,151 @@ def staff_checkout(request):
         Rendered staff checkout page with order details.
     """
     # When each satff change the status, they will be that order's staff
-    orders = Order.objects.all()
-    return render(request, "checkout.html", {"orders": orders})
+    if request.method == "GET":
+        form = OrderFilterForm()
+        # orders = Order.objects.all()
+        return render(request, "checkout.html", {"form":form})
+    elif request.method == "POST":
+        form = OrderFilterForm(request.POST)
+        template_name="checkout.html"
+        if form.is_valid():
+            filter_type = form.cleaned_data["filter_type"]
+            filter_value = form.cleaned_data["filter_value"]
+
+            if filter_type not in ("last_order","my_orders","all") and filter_value == "":
+                form.add_error("filter_value", "Please enter a valid value.")
+            elif filter_type == "last_order":
+                orders = Order.objects.order_by("-order_date")[:1]  # Last order
+                return render(
+                    request, template_name, {"form": form, "orders": orders}
+                )
+            elif filter_type == "all":
+                orders = Order.objects.all()
+                return render(
+                    request, template_name, {"form": form, "orders": orders}
+                )
+            elif filter_type == "my_orders":
+                user_firstname = request.user.first_name
+                user_lastname= request.user.last_name
+                
+                orders = Order.objects.filter(staff__first_name=user_firstname,staff__last_name=user_lastname)
+                return render(
+                    request, template_name, {"form": form, "orders": orders}
+                )
+            elif filter_type not in ("last_order","my_orders","all") and filter_value != "":
+                if filter_type == "date":
+                    import datetime
+
+                    try:
+                        date_filter = datetime.datetime.strptime(
+                            filter_value, "%Y-%m-%d"
+                        )
+                        orders = Order.objects.filter(order_date__date=date_filter)
+                    except ValueError:
+                        orders = (
+                            Order.objects.none()
+                        )  # Return no results on invalid date
+                elif filter_type == "status":
+                    orders = Order.objects.filter(status=filter_value)
+                elif filter_type == "table_number":
+                    customers = Customer.objects.filter(table_number=filter_value)
+                    orders = Order.objects.filter(customer__in=customers)
+
+                # Ensure we have an order to work with
+                if orders.exists():
+                    order = (
+                        orders.first()
+                    )  # Get the first order from the filtered results
+                else:
+                    order = None  # No orders found
+
+                return render(
+                    request,
+                    template_name,
+                    {"form": form, "orders": orders, "order": order},
+                )
+
+        return render(request, template_name, {"form": form})
+    
+@user_passes_test(lambda u: u.is_superuser)
+@login_required
+def manager_checkout(request):
+    """Renders the manager checkout page with all orders.
+    Returns:
+        Rendered manager checkout page with order details.
+    """
+    # When each satff change the status, they will be that order's staff
+    if request.method == "GET":
+        form = OrderFilterFormManager()
+        # orders = Order.objects.all()
+        return render(request, "checkoutmanager.html", {"form":form})
+    elif request.method == "POST":
+        staffs=Staff.objects.all()
+        form = OrderFilterFormManager(request.POST)
+        template_name="checkoutmanager.html"
+        if form.is_valid():
+            filter_type = form.cleaned_data["filter_type"]
+            filter_value = form.cleaned_data["filter_value"]
+
+            if filter_type not in ("last_order","my_orders","all","staff_null") and filter_value == "":
+                form.add_error("filter_value", "Please enter a valid value.")
+            elif filter_type == "last_order":
+                orders = Order.objects.order_by("-order_date")[:1]  # Last order
+                return render(
+                    request, template_name, {"form": form, "orders": orders,"staffs":staffs}
+                )
+            elif filter_type == "staff_null":
+                orders = Order.objects.filter(staff_id__isnull=True) 
+                return render(
+                    request, template_name, {"form": form, "orders": orders,"staffs":staffs}
+                )
+            elif filter_type == "all":
+                orders = Order.objects.all()
+                return render(
+                    request, template_name, {"form": form, "orders": orders,"staffs":staffs}
+                )
+            elif filter_type == "my_orders":
+                user_firstname = request.user.first_name
+                user_lastname= request.user.last_name
+                orders = Order.objects.filter(staff__first_name=user_firstname,staff__last_name=user_lastname)
+                
+                return render(
+                    request, template_name, {"form": form, "orders": orders,"staffs":staffs}
+                )
+            elif filter_type not in ("last_order","my_orders","all") and filter_value != "":
+                if filter_type == "date":
+                    import datetime
+
+                    try:
+                        date_filter = datetime.datetime.strptime(
+                            filter_value, "%Y-%m-%d"
+                        )
+                        orders = Order.objects.filter(order_date__date=date_filter)
+                    except ValueError:
+                        orders = (
+                            Order.objects.none()
+                        )  # Return no results on invalid date
+                elif filter_type == "status":
+                    orders = Order.objects.filter(status=filter_value)
+                elif filter_type == "table_number":
+                    customers = Customer.objects.filter(table_number=filter_value)
+                    orders = Order.objects.filter(customer__in=customers)
+
+                # Ensure we have an order to work with
+                if orders.exists():
+                    order = (
+                        orders.first()
+                    )  # Get the first order from the filtered results
+                else:
+                    order = None  # No orders found
+
+                return render(
+                    request,
+                    template_name,
+                    {"form": form, "orders": orders, "order": order,"staffs":staffs},
+                )
+
+        return render(request, template_name, {"form": form,"staffs":staffs})
 
 
 @login_required
@@ -499,6 +642,22 @@ def update_order_status(request, order_id):
         order.status = new_status
         order.save()
         return redirect("staff_checkout")
+    
+@login_required
+def update_order_staff(request, order_id):
+    """Updates the staff of a specific order.
+    Returns:
+        Redirect to the manager checkout page.
+    """
+    if request.method == "POST":
+        order = get_object_or_404(Order, id=order_id)
+        print(request.POST)
+        new_staff = request.POST.get("staff")
+        print(new_staff)
+        order.staff_id = new_staff
+        order.save()
+        return redirect("manager_checkout")
+
 
 
 @login_required
@@ -513,10 +672,9 @@ def order_details(request, order_id):
 
     return render(
         request,
-        "order_list.html",
-        {"order": order, "order_items": order_items, "products": products},
+        "order_details.html",
+        {"orders": order, "order": order_items, "products": products},
     )
-
 
 @login_required
 def add_order_item(request, order_id):
@@ -545,7 +703,7 @@ def add_order_item(request, order_id):
             order_item.quantity = quantity
 
         order_item.save()
-        return redirect("order_list", order_id=order.id)
+        return redirect("order_details", order_id=order.id)
 
 
 @login_required
@@ -564,7 +722,7 @@ def update_order_item(request, item_id):
         else:
             order_item.delete()
 
-        return redirect("order_list", order_id=order_item.order.id)
+        return redirect("order_details", order_id=order_item.order.id)
 
 
 @login_required
@@ -576,7 +734,7 @@ def remove_order_item(request, item_id):
     if request.method == "POST":
         order_item = get_object_or_404(OrderItem, id=item_id)
         order_item.delete()
-        return redirect("order_list", order_id=order_item.order.id)
+        return redirect("order_details", order_id=order_item.order.id)
 
 
 @method_decorator(login_required, name="dispatch")
