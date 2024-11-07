@@ -12,7 +12,6 @@ class CustomerModelTests(TestCase):
         self.cafe = Cafe.objects.create(
             name='Test Cafe',
             address='123 Test Street',
-            number_of_tables=10,
             opening_time='08:00',
             closing_time='20:00'
         )
@@ -115,7 +114,6 @@ class CustomerViewTests(TestCase):
         self.cafe = Cafe.objects.create(
             name='Test Cafe',
             address='123 Test Street',
-            number_of_tables=10,
             opening_time='08:00',
             closing_time='20:00'
         )
