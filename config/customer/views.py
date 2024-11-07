@@ -10,16 +10,16 @@ def customer_checkout(request):
     """
     Renders the customer order status page.
 
-    
+
     Context:
-        orders (list): A list of Order objects associated with the 
+        orders (list): A list of Order objects associated with the
                        customer's phone number.
 
     Args:
         request (HttpRequest): The HTTP request object.
 
     Returns:
-        HttpResponse: The rendered HTML response of the 
+        HttpResponse: The rendered HTML response of the
                       customer order status page.
     """
     # Retrieve the customer's phone number from the session
@@ -35,6 +35,7 @@ def customer_checkout(request):
 
     return render(request, "customer_order_status.html", {"orders": orders})
 
+
 @user_passes_test(lambda u: u.is_staff)
 def search_customer(request):
     """
@@ -48,13 +49,14 @@ def search_customer(request):
         request (HttpRequest): The HTTP request object.
 
     Returns:
-        HttpResponse: The rendered HTML response of the customer 
+        HttpResponse: The rendered HTML response of the customer
                       search results page.
     """
     customers = []
-    if request.method == 'GET':
-        phone_number = request.GET.get('phone_number', '')
+    if request.method == "GET":
+        phone_number = request.GET.get("phone_number", "")
         if phone_number:
-            customers = Customer.objects.filter(phone_number=phone_number)  # جستجوی مشتریان بر اساس شماره تلفن
-    return render(request, 'customers/search_customer.html', {'customers': customers})
-
+            customers = Customer.objects.filter(
+                phone_number=phone_number
+            )  # جستجوی مشتریان بر اساس شماره تلفن
+    return render(request, "customers/search_customer.html", {"customers": customers})

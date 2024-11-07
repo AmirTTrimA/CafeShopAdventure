@@ -5,7 +5,7 @@ allowing the management of customer orders, order items, and order history.
 """
 
 from django.contrib import admin
-from .models import Order, OrderItem, OrderHistory
+from .models import Order, OrderItem
 
 
 class OrderItemInline(admin.TabularInline):
@@ -94,26 +94,3 @@ class OrderItemAdmin(admin.ModelAdmin):
             },
         ),
     )
-
-
-@admin.register(OrderHistory)
-class OrderHistoryAdmin(admin.ModelAdmin):
-    """
-    Admin interface for the OrderHistory model.
-
-    This configuration allows the admin to view and manage order history records.
-    """
-
-    list_display = ("id", "customer", "guest_id", "created_at")
-
-    search_fields = ("customer__phone_number", "guest_id")
-
-    readonly_fields = ("created_at",)
-
-    fieldsets = (
-        (None, {"fields": ("customer", "guest_id")}),
-        ("Order Data", {"fields": ("order_data",)}),
-        ("Timestamps", {"fields": ("created_at",)}),
-    )
-
-    ordering = ("-created_at",)

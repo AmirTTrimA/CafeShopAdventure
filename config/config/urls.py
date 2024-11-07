@@ -1,10 +1,11 @@
 from django.contrib import admin
 from django.urls import path, include
+
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('', include('cafe.urls')),
-    path('', include('menu.urls')),
-    path('', include('order.urls')),
-    path('', include('customer.urls')),
-    path('panel/', include('staff.urls')),
+    path("", include("cafe.urls")),
+    path("", include("menu.urls")),
+    path("", include("order.urls")),
+    path("", include("customer.urls")),
+    path("panel/", include("staff.urls")),
 ]

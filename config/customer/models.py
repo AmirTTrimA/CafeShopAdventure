@@ -9,7 +9,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from cafe.models import Cafe, Table
 from .validator import iran_phone_regex
-# from django.contrib.auth.hashers import make_password
+
 
 class Customer(models.Model):
     """
@@ -31,15 +31,12 @@ class Customer(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     table_number = models.PositiveIntegerField()
-    # Doesn't need these two fields for now
-    # date_of_birth =models.DateField(null=True,blank=True)
-    # gender =models.CharField(max_length=10,choices=gender_choices,null=True,blank=True)
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE, null=True, blank=True)
 
     phone_number = models.CharField(
         max_length=12, validators=[iran_phone_regex], unique=True, null=True, blank=True
     )
-    points = models.PositiveIntegerField(default=0) 
+    points = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -62,8 +59,6 @@ class Customer(models.Model):
         Args:
             *args, **kwargs: Additional arguments are passed to the superclass save method.
         """
-        # Call clean method before saving
-        # self.clean()
         super(Customer, self).save(*args, **kwargs)
 
     def __str__(self):

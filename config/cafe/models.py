@@ -2,7 +2,8 @@
 This module contains the data models for the Cafe application.
 
 It defines the following models:
-- Cafe: Represents a cafe with attributes such as name, address, owner, opening and closing times, and the number of tables.
+- Cafe: Represents a cafe with attributes such as name,
+        address, owner, opening and closing times, and the number of tables.
 - Table: Represents a table within a cafe, including its number, status, and the cafe it belongs to.
 """
 
@@ -24,8 +25,6 @@ class Cafe(models.Model):
 
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=255)
-    # owner = models.ForeignKey(Staff, on_delete=models.CASCADE)
-    # number_of_tables = models.PositiveIntegerField(default=1)
     opening_time = models.TimeField()
     closing_time = models.TimeField()
     created_at = models.DateTimeField(auto_now_add=True)

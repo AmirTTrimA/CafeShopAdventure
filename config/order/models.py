@@ -11,6 +11,7 @@ from customer.models import Customer
 from menu.models import MenuItem
 from django.core.exceptions import ValidationError
 
+
 class Order(models.Model):
     """
     Represents a customer order in the system.
@@ -80,13 +81,13 @@ class Order(models.Model):
         # Now that the Order is saved, you can access the order_items
         self.calculate_total_price()
 
-
-    def clean(self):       
+    def clean(self):
         if self.total_price < 0:
-            raise ValidationError("قیمت کل نمی‌تواند منفی باشد.")  
-          
+            raise ValidationError("قیمت کل نمی‌تواند منفی باشد.")
+
         if not self.table_number or not self.table_number.isdigit():
             raise ValidationError("شماره میز الزامی است و باید عددی باشد.")
+
 
 class OrderItem(models.Model):
     """
@@ -135,33 +136,3 @@ class OrderItem(models.Model):
             str: A string indicating the quantity and item name in the corresponding order.
         """
         return f"{self.quantity} x {self.item.name} in Order {self.order.id}"
-
-
-class OrderHistory(models.Model):
-    """
-    Model to store order history in JSON format.
-
-    Attributes:
-        customer (Customer): The customer associated with the order history.
-        guest_id (str): An identifier for guest users.
-        order_data (JSONField): Stores the order details in JSON format.
-        created_at (DateTimeField): The timestamp when the order history was created.
-    """
-
-    customer = models.ForeignKey(
-        Customer, on_delete=models.CASCADE, null=True, blank=True
-    )
-    guest_id = models.CharField(
-        max_length=36, null=True, blank=True
-    )  # For guest tracking
-    order_data = models.JSONField()  # Stores the order details in JSON format
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        """
-        Returns a string representation of the OrderHistory.
-
-        Returns:
-            str: A string indicating the customer phone number and creation date.
-        """
-        return f"Order by {self.customer.phone_number} on {self.created_at}"

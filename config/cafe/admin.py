@@ -1,6 +1,7 @@
 from django.contrib import admin
 from . import models
 
+
 @admin.register(models.Cafe)
 class CafeAdmin(admin.ModelAdmin):
     """
@@ -18,8 +19,12 @@ class CafeAdmin(admin.ModelAdmin):
       - Address
       - Number of tables
     """
-    list_display = ('name', 'address', 'opening_time', 'closing_time', 'created_at')
-    search_fields = ('name', 'address',)
+
+    list_display = ("name", "address", "opening_time", "closing_time", "created_at")
+    search_fields = (
+        "name",
+        "address",
+    )
 
 
 @admin.register(models.Table)
@@ -34,5 +39,6 @@ class TableAdmin(admin.ModelAdmin):
     - Enabling search functionality on the following fields:
       - Number
     """
-    list_display = ('number', 'status', 'cafe', 'created_at')
-    search_fields = ('number',)
+
+    list_display = ("number", "status", "cafe", "created_at")
+    search_fields = ("number",)

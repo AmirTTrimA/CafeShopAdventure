@@ -1,28 +1,11 @@
-from decimal import Decimal
 from datetime import timedelta, date
 from collections import defaultdict
-from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from django.contrib import messages
-from django.views.generic.edit import FormView
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponse
 from django.views import View
-from .models import Staff
-from django.urls import reverse_lazy
 from django.db.models import Sum, Count, F
 from django.utils import timezone
 from django.db.models.functions import TruncDate, TruncMonth, TruncYear
-from django.contrib.auth.decorators import user_passes_test
-
-# from openpyxl import Workbook
 from order.models import Order, OrderItem
 from customer.models import Customer
-from menu.models import MenuItem, Category
-from .forms import OrderFilterForm, DataAnalysisForm, SaleAnalysisForm
-from .forms import StaffRegistrationForm
 
 
 class ReportView(View):
@@ -41,8 +24,6 @@ class ReportView(View):
         """
         now = timezone.now()
         last_month_start = now - timedelta(days=30)
-        # start_of_month = now.replace(day=1)
-        # # end_of_month = (start_of_month + timezone.timedelta(days=31)).replace(day=1)
 
         top_products = (
             OrderItem.objects.filter(created_at__gte=last_month_start)
@@ -374,10 +355,12 @@ class ReportView(View):
         )
 
         for customer in top_customers:
-            if customer['customer__phone_number'] == None:
+            if customer["customer__phone_number"] == None:
                 continue
             else:
-                customer_obj = Customer.objects.get(phone_number=customer['customer__phone_number'])
-            customer['points'] = customer_obj.points
+                customer_obj = Customer.objects.get(
+                    phone_number=customer["customer__phone_number"]
+                )
+            customer["points"] = customer_obj.points
 
         return top_customers

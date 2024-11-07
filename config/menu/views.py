@@ -10,6 +10,7 @@ class CafeMenuView(View):
     If a category_id is provided, only the menu items belonging to that category will be shown.
     Otherwise, all available menu items will be displayed.
     """
+
     def get(self, request, category_id=None):
         """
         Handles GET requests to fetch and display menu items.
@@ -29,6 +30,7 @@ class ProductDetailView(View):
     """
     View to display the details of a specific product (menu item).
     """
+
     template_name = "product.html"
 
     def get(self, request, pk):
@@ -46,6 +48,7 @@ class SearchView(View):
 
     This view retrieves menu items whose names contain the search query.
     """
+
     def get(self, request):
         """
         Handles GET requests to search for menu items based on the query.

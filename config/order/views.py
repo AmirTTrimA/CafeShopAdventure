@@ -14,8 +14,7 @@ from django.contrib import messages
 from django.utils import timezone
 from cafe.models import Cafe, Table
 from staff.models import Staff
-from .models import Order, OrderItem, OrderHistory, MenuItem, Customer
-from django.contrib.auth.decorators import permission_required
+from .models import Order, OrderItem, MenuItem, Customer
 
 DEFAULT_GUEST_CUSTOMER_PHONE = "09123456789"  # Default phone number for guest customer
 
@@ -241,9 +240,6 @@ def manage_order_items(request, order_id):
     )
 
 
-# تغییر وضعیت سفارش
-
-
 @login_required
 def change_order_status(request, order_id):
     """Allow staff to change the status of an order."""
@@ -273,7 +269,6 @@ def change_order_status(request, order_id):
     return render(request, "change_order_status.html", {"order": order})
 
 
-# تأیید سفارش
 @login_required
 def order_confirmation(request, order_id):
     """Show the order confirmation after checkout."""
@@ -287,18 +282,14 @@ def order_status_cleanup(request):
         messages.error(request, "You do not have permission to clean up orders.")
         return redirect("order_list")
 
-    # تعیین محدوده زمانی برای سفارش‌های قدیمی. مثلا سفارش‌هایی که بیش از 30 روز پیش ایجاد شده‌اند
     time_threshold = timezone.now() - timedelta(days=30)
 
-    # پیدا کردن سفارش‌هایی که وضعیت آنها 'Canceled' یا 'Completed' است و بیش از 30 روز پیش ایجاد شده‌اند
     old_orders = Order.objects.filter(
         status__in=["Canceled", "Completed"], created_at__lt=time_threshold
     )
 
-    # حذف این سفارش‌ها
     deleted_count, _ = old_orders.delete()
 
-    # نمایش پیغام به کاربر درباره تعداد سفارش‌های حذف شده
     messages.success(request, f"{deleted_count} old orders have been cleaned up.")
 
     return redirect("order_list")
@@ -308,11 +299,9 @@ def order_status_cleanup(request):
 def change_item_quantity(request, order_id, item_id):
     """Allow staff to change the quantity of an item in an order."""
 
-    # پیدا کردن سفارش و آیتم مربوطه
     order = get_object_or_404(Order, id=order_id)
     order_item = get_object_or_404(OrderItem, order=order, menu_item_id=item_id)
 
-    # بررسی اینکه آیا کاربر یک عضو staff است
     if not request.user.is_staff:
         messages.error(
             request,
@@ -321,13 +310,11 @@ def change_item_quantity(request, order_id, item_id):
         return redirect("order_list")
 
     if request.method == "POST":
-        # دریافت مقدار جدید از فرم
         new_quantity = int(request.POST.get("quantity", 1))
 
-        # بررسی اینکه مقدار جدید معتبر است
         if new_quantity > 0:
             order_item.quantity = new_quantity
-            order_item.save()  # ذخیره آیتم با مقدار جدید
+            order_item.save()
             messages.success(
                 request,
                 f"The quantity of {order_item.menu_item.name} has been updated to {new_quantity}.",
@@ -335,9 +322,8 @@ def change_item_quantity(request, order_id, item_id):
         else:
             messages.error(request, "Quantity must be greater than zero.")
 
-        # محاسبه مجدد قیمت کل سفارش
         order.calculate_total_price()
-        order.save()  # ذخیره سفارش با قیمت جدید
+        order.save()
 
         return redirect("manage_order_items", order_id=order.id)
 

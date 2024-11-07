@@ -24,7 +24,9 @@ def create_orders_sheet():
     order_items = OrderItem.objects.all()
     for item in order_items:
         order_date_naive = (
-            item.order.order_date.replace(tzinfo=None) if item.order.order_date else None
+            item.order.order_date.replace(tzinfo=None)
+            if item.order.order_date
+            else None
         )
         phone_number = item.order.customer.phone_number if item.order.customer else ""
         orders_sheet.append(

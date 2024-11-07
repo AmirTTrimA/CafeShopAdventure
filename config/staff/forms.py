@@ -1,28 +1,27 @@
-
 """staff/forms.py"""
 
 from django import forms
 from .models import Staff
-from .validator import iran_phone_regex
-from django.contrib.auth.models import Permission
+
 
 class OrderFilterForm(forms.Form):
     """
     A form for filtering orders based on various criteria.
 
     Attributes:
-        FILTER_CHOICES (list): A list of choices for filtering types, 
+        FILTER_CHOICES (list): A list of choices for filtering types,
                                 including date, last order, status, and table number.
         filter_type (ChoiceField): A field to select the type of filter.
         filter_value (CharField): A field to input the value to filter by.
     """
+
     FILTER_CHOICES = [
         ("date", "Date"),
         ("last_order", "Last Order"),
         ("status", "Status"),
         ("table_number", "Table Number"),
-        ("my_orders","my orders"),
-        ("all","all"),
+        ("my_orders", "my orders"),
+        ("all", "all"),
     ]
     filter_type = forms.ChoiceField(choices=FILTER_CHOICES)
     filter_value = forms.CharField(label="Enter filter value", required=False)
@@ -33,19 +32,20 @@ class OrderFilterFormManager(forms.Form):
     A form for filtering orders based on various criteria.
 
     Attributes:
-        FILTER_CHOICES (list): A list of choices for filtering types, 
+        FILTER_CHOICES (list): A list of choices for filtering types,
                                 including date, last order, status, and table number.
         filter_type (ChoiceField): A field to select the type of filter.
         filter_value (CharField): A field to input the value to filter by.
     """
+
     FILTER_CHOICES = [
-        ("staff_null","staff_null"),
+        ("staff_null", "staff_null"),
         ("date", "Date"),
         ("last_order", "Last Order"),
         ("status", "Status"),
         ("table_number", "Table Number"),
-        ("my_orders","my orders"),
-        ("all","all"),
+        ("my_orders", "my orders"),
+        ("all", "all"),
     ]
     filter_type = forms.ChoiceField(choices=FILTER_CHOICES)
     filter_value = forms.CharField(label="Enter filter value", required=False)
@@ -57,26 +57,32 @@ class StaffRegistrationForm(forms.ModelForm):
     """
 
     first_name = forms.CharField(
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Enter your first name'}))
-    
+        widget=forms.TextInput(attrs={"placeholder": "Enter your first name"})
+    )
+
     last_name = forms.CharField(
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Enter your last name'}))
-    
+        widget=forms.TextInput(attrs={"placeholder": "Enter your last name"})
+    )
 
     phone_number = forms.CharField(
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Enter a valid Iranian phone number (e.g., +989123456789 or 09123456789'}))
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Enter a valid Iranian phone number (e.g., +989123456789 or 09123456789"
+            }
+        )
+    )
 
     password1 = forms.CharField(
-        widget=forms.PasswordInput(attrs={'placeholder':"Enter a strong password with at least 8 characters"}),
+        widget=forms.PasswordInput(
+            attrs={"placeholder": "Enter a strong password with at least 8 characters"}
+        ),
         label="Confirm Password",
     )
 
-    
     password2 = forms.CharField(
-        widget=forms.PasswordInput(attrs={'placeholder':"Enter the same password as above, for verification"}),
+        widget=forms.PasswordInput(
+            attrs={"placeholder": "Enter the same password as above, for verification"}
+        ),
         label="Confirm Password",
     )
 
@@ -90,7 +96,14 @@ class StaffRegistrationForm(forms.ModelForm):
         """
 
         model = Staff
-        fields = ["first_name","last_name","phone_number", "password1", "password2", "role"]
+        fields = [
+            "first_name",
+            "last_name",
+            "phone_number",
+            "password1",
+            "password2",
+            "role",
+        ]
 
     def clean(self):
         """
@@ -124,10 +137,11 @@ class DataAnalysisForm(forms.Form):
     A form for selecting the type of data analysis to perform.
 
     Attributes:
-        FILTER_CHOICES (list): A list of choices for data analysis types, 
+        FILTER_CHOICES (list): A list of choices for data analysis types,
                                 including popular items and peak business hours.
         filter_type (ChoiceField): A field to select the type of analysis filter.
     """
+
     FILTER_CHOICES = [
         ("most popular caffe items", "popular items"),
         ("peak business hour", "peak hour"),
@@ -142,14 +156,15 @@ class SaleAnalysisForm(forms.Form):
     A form for selecting the type of sales analysis to perform.
 
     Attributes:
-        FILTER_CHOICES (list): A list of choices for sales analysis types, 
+        FILTER_CHOICES (list): A list of choices for sales analysis types,
                                 including total, daily, monthly, and yearly sales.
         filter_type (ChoiceField): A field to select the type of sales analysis filter.
     """
+
     FILTER_CHOICES = [
-        ("total sales","total sales"),
-        ("daily sales",'daily sales'),
-        ("monthly sales","monthly sales"),
-        ("yearly sales","yearly sales")
+        ("total sales", "total sales"),
+        ("daily sales", "daily sales"),
+        ("monthly sales", "monthly sales"),
+        ("yearly sales", "yearly sales"),
     ]
     filter_type = forms.ChoiceField(choices=FILTER_CHOICES)

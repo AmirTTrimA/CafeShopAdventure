@@ -2,13 +2,15 @@
 from django.contrib.auth.backends import ModelBackend
 from .models import Staff
 
+
 class PhoneNumberBackend(ModelBackend):
     """
     Custom authentication backend that authenticates users based on their phone number.
     Attributes:
-        model (Model): The model class to use for authentication, which should be a subclass of 
+        model (Model): The model class to use for authentication, which should be a subclass of
         Django's `User` model (in this case, `Staff`).
     """
+
     def authenticate(self, request, phone_number=None, password=None, **kwargs):
         """
         Authenticate a user based on the provided phone number and password.

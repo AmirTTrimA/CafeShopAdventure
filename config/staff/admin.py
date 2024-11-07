@@ -21,8 +21,6 @@ class StaffAdmin(admin.ModelAdmin):
         "last_name",
         "phone_number",
         "role",
-        # "is_staff",
-        # "is_superuser",
     )
 
     list_filter = ["role"]
