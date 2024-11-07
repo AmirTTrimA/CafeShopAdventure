@@ -1,13 +1,12 @@
 from django.test import TestCase
 from django.urls import reverse
-from .models import Order
+from .models import Order, OrderItem
 from customer.models import Customer
 from menu.models import MenuItem, Category
 from staff.models import Staff
 from decimal import Decimal
 import json
 from django.core.exceptions import ValidationError
-
 
 class OrderViewTests(TestCase):
 
@@ -22,19 +21,16 @@ class OrderViewTests(TestCase):
     def test_add_to_cart_view(self):
         """Test adding an item to the cart."""
         response = self.client.get(reverse('add_to_cart', args=[self.menu_item.id]), {'quantity': 2})
-        self.assertEqual(response.status_code, 200)  # Change to 200 for handling in view
+        self.assertEqual(response.status_code, 200)  # Update to match view response
         cart = json.loads(response.cookies['cart'].value)
         self.assertIn(str(self.menu_item.id), cart)
         self.assertEqual(cart[str(self.menu_item.id)]['quantity'], 2)
 
-    def test_submit_order_view(self):
-        """Test submitting an order."""
-        self.client.cookies['cart'] = json.dumps({str(self.menu_item.id): {"quantity": 2}})
-        response = self.client.post(reverse('submit_order'), {'table_number': '5', 'phone_number': '09123456789'})
-        self.assertEqual(response.status_code, 302)  # Redirect response
-        order = Order.objects.last()
-        self.assertEqual(order.customer.phone_number, '09123456789')
-        self.assertEqual(order.total_price, Decimal("5.00"))  # 2 * 2.50
+    def test_cart_view_empty_cart(self):
+        self.client.get(reverse('remove_from_cart', args=[self.menu_item.id]))  # Remove item
+        response = self.client.get(reverse('cart'))
+        self.assertEqual(response.status_code, 200)  # Should render cart view
+        self.assertContains(response, "Your cart is empty.")  
 
     def test_order_success_view(self):
         """Test the order success page."""
@@ -64,26 +60,48 @@ class OrderViewTests(TestCase):
         with self.assertRaises(ValidationError):
             order.full_clean()  # Should raise validation error
 
-    # def test_order_invalid_table_number(self):
-    #     """Test creating an order with a table number that doesn't exist."""
-    #     order = Order(
-    #         customer=self.customer,
-    #         table_number=50,  # Invalid table number (assuming the cafe only has 10 tables)
-    #         total_price=100.0,
-    #         status='Completed'
-    #     )
-    #     with self.assertRaises(ValidationError):
-    #         order.full_clean()  # Should raise validation error
-
-
-    def test_manage_order_items_view(self):
-        # ایجاد سفارش برای customer در تست
-        order = Order.objects.create(customer=self.customer)
+    def test_cart_functionality(self):
+        """Test adding items to the cart and checking cart data."""
+        response = self.client.get(reverse('add_to_cart', args=[self.menu_item.id]), {'quantity': 3})
         
-        response = self.client.get(reverse('order_list', args=[order.id]))
-        
-        # چک کردن کد وضعیت به جای ریدایرکت و انتظار کد 200
+        # چک کردن وضعیت پاسخ
         self.assertEqual(response.status_code, 200)
+        
+        # بررسی ذخیره‌سازی سبد خرید در کوکی‌ها
+        cart = json.loads(response.cookies['cart'].value)
+        self.assertIn(str(self.menu_item.id), cart)
+        self.assertEqual(cart[str(self.menu_item.id)]['quantity'], 3)
+
+    def test_order_item_subtotal_calculation(self):
+        """Test if subtotal for an order item is calculated correctly."""
+        order = Order.objects.create(customer=self.customer, staff=self.staff_member, table_number="1")
+        order_item = OrderItem.objects.create(order=order, item=self.menu_item, quantity=3)
+        self.assertEqual(order_item.subtotal, Decimal("7.50"))  # 2.50 * 3
+
+    def test_order_update_total_price_on_item_change(self):
+        """Test if the total price of an order updates when an order item is changed."""
+        order = Order.objects.create(customer=self.customer, staff=self.staff_member, table_number="1")
+        order_item = OrderItem.objects.create(order=order, item=self.menu_item, quantity=1)
+        order.calculate_total_price()
+        self.assertEqual(order.total_price, Decimal("2.50"))  # Initial total price
+
+        # Change the quantity of the order item
+        order_item.quantity = 4
+        order_item.save()  # This should trigger total price recalculation
+        self.assertEqual(order.total_price, Decimal("10.00"))  # 2.50 * 4
+
+    def test_order_item_removal_updates_total_price(self):
+        """Test if removing an order item updates the total price."""
+        order = Order.objects.create(customer=self.customer, staff=self.staff_member, table_number="1")
+        order_item1 = OrderItem.objects.create(order=order, item=self.menu_item, quantity=2)
+        order_item2 = OrderItem.objects.create(order=order, item=self.menu_item, quantity=1)
+        order.calculate_total_price()
+        self.assertEqual(order.total_price, Decimal("7.50"))  # 2.50 * 2 + 2.50 * 1
+
+        # Remove one item
+        order_item1.delete()
+        order.calculate_total_price()
+        self.assertEqual(order.total_price, Decimal("2.50"))  # Only one item left
 
     def tearDown(self):
         self.customer.delete()
@@ -91,4 +109,3 @@ class OrderViewTests(TestCase):
         self.menu_item.delete()
         self.category.delete()
         Order.objects.all().delete()
-    

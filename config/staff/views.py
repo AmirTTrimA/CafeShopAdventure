@@ -987,6 +987,8 @@ def search_customer(request):
     Returns:
         HttpResponse: Renders the search_customer.html with customer data.
     """
+    if not request.user.is_staff:
+        return redirect('login')
     customers = []
     if request.method == "GET":
         phone_number = request.GET.get("phone_number", "")
