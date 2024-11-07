@@ -9,7 +9,7 @@ from django.db import models
 from staff.models import Staff
 from customer.models import Customer
 from menu.models import MenuItem
-
+from django.core.exceptions import ValidationError
 
 class Order(models.Model):
     """
@@ -80,6 +80,13 @@ class Order(models.Model):
         # Now that the Order is saved, you can access the order_items
         self.calculate_total_price()
 
+
+    def clean(self):       
+        if self.total_price < 0:
+            raise ValidationError("قیمت کل نمی‌تواند منفی باشد.")  
+          
+        if not self.table_number or not self.table_number.isdigit():
+            raise ValidationError("شماره میز الزامی است و باید عددی باشد.")
 
 class OrderItem(models.Model):
     """

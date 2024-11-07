@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}orders{% endblock %}
+
+{% block content %}
+{% load static %}
+    <h1 class="st-h">Staff Panel</h1>
+    {% if user.is_authenticated %}
+        <h3 class="st-h" > Welcome {{user.first_name}} {{user.last_name}}!</h3>
+    {% endif %}
+    <div class="st-panel">
+        {% comment %} <li><a href="{% url 'checkout' %}">Checkout</a></li> {% endcomment %}
+        <li><a href="{% url 'add-product' %}">Add Product</a></li>
+        <li><a href="{% url 'edit-product' %}">Edit Product</a></li>
+        <li><a href="{% url 'logout' %}">logout</a></li>
+
+    </div>
+        <!-- Cart Section Start -->
+        <section id="staff-cart">
+            <div class="container">
+                <header class="section-header">
+                    <h3 class="st-ti">Sales Analytics</h3>
+                    
+                </header>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive-sm">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col">Item</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col">Quantity</th>
+                                        <th scope="col">peak time</th>
+                                        <th scope="col">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">ICED LATTE MACCHIATO</th>
+                                        <td>$10</td>
+                                        <td>100</td>
+                                        <td>oct2020</td>
+                                        <td>$1000</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">PANINI</th>
+                                        <td>$15</td>
+                                        <td>30</td>
+                                        <td>oct2020</td>
+                                        <td>$450</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Cappuccino</th>
+                                        <td>$20</td>
+                                        <td>15</td>
+                                        <td>oct2020</td>
+                                        <td>$300</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Cart Section End -->
+
+{% endblock %}
