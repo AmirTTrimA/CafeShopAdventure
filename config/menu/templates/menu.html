@@ -24,7 +24,7 @@
           <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
           <div>${{item.price}}</div>
           <h4><a href="{% url 'product' item.pk %}">{{item.name}}</a></h4>
-          <span class="quantity"><input type="text" value="1" data-item-id="{{ item.pk }}"/></span>
+          <span class="quantity"><input type="text" value="0" data-item-id="{{ item.pk }}"/></span>
           <a href="#" onclick="addToCart({{ item.pk }}); return false;">
             <i class="fas fa-shopping-cart"></i>
           </a>

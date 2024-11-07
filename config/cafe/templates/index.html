@@ -11,7 +11,7 @@
                 <header class="section-header">
                         <div class="container">
                             <h3>Welcome to Maktab CoffeeShop</h3>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas gravida sollicitudin turpis id posuere. Fusce nec rhoncus nibh. Fusce arcu libero, euismod eget commodo at, venenatis a nisi. Sed faucibus metus sed leo vulputate blandit.</p>
+                            <p>At Maktab CoffeeShop, we believe that a great cup of coffee can change your day. Nestled in the heart of Tehran, our café is more than just a place to grab a drink; it’s a community hub where friends gather, ideas flourish, and moments are shared.</p>
                         </div>
                 </header>
             </div>
@@ -29,19 +29,16 @@
                     <div class="col-md-6">
                         <div class="about-col-right">
                             <header class="section-header">
-                                <h3>About Us</h3>
+                                <h3>What We Offer</h3>
                             </header>
                             <ul class="icon">
-                                <li><a href="#" class="fab fa-twitter"></a></li>
-                                <li><a href="#" class="fab fa-facebook"></a></li>
-                                <li><a href="#" class="fab fa-pinterest"></a></li>
-                                <li><a href="#" class="fab fa-google-plus"></a></li>
+                                <li><a href="https://www.twitter.com" class="fab fa-twitter"></a></li>
+                                <li><a href="https://www.facebook.com" class="fab fa-facebook"></a></li>
+                                <li><a href="https://www.pinterest.com" class="fab fa-pinterest"></a></li>
+                                <!-- <li><a href="#" class="fab fa-google-plus"></a></li> -->
                             </ul>
                             <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam convallis quam sed tincidunt accumsan. Aliquam at tincidunt tortor, ac porta turpis. Curabitur lacinia venenatis semper.
-                            </p>
-                            <p>
-                                Aliquam ut nibh ut lacus posuere facilisis. Vestibulum ullamcorper arcu et bibendum ultrices. Suspendisse rutrum turpis vitae.
+                                We take pride in our diverse menu, featuring a wide range of specialty coffees, teas, and freshly baked pastries. Whether you’re in the mood for a classic espresso, a creamy latte, or a refreshing iced tea, we have something to satisfy every palate. Our baristas are trained to provide you with the best experience, and they are always happy to recommend their favorites.
                             </p>
                             <a class="btn" href="{% url 'about' %}">Learn More</a>
                         </div>
@@ -66,7 +63,7 @@
                         <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
                         <div>${{item.price}}</div>
                         <h4><a href="{% url 'product' item.pk %}">{{item.name}}</a></h4>
-                        <span class="quantity"><input type="text" value="1" /></span>
+                        <span class="quantity"><input type="text" value="0" /></span>
                         <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i> </a>
                         </div>
                     </div>
@@ -149,18 +146,17 @@
                     <div class="row testimonial-item">
                         <div class="col-sm-4">
                             <div class="img">
-                                <img src="{% static 'img/testimonial-1.jpg' %}" class="testimonial-img" alt="">
+                                <img src="{% static 'img/team-1.jpg' %}" class="testimonial-img" alt="">
                             </div>
                         </div>
                         <div class="col-sm-8">
                             <div class="testimonial-content">
                                 <div class="content">
-                                    <h4>Jamie Boyd</h4>
+                                    <h4>AmirRwza Tehrani</h4>
                                     <h5>VIP Client</h5>
                                     <p>
                                         <i class="fa fa-quote-left"></i>
-                                        Commodo sed hendrerit id, posuere tempus odio. Phasellus vel leo aliquam, interdum massa quis, aliquam sapien. Aliquam erat volutpat. Etiam nec feugiat libero. Phasellus in ipsum nunc.
-                                        <i class="fa fa-quote-right"></i>
+                                        I absolutely love this café! The atmosphere is cozy and inviting, making it the perfect spot to relax with a book or catch up with friends. Their cappuccinos are the best I've ever had, and the pastries are always fresh and delicious. Highly recommend!<i class="fa fa-quote-right"></i>
                                     </p>
                                 </div>
                             </div>
@@ -176,12 +172,11 @@
                         <div class="col-sm-8">
                             <div class="testimonial-content">
                                 <div class="content">
-                                    <h4>Albert Cerrato</h4>
+                                    <h4>Fatemeh Normohamadi</h4>
                                     <h5>Regular Client</h5>
                                     <p>
                                         <i class="fa fa-quote-left"></i>
-                                        Proin ut dui dictum ligula condimentum cursus. Ut orci arcu, commodo sed hendrerit id, posuere tempus odio. Phasellus vel leo aliquam, interdum massa quis, aliquam sapien. Aliquam erat volutpat
-                                        <i class="fa fa-quote-right"></i>
+                                        This café has a charming vibe, but I found the service to be a bit slow during peak hours. The coffee was good, but not exceptional. I did enjoy the avocado toast, which was beautifully presented. I might give it another try during a quieter time.                                        <i class="fa fa-quote-right"></i>
                                     </p>
                                 </div>
                             </div>
@@ -191,18 +186,17 @@
                     <div class="row testimonial-item">
                         <div class="col-sm-4">
                             <div class="img">
-                                <img src="{% static 'img/testimonial-3.jpg' %}" class="testimonial-img" alt="">
+                                <img src="{% static 'img/team-2.jpg' %}" class="testimonial-img" alt="">
                             </div>
                         </div>
                         <div class="col-sm-8">
                             <div class="testimonial-content">
                                 <div class="content">
-                                    <h4>Theresa Wood</h4>
+                                    <h4>Nima Nemaii</h4>
                                     <h5>VIP Client</h5>
                                     <p>
                                         <i class="fa fa-quote-left"></i>
-                                        Dictum ligula condimentum cursus commodo sed hendrerit id, posuere tempus odio. Phasellus vel leo aliquam, interdum massa quis, aliquam sapien. Aliquam erat volutpat. Etiam nec ultricies semper risus.
-                                        <i class="fa fa-quote-right"></i>
+                                        I had a wonderful experience at this café! The staff was incredibly friendly and attentive. I tried their signature latte and a slice of carrot cake, both of which were fantastic. It's a great place to work or meet friends. I’ll definitely be coming back!                                        <i class="fa fa-quote-right"></i>
                                     </p>
                                 </div>
                             </div>
@@ -214,66 +208,7 @@
         <!-- Testimonials Section End -->
 
         <!-- Contact Section Start -->
-        <section id="contact">
-            <div class="container">
-                <div class="section-header">
-                    <h3>Contact Us</h3>
-                </div>
-                
-                <div class="row contact-detail">
-                    <div class="col-md-6">
-                        <div class="contact-col-1">
-                            <div class="contact-hours">
-                                <h4>Opening Hours</h4>
-                                <p>Monday-Friday: 7am to 12am</p>
-                                <p>Saturday: 5pm to 12am</p>
-                                <p>Sunday: 9am to 12am</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="contact-col-2">
-                            <div class="contact-info">
-                                <h4>Contact Info</h4>
-                                <p>1489 Enghelab Street, Tehran, Iran</p>
-                                <p><a href="tel:+98-021-748-1492">+98-021-748-1492</a></p>
-                                <p><a href="mailto:info@example.com">info@example.com</a></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- <div class="row">
-                    <div class="col-md-6">
-                        <div class="contact-map">
-                            <iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d12623.52751148822!2d-122.47260557388145!3d37.72245039905841!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1s220%2C+San+Francisco%2C+California%2C+USA!5e0!3m2!1sen!2sbd!4v1555690883913!5m2!1sen!2sbd" frameborder="0" style="border:0" allowfullscreen></iframe>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="contact-form">
-                            <form>
-                                <div class="form-row">
-                                    <div class="form-group col-md-6">
-                                        <input type="text" class="form-control" placeholder="Your Name" required="required" />
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <input type="email" class="form-control" placeholder="Your Email" required="required" />
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Subject" required="required" />
-                                </div>
-                                <div class="form-group">
-                                    <textarea class="form-control" rows="5" placeholder="Message" required="required" ></textarea>
-                                </div>
-                                <div><button type="submit">Send Message</button></div>
-                            </form>
-                        </div>
-                    </div>
-                </div> -->
-            </div>
-        </section>
         <!-- Contact Section End -->
 
 {% endblock %}       
