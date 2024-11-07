@@ -304,6 +304,9 @@ class EditProduct(View):
             price = request.POST.get("Product Price")
             if price != "":
                 item.price = Decimal(price)
+            point = request.POST.get("Product Point")
+            if point != "":
+                item.point = int(point)
             item_cat = request.POST.get("Product cat")
             if item_cat != [""]:
                 item.category = Category.objects.get(id=item_cat)
@@ -345,6 +348,7 @@ class Add_product(View):
         category_p = Category.objects.get(id=product_cat)
         product_description = data.get("Product description")
         product_price = data.get("Product Price")
+        product_point = data.get("Product Point")
         check_item = MenuItem.objects.filter(name=product_name, category=category_p)
         if check_item:
             return render(
@@ -361,6 +365,7 @@ class Add_product(View):
                 description=product_description,
                 price=Decimal(product_price),
                 category=category_p,
+                points=product_point,
             )
             item.save()
             return render(
