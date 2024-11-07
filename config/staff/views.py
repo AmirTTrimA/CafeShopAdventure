@@ -17,6 +17,7 @@ from django.utils import timezone
 from django.db.models.functions import TruncDate, TruncMonth, TruncYear
 from django.contrib.auth.decorators import user_passes_test
 from openpyxl import Workbook
+from cafe.models import Table
 from order.models import Order, OrderItem
 from customer.models import Customer
 from menu.models import MenuItem, Category
@@ -640,6 +641,11 @@ def update_order_status(request, order_id):
         order = get_object_or_404(Order, id=order_id)
         new_status = request.POST.get("status")
         order.status = new_status
+        if new_status == "Completed":
+            table = Table.objects.get(number=order.customer.table_number)
+            print(table.number)
+            table.status = "A"
+            table.save()
         order.save()
         return redirect("staff_checkout")
     

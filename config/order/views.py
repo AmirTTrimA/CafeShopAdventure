@@ -12,7 +12,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
-from cafe.models import Cafe
+from cafe.models import Cafe, Table
 from staff.models import Staff
 from .models import Order, OrderItem, OrderHistory, MenuItem, Customer
 from django.contrib.auth.decorators import permission_required
@@ -24,7 +24,7 @@ def add_to_cart(response, request, item_id):
     """Add a menu item to the cart."""
     menu_item = get_object_or_404(MenuItem, id=item_id)
 
-    quantity = int(request.GET.get('quantity'))
+    quantity = int(request.GET.get("quantity"))
 
     cart = request.COOKIES.get("cart", "{}")
     cart = json.loads(cart)
@@ -104,11 +104,10 @@ def cart_view(request):
         item["total"] = item_total  # Add item total to each item
         total_price += item_total
 
-    
     context = {
-            'cart': cart,
-            'total_price': total_price,
-        }
+        "cart": cart,
+        "total_price": total_price,
+    }
 
     return render(request, "cart.html", context)
 
@@ -120,7 +119,7 @@ def submit_order(request):
         request (HttpRequest): The HTTP request object.
 
     Returns:
-        HttpResponse: Redirect response to the order success page, or 
+        HttpResponse: Redirect response to the order success page, or
         render cart view if not a POST request.
     """
     if request.method == "POST":
@@ -131,9 +130,15 @@ def submit_order(request):
         # Ensure table_number is valid
         if not table_number:
             messages.error(request, "Table number is required.")
-            return redirect("order_form")  # Redirect to the form page
+            return redirect("cart")  # Redirect to the form page
 
-        # Create or get the customer (unpack the tuple)
+        # Check if the table is available
+        table = get_object_or_404(Table, number=table_number)
+        if table.status != "available":
+            messages.error(request, "The selected table is not available.")
+            return redirect("menu")  # Redirect to the form page
+
+        # Create or get the customer
         customer, created = Customer.objects.get_or_create(
             phone_number=phone_number,
             defaults={
@@ -143,13 +148,17 @@ def submit_order(request):
             },
         )
 
-        # Create the order instance
+        # Create the order instance with initial status
         order = Order.objects.create(
             customer=customer,
             table_number=table_number,
             order_date=timezone.now(),
             total_price=0.00,  # Will be calculated later
         )
+
+        # Mark the table as occupied
+        table.status = "unavailable"
+        table.save()
 
         request.session["customer_phone_number"] = order.customer.phone_number
 
@@ -158,20 +167,17 @@ def submit_order(request):
         cart = json.loads(cart)
         for item_id, item in cart.items():
             try:
-                menu_item = MenuItem.objects.get(
-                    id=item_id
-                )  # Get the MenuItem instance
+                menu_item = MenuItem.objects.get(id=item_id)
                 quantity = item["quantity"]
 
                 # Create OrderItem instance
                 order_item = OrderItem.objects.create(
                     order=order, item=menu_item, quantity=quantity
                 )
-                customer.points += menu_item.points * quantity  # Now this works
-                print(customer.points)
+                customer.points += menu_item.points * quantity
             except MenuItem.DoesNotExist:
                 messages.error(request, f"Menu item with ID {item_id} does not exist.")
-                continue  # Skip this item and move to the next
+                continue
 
         customer.save()
         # Calculate the total price for the order
@@ -236,6 +242,7 @@ def manage_order_items(request, order_id):
 
 
 # تغییر وضعیت سفارش
+
 
 @login_required
 def change_order_status(request, order_id):
@@ -369,4 +376,3 @@ def order_history_view(request):
                 "You need to provide a phone number or be logged in to view your order history.",
             )
             return redirect("login")
-
