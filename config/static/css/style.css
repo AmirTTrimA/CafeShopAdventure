@@ -1330,6 +1330,12 @@ span.quantity {
     width: 440px;
     margin: 0 auto;
 }
+.form-group label {
+    color: #fff;
+}
+span.required {
+    color: red;
+}
 
 #subscriber .form-group {
     margin-bottom: 0;
@@ -1644,6 +1650,7 @@ span.quantity {
     color: #353535;
     background: #BC9B5D;
     cursor: pointer;
+    margin-top: 25px;
 }
 
 #reservations .button button:hover {
