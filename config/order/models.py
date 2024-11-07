@@ -57,6 +57,12 @@ class Order(models.Model):
         return f"Order {self.id} by {self.customer.phone_number if self.customer else 'Guest'}"
 
     def calculate_total_price(self):
+        """
+        Calculates the total price of the order based on the subtotal of all order items.
+
+        This method sums the subtotals of all associated OrderItem instances and updates
+        the total_price attribute of the Order instance.
+        """
         total = sum(item.subtotal for item in self.order_items.all())
         self.total_price = total
 

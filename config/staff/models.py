@@ -12,6 +12,7 @@ from django.contrib.auth.models import (
     BaseUserManager,
     PermissionsMixin,
 )
+from django.contrib.auth.models import Permission
 from .validator import iran_phone_regex
 
 
@@ -33,6 +34,8 @@ class StaffManager(BaseUserManager):
         user.role = "S"
         user.save(using=self._db)
         return user
+    
+    
 
     def create_superuser(self, phone_number, password=None):
         """Create and return a superuser with admin privileges."""
@@ -41,7 +44,7 @@ class StaffManager(BaseUserManager):
         user.is_superuser = True
         user.save(using=self._db)
         return user
-
+    
 
 class Staff(AbstractBaseUser, PermissionsMixin):
     """
@@ -79,6 +82,7 @@ class Staff(AbstractBaseUser, PermissionsMixin):
     password = models.CharField(max_length=128)
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
+
 
     @property
     def is_staff(self):

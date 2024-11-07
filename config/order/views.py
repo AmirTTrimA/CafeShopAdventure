@@ -15,7 +15,7 @@ from django.utils import timezone
 from cafe.models import Cafe
 from staff.models import Staff
 from .models import Order, OrderItem, OrderHistory, MenuItem, Customer
-
+from django.contrib.auth.decorators import permission_required
 
 DEFAULT_GUEST_CUSTOMER_PHONE = "09123456789"  # Default phone number for guest customer
 
@@ -45,6 +45,15 @@ def add_to_cart(response, request, item_id):
 
 
 def add_to_cart_view(request, item_id):
+    """Handle the request to add a menu item to the cart.
+
+    Args:
+        request (HttpRequest): The HTTP request object containing the quantity.
+        item_id (int): The ID of the menu item to be added.
+
+    Returns:
+        HttpResponse: Redirect response to the menu page.
+    """
     if request.method == "GET":
         quantity = int(request.GET.get("quantity"))
         print(f"Adding item {item_id} with quantity {quantity} to cart.")
@@ -55,6 +64,13 @@ def add_to_cart_view(request, item_id):
 
 
 def remove_from_cart(request, item_id):
+    """
+    Remove an item from the cart.
+    Args:
+        request (HttpRequest): The HTTP request object containing the cart.
+    Returns:
+        HttpResponse: Redirect response back to the cart page or error message.
+    """
     # Check if the cart exists in the session
     cart = request.COOKIES.get("cart", "{}")
     cart = json.loads(cart)
@@ -98,6 +114,15 @@ def cart_view(request):
 
 
 def submit_order(request):
+    """Submit an order based on the current cart items.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: Redirect response to the order success page, or 
+        render cart view if not a POST request.
+    """
     if request.method == "POST":
         # Retrieve form data
         table_number = request.POST.get("table_number")
@@ -210,6 +235,7 @@ def manage_order_items(request, order_id):
 
 
 # تغییر وضعیت سفارش
+
 @login_required
 def change_order_status(request, order_id):
     """Allow staff to change the status of an order."""
@@ -342,3 +368,4 @@ def order_history_view(request):
                 "You need to provide a phone number or be logged in to view your order history.",
             )
             return redirect("login")
+
