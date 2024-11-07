@@ -7,7 +7,7 @@ urlpatterns = [
     path('', include('order.urls')),
     # path('', include('analytics.urls')),
     path('', include('customer.urls')),
-    path('staff', include('staff.urls')),
+    path('staff/', include('staff.urls')),
     # path("", include("staff.urls")),
     # path("search_customer/", include("staff.urls")),
 ]
