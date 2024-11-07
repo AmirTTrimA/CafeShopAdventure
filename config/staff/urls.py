@@ -69,6 +69,8 @@ urlpatterns = [
         views.customer_order_history_report,
         name="customer_order_history_report",
     ),
-    path('download-details/', views.download_details, name='download_details'),
+    path("export_orders/", views.download_orders, name="export_orders"),
+    path("export_customers/", views.download_customers, name="export_customers"),
+    path("export_staff/", views.download_staff, name="export_staff"),
+    path("export_menu_items/", views.download_menu_items, name="export_menu_items"),
 ]
-

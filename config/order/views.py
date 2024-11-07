@@ -134,9 +134,10 @@ def submit_order(request):
 
         # Check if the table is available
         table = get_object_or_404(Table, number=table_number)
-        if table.status != "available":
+        if table.status != "A":
             messages.error(request, "The selected table is not available.")
             return redirect("menu")  # Redirect to the form page
+
 
         # Create or get the customer
         customer, created = Customer.objects.get_or_create(
