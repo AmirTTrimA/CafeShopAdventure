@@ -25,24 +25,41 @@ from .forms import StaffRegistrationForm
 from .report import ReportView
 from django.db.models import Sum
 from django.utils import timezone
-from django.db.models.functions import TruncDate, TruncMonth, TruncYear
 from datetime import timedelta, date
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import permission_required
+
 
 
 @method_decorator(login_required, name="dispatch")
 class RegisterView(FormView):
+    """
+    View for staff registration.
+
+    This view handles the registration of new staff members.
+
+    Attributes:
+        template_name (str): The name of the template to be rendered.
+        form_class (Type[StaffRegistrationForm]): The form class used for registration.
+        success_url (str): URL to redirect to upon successful registration.
+    """
     template_name = "login.html"
     form_class = StaffRegistrationForm
     success_url = reverse_lazy("login")
 
     def form_valid(self, form):
+        """
+        Handles the valid submission of the registration form.
+        """
         form.save()
         messages.success(self.request, "Staff registered successfully!")
         return super().form_valid(form)
 
     def form_invalid(self, form):
+        """
+        Handles an invalid registration form submission.
+        """
         messages.error(self.request, "There was an error in the registration form.")
         return super().form_invalid(form)
 
@@ -53,9 +70,15 @@ class LoginView(View):
     template_name = "login.html"
 
     def get(self, request):
+        """
+        Renders the login template.
+        """
         return render(request, self.template_name)
 
     def post(self, request):
+        """
+        Handles the login form submission.
+        """
         phone_number = request.POST.get("phone_number")
         password = request.POST.get("password")
         user = authenticate(
@@ -85,6 +108,9 @@ class LogoutView(View):
     """
 
     def get(self, request):
+        """
+        Logs out the staff member and redirects to the login page.
+        """
         logout(request)
         messages.success(request, "You have been logged out successfully.")
         return redirect("login")
@@ -94,21 +120,33 @@ class LogoutView(View):
 class ManagerView(View):
     """Render the manager dashboard."""
 
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Checks if the user is a superuser before dispatching the request.
+        Returns:
+            HttpResponse: Redirects to the login page if the user is not a superuser.
+        """
+        if not request.user.is_superuser:
+            return render(request,"login.html")
+        return super().dispatch(request, *args, **kwargs)
+    
+
     template_name = "manager.html"
 
     def get(self, request):
         return render(request, self.template_name)
-
 
 @method_decorator(login_required, name="dispatch")
 class StaffView(View):
     """
     Render the staff page.
     """
-
     template_name = "staff.html"
-
+    
     def get(self, request):
+        """
+        Renders the manager dashboard view.
+        """
         if request.user.is_authenticated:
             """render the staff page"""
             # context = self.get_context_data()
@@ -117,19 +155,38 @@ class StaffView(View):
             return render(request, self.template_name, {"login_logout": "login"})
 
     def get_context_data(self, **kwargs):
+        """
+        Provides the context data for rendering.
+        Returns:
+            dict: Context data for rendering the staff page.
+        """
         context = {}
         return context
 
 
 @method_decorator(login_required, name="dispatch")
 class OrderFilterView(View):
-    template_name = "order_list.html"
+    """
+    View to filter orders based on user inputs.
+    """
 
+    template_name = "order_list.html"
     def get(self, request):
+        """
+        Renders the order filter form.
+        Returns:
+            HttpResponse: The rendered order filter form.
+        """
         form = OrderFilterForm()
         return render(request, self.template_name, {"form": form})
 
     def post(self, request):
+        """
+        Handles the order filter form submission.
+        Returns:
+            HttpResponse: Renders the order list based on the filter criteria or shows 
+                          appropriate messages.
+        """
         form = OrderFilterForm()
         products = MenuItem.objects.all()
         if request.POST.get("form_type") == "change_status":
@@ -206,6 +263,12 @@ class OrderFilterView(View):
 
 @method_decorator(login_required, name="dispatch")
 class EditProduct(View):
+    """View to handle the editing of menu items.
+
+    Methods:
+        get: Renders the edit product page with existing items and categories.
+        post: Updates the product details based on user input from the form.
+    """
     def get(self, request):
         items = MenuItem.objects.all()
         cats = Category.objects.all()
@@ -246,6 +309,13 @@ class EditProduct(View):
 
 @method_decorator(login_required, name="dispatch")
 class Add_product(View):
+    """View to handle the addition of new menu items.
+
+    Methods:
+        get: Renders the add product page with categories.
+        post: Creates a new product based on user input from the form.
+    """
+
     def get(self, request):
         cats = Category.objects.all()
         return render(request, "add-product.html", {"cats": cats})
@@ -284,6 +354,13 @@ class Add_product(View):
 
 @method_decorator(login_required, name="dispatch")
 class RemoveProduct(View):
+    """View to handle the removal of menu items.
+
+    Methods:
+        get: Renders the remove product page with product list.
+        post: Deletes a specified product based on user input from the form.
+    """
+
     def get(self, request):
         cats = Category.objects.all()
         pros = MenuItem.objects.all()
@@ -323,6 +400,20 @@ class RemoveProduct(View):
 
 @method_decorator(login_required, name="dispatch")
 class AddCategory(View):
+    """View to handle the addition of new categories.
+
+    Methods:
+        dispatch: Checks if the user is a superuser.
+        get: Renders the add category page.
+        post: Creates a new category based on user input from the form.
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return render(request,"login.html")
+        return super().dispatch(request, *args, **kwargs)
+    
+
     def get(self, request):
         return render(request, "Add-category.html")
 
@@ -348,6 +439,20 @@ class AddCategory(View):
 
 @method_decorator(login_required, name="dispatch")
 class RemoveCategory(View):
+    """View to handle the removal of categories.
+
+    Methods:
+        dispatch: Checks if the user is a superuser.
+        get: Renders the remove category page.
+        post: Deletes a specified category based on user input from the form.
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return render(request,"login.html")
+        return super().dispatch(request, *args, **kwargs)
+    
+
     def get(self, request):
         return render(request, "remove-c.html")
 
@@ -373,6 +478,10 @@ class RemoveCategory(View):
 
 @login_required
 def staff_checkout(request):
+    """Renders the staff checkout page with all orders.
+    Returns:
+        Rendered staff checkout page with order details.
+    """
     # When each satff change the status, they will be that order's staff
     orders = Order.objects.all()
     return render(request, "checkout.html", {"orders": orders})
@@ -380,6 +489,10 @@ def staff_checkout(request):
 
 @login_required
 def update_order_status(request, order_id):
+    """Updates the status of a specific order.
+    Returns:
+        Redirect to the staff checkout page.
+    """
     if request.method == "POST":
         order = get_object_or_404(Order, id=order_id)
         new_status = request.POST.get("status")
@@ -390,6 +503,10 @@ def update_order_status(request, order_id):
 
 @login_required
 def order_details(request, order_id):
+    """Displays detailed information about a specific order.
+    Returns:
+        Rendered order details page with order information and items.
+    """
     order = get_object_or_404(Order, id=order_id)
     order_items = order.order_items.all()
     products = MenuItem.objects.all()
@@ -403,6 +520,15 @@ def order_details(request, order_id):
 
 @login_required
 def add_order_item(request, order_id):
+    """Adds a new item to the specified order.
+
+    Args:
+        request: The HTTP request object.
+        order_id: ID of the order to add an item to.
+
+    Returns:
+        Redirect to the order details page.
+    """
     if request.method == "POST":
         order = get_object_or_404(Order, id=order_id)
         product_id = request.POST.get("product_id")
@@ -424,6 +550,10 @@ def add_order_item(request, order_id):
 
 @login_required
 def update_order_item(request, item_id):
+    """Updates the quantity of an order item or deletes it.
+    Returns:
+        Redirect to the order details page.
+    """
     if request.method == "POST":
         order_item = get_object_or_404(OrderItem, id=item_id)
         new_quantity = int(request.POST.get("quantity"))
@@ -439,6 +569,10 @@ def update_order_item(request, item_id):
 
 @login_required
 def remove_order_item(request, item_id):
+    """Removes an item from the specified order.
+    Returns:
+        Redirect to the order details page.
+    """
     if request.method == "POST":
         order_item = get_object_or_404(OrderItem, id=item_id)
         order_item.delete()
@@ -447,30 +581,80 @@ def remove_order_item(request, item_id):
 
 @method_decorator(login_required, name="dispatch")
 class ViewManager(View):
+    """
+    ViewManager handles the main manager view for superusers.
+
+    Requires the user to be logged in and a superuser to access the dispatch method.
+    
+    Methods:
+        get: Returns the manager HTML with top products and top customers context.
+    """
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Ensures that only superusers can access the view.
+        """
+        if not request.user.is_superuser:
+            return render(request,"login.html")
+        return super().dispatch(request, *args, **kwargs)
+    
+
     def get(self, request):
+        """
+        Handles GET requests to retrieve top products and top customers.
+        """
         context = {
             "top_products": ReportView.top_products(),
             "top_customers": ReportView.customer_analytics(),
         }
         return render(request, "Manager.html", context)
 
-
 @method_decorator(login_required, name="dispatch")
 class StaffAccess(FormView):
+    """
+    StaffAccess enables superusers to register new staff members.
+    Requires user to be logged in and a superuser to access the dispatch method.
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Ensures that only superusers can access the view.
+        Returns:
+            HttpResponse: Renders the login page if the user is not a superuser, 
+                        else proceeds with the dispatch.
+        """
+        if not request.user.is_superuser:
+            return render(request,"login.html")
+        return super().dispatch(request, *args, **kwargs)
+    
     template_name = "staff-access.html"
     form_class = StaffRegistrationForm
     success_url = reverse_lazy("login")
 
     def form_valid(self, form):
+        """
+        Handles the submission of a valid registration forme
+        Returns:
+            HttpResponse: Redirects to the success URL after saving the form.
+        """
         form.save()
         messages.success(self.request, "Staff registered successfully!")
         return super().form_valid(form)
 
     def form_invalid(self, form):
+        """
+        Handles the submission of an invalid registration form.
+        Returns:
+            HttpResponse: Renders the form with error messages.
+        """
         messages.error(self.request, "There was an error in the registration form.")
         return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):
+        """
+        Adds the staff list to the context for the template.
+        Returns:
+            dict: Updated context with the staff list.
+        """
         context = super().get_context_data(**kwargs)
         context["staff_list"] = Staff.objects.all()
         return context
@@ -478,11 +662,36 @@ class StaffAccess(FormView):
 
 @method_decorator(login_required, name="dispatch")
 class DataAnalysis(View):
+    """
+    DataAnalysis handles data analysis requests for superusers.
+    Requires user to be logged in and a superuser to access the dispatch method.
+    """
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Ensures that only superusers can access the view.
+            HttpResponse: Renders the login page if the user is not a superuser, 
+                        else proceeds with the dispatch.
+        """
+        if not request.user.is_superuser:
+            return render(request,"login.html")
+        return super().dispatch(request, *args, **kwargs)
+    
+
     def get(self, request):
+        """
+        Handles GET requests to display the data analysis form.
+        Returns:
+            HttpResponse: Renders the data_analysis.html template with an empty form.
+        """
         form = DataAnalysisForm()
         return render(request, "data_analysis.html", {"form": form})
 
     def post(self, request):
+        """
+        Handles POST requests to process the data analysis form.
+        Returns:
+            HttpResponse: Renders the data_analysis.html with analysis results or errors.
+        """
         form = DataAnalysisForm(request.POST)
         now = timezone.now()
         if form.is_valid():
@@ -512,11 +721,36 @@ class DataAnalysis(View):
 
 @method_decorator(login_required, name="dispatch")
 class SalesAnalysis(View):
+    """
+    SalesAnalysis handles sales analysis requests for superusers.
+    Requires user to be logged in and a superuser to access the dispatch method.
+    """
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Ensures that only superusers can access the view.
+            HttpResponse: Renders the login page if the user is not a superuser, 
+                        else proceeds with the dispatch.
+        """
+        if not request.user.is_superuser:
+            return render(request,"login.html")
+        return super().dispatch(request, *args, **kwargs)
+    
+
     def get(self, request):
+        """
+        Handles GET requests to display the sales analysis form.
+        Returns:
+            HttpResponse: Renders the sale_analysis.html template with an empty form.
+        """
         form = SaleAnalysisForm()
         return render(request, "sale_analysis.html", {"form": form})
 
     def post(self, request):
+        """
+        Handles POST requests to process the sales analysis form.
+        Returns:
+            HttpResponse: Renders the sale_analysis.html with analysis results or errors.
+        """
         now = timezone.now()
         form = SaleAnalysisForm(request.POST)
 
@@ -549,8 +783,14 @@ class SalesAnalysis(View):
                 form.add_error("filter_type", "Please enter a valid value.")
 
 
-@user_passes_test(lambda u: u.is_staff)
+@login_required
 def search_customer(request):
+    """
+    Search for customers based on the provided phone number.
+    Requires the user to be a staff member.
+    Returns:
+        HttpResponse: Renders the search_customer.html with customer data.
+    """
     customers = []
     if request.method == "GET":
         phone_number = request.GET.get("phone_number", "")
@@ -559,9 +799,15 @@ def search_customer(request):
             # order = Order.objects.filter(customer__phone_number=phone_number)
     return render(request, "search_customer.html", {"customers": customers})
 
-
+@user_passes_test(lambda u: u.is_superuser)
 @login_required
 def top_selling_items(request):
+    """
+    Generates and displays the top-selling items within a specified date range.
+    Requires the user to be a superuser and logged in.
+    Returns:
+        HttpResponse: Renders the top selling items report based on POST data or an empty view.
+    """
     if request.method == "POST":
         start_date = request.POST.get("start_date", timezone.now() - timedelta(days=30))
         end_date = request.POST.get("end_date", timezone.now())
@@ -580,17 +826,29 @@ def top_selling_items(request):
     elif request.method == "GET":
         return render(request, "reports/top_selling_items.html")
 
-
+@user_passes_test(lambda u: u.is_superuser)
 @login_required
 def sales_by_category(request):
+    """
+    Provides a report on total sales categorized by menu items.
+    Requires the user to be a superuser and logged in.
+    Returns:
+        HttpResponse: Renders the sales_by_category.html with sales data.
+    """
     sales = OrderItem.objects.values("item__category__name").annotate(
         total_sales=Sum("quantity")
     )
     return render(request, "reports/sales_by_category.html", {"sales": sales})
 
-
+@user_passes_test(lambda u: u.is_superuser)
 @login_required
 def sales_by_customer(request):
+    """
+    Displays sales data for a specific customer identified by their phone number.
+    Requires the user to be a superuser and logged in.
+    Returns:
+        HttpResponse: Renders the sales_by_customer.html with orders data if POST; otherwise, renders the empty view.
+    """
     if request.method == "POST":
         phone_number = request.POST.get("phone_number")
         customer_orders = Order.objects.filter(customer__phone_number=phone_number)
@@ -600,9 +858,15 @@ def sales_by_customer(request):
     elif request.method == "GET":
         return render(request, "reports/sales_by_customer.html")
 
-
+@user_passes_test(lambda u: u.is_superuser)
 @login_required
 def sales_by_time_of_day(request):
+    """
+    Provides a report on sales segmented by time of day.
+    Requires the user to be a superuser and logged in.
+    Returns:
+        HttpResponse: Renders the sales_by_time_of_day.html with sales data.
+    """
     morning_sales = Order.objects.filter(order_date__hour__lt=12).aggregate(
         total_sales=Count("id")
     )
@@ -615,9 +879,15 @@ def sales_by_time_of_day(request):
         {"morning_sales": morning_sales, "afternoon_sales": afternoon_sales},
     )
 
-
+@user_passes_test(lambda u: u.is_superuser)
 @login_required
 def order_status_report(request):
+    """
+    Generates a report on the status of orders for a specific date.
+    Requires the user to be a superuser and logged in.
+    Returns:
+        HttpResponse: Renders the order_status_report.html with order statuses for the specified date.
+    """
     date = request.GET.get("date", timezone.now().date())
     orders = (
         Order.objects.filter(order_date__date=date)
@@ -626,9 +896,15 @@ def order_status_report(request):
     )
     return render(request, "reports/order_status_report.html", {"orders": orders})
 
-
+@user_passes_test(lambda u: u.is_superuser)
 @login_required
 def sales_by_employee_report(request):
+    """
+    Provides a report of total sales categorized by employee.
+    Requires the user to be a superuser and logged in.
+    Returns:
+        HttpResponse: Renders the sales_by_employee_report.html with sales data by employee.
+    """
     employee_sales = Order.objects.values(
         "staff__first_name", "staff__last_name"
     ).annotate(total_sales=Count("id"))
@@ -638,17 +914,29 @@ def sales_by_employee_report(request):
         {"employee_sales": employee_sales},
     )
 
-
+@user_passes_test(lambda u: u.is_superuser)
 @login_required
 def customer_order_history_report(request):
+    """
+    Shows the order history for a specific customer identified by customer_id.
+    Returns:
+        HttpResponse: Renders the customer_order_history_report.html with customer order data.
+    """
     customer_id = request.GET.get("customer_id")
     orders = Order.objects.filter(customer_id=customer_id).order_by("-order_date")
     return render(
         request, "reports/customer_order_history_report.html", {"orders": orders}
     )
 
-
+@user_passes_test(lambda u: u.is_superuser)
+@login_required
 def download_details(request):
+    """
+    Downloads order, customer, staff, and menu item details as an Excel file.
+    Requires the user to be a superuser and logged in.
+    Returns:
+        HttpResponse: An Excel file response containing detailed data.
+    """
     response = HttpResponse(
         content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
@@ -743,7 +1031,7 @@ def download_details(request):
 
     staff_members = Staff.objects.all()
     for staff in staff_members:
-        # Calculate the number of orders submitted by this staff member
+        #Calculate the number of orders submitted by this staff member
         orders_by_staff = Order.objects.filter(staff=staff)
         number_of_orders = orders_by_staff.count()
 
@@ -785,3 +1073,4 @@ def download_details(request):
     # Save the workbook to the response
     workbook.save(response)
     return response
+

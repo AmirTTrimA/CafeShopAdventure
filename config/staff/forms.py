@@ -6,6 +6,15 @@ from .validator import iran_phone_regex
 
 
 class OrderFilterForm(forms.Form):
+    """
+    A form for filtering orders based on various criteria.
+
+    Attributes:
+        FILTER_CHOICES (list): A list of choices for filtering types, 
+                                including date, last order, status, and table number.
+        filter_type (ChoiceField): A field to select the type of filter.
+        filter_value (CharField): A field to input the value to filter by.
+    """
     FILTER_CHOICES = [
         ("date", "Date"),
         ("last_order", "Last Order"),
@@ -85,6 +94,14 @@ class StaffRegistrationForm(forms.ModelForm):
 
 
 class DataAnalysisForm(forms.Form):
+    """
+    A form for selecting the type of data analysis to perform.
+
+    Attributes:
+        FILTER_CHOICES (list): A list of choices for data analysis types, 
+                                including popular items and peak business hours.
+        filter_type (ChoiceField): A field to select the type of analysis filter.
+    """
     FILTER_CHOICES = [
         ("most popular caffe items", "popular items"),
         ("peak business hour", "peak hour"),
@@ -95,6 +112,14 @@ class DataAnalysisForm(forms.Form):
 
 
 class SaleAnalysisForm(forms.Form):
+    """
+    A form for selecting the type of sales analysis to perform.
+
+    Attributes:
+        FILTER_CHOICES (list): A list of choices for sales analysis types, 
+                                including total, daily, monthly, and yearly sales.
+        filter_type (ChoiceField): A field to select the type of sales analysis filter.
+    """
     FILTER_CHOICES = [
         ("total sales","total sales"),
         ("daily sales",'daily sales'),

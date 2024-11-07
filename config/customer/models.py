@@ -45,11 +45,21 @@ class Customer(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def clean(self):
+        """
+        Validate the model's attributes before saving.
+        """
         # Validate that the table_number is not greater than the number of tables in the Cafe
         if self.table_number > self.cafe.number_of_tables:
             raise ValidationError(f"Table number cannot exceed {self.cafe.number_of_tables} for this cafe.")
 
     def save(self, *args, **kwargs):
+        """
+        Save the customer instance after validating its data.
+        Calls the clean method to ensure data integrity before saving the instance.
+
+        Args:
+            *args, **kwargs: Additional arguments are passed to the superclass save method.
+        """
         # Call clean method before saving
         # self.clean()
         super(Customer, self).save(*args, **kwargs)
