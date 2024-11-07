@@ -106,7 +106,15 @@
                 <li><a class="dropdown-item" href="{% url 'customer_order_history_report' %}">Customer Order History</a></li>
             </ul>
         </li>
-        <li><a href="{% url 'download_details' %}">Download Order Detail</a></li>
+        <li class="menu-has-children">
+            <a class="dropdown-toggle" href="#" data-toggle="dropdown">Export</a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'export_orders' %}">Download Order Detail</a></li>
+                <li><a class="dropdown-item" href="{% url 'export_customers' %}">Download Customer Detail</a></li>
+                <li><a class="dropdown-item" href="{% url 'export_staff' %}">Download Staff Detail</a></li>
+                <li><a class="dropdown-item" href="{% url 'export_menu_items' %}">Download Menu Detail</a></li>
+            </ul>
+        </li>
 </div>
 
 {% else %}
