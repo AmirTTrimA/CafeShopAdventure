@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from menu.models import MenuItem, Category
-from .models import Cafe
+from .models import Cafe, Table
 from datetime import time
 from django.core.exceptions import ValidationError
 
@@ -74,6 +74,12 @@ class CafeModelTests(TestCase):
         # Assert that the cafe is open at the specified time
         self.assertTrue(self.cafe.is_open(open_time), "Cafe should be open at 09:00")
 
+    def test_is_closed(self):
+        """Test the is_open method to check if the cafe is closed at a given time."""
+        closed_time = time(21, 0)  # Define the time to check if the cafe is closed
+        # Assert that the cafe is closed at the specified time
+        self.assertFalse(self.cafe.is_open(closed_time), "Cafe should be closed at 21:00")
+
     def test_cafe_invalid_opening_time(self):
         """Test creating a cafe with invalid opening and closing times."""
         cafe = Cafe(
@@ -90,9 +96,20 @@ class CafeModelTests(TestCase):
         cafe = Cafe(
             name='',
             address='123 Test Street',
-            opening_time='08:00',
-            closing_time='20:00',
+            opening_time=time(8, 0),
+            closing_time=time(20, 0),
         )
         with self.assertRaises(ValidationError):
             cafe.full_clean()  # Should raise validation error
 
+
+    def test_table_creation(self):
+        """Test creating a table for the cafe."""
+        table = Table.objects.create(cafe=self.cafe, number=1)
+        self.assertEqual(table.number, 1)
+        self.assertEqual(table.cafe, self.cafe)
+
+    def test_table_string_representation(self):
+        """Test the string representation of the table."""
+        table = Table.objects.create(cafe=self.cafe, number=3)
+        self.assertEqual(str(table), 'Table 3 in Test Cafe')

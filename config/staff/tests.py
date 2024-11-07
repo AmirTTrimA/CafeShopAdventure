@@ -34,8 +34,8 @@ class StaffModelTests(TestCase):
         self.assertEqual(manager.role, "M")
 
     def test_phone_number_unique(self):
-        # تلاش برای ایجاد یک Staff جدید با شماره تلفن تکراری
-        with self.assertRaises(Exception):  # یا استفاده از specific exception like IntegrityError
+        """Test that the phone number must be unique."""
+        with self.assertRaises(Exception):  
             Staff.objects.create(phone_number=self.staff_member.phone_number)
     def test_set_password_hashing(self):
         """Test that the password is hashed when set."""
@@ -68,16 +68,50 @@ class StaffModelTests(TestCase):
         with self.assertRaises(ValidationError):
             staff.full_clean()  # Should raise validation error
 
-    # def test_staff_login(self):
-    #     """Test that staff member can log in."""
-    #     self.client.login(phone_number='09123456789', password='testpass')
-    #     response = self.client.get(reverse('staff_dashboard'))
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'staff_dashboard.html')  # Assuming the staff dashboard template
+    def test_staff_active_status(self):
+        """Test if a new staff member is active by default."""
+        self.assertTrue(self.staff.is_active)
 
+    def test_staff_deactivation(self):
+        """Test if a staff member can be deactivated."""
+        self.staff.is_active = False
+        self.staff.save()
+        self.assertFalse(self.staff.is_active)
 
     def test_search_customer_no_phone(self):
         """Test the search_customer view with no phone number provided."""
         response = self.client.get(reverse('search_customer'), {'phone_number': ''})       
         self.assertEqual(response.status_code, 302)
         self.assertIn('/login/', response.url)  
+
+    def test_search_customer_as_non_staff(self):
+        self.client.login(username='non_staff_user', password='password')  # کاربر غیر کارمند لاگین می‌شود
+        response = self.client.get(reverse('search_customer'))  # نام الگوی URL را بررسی کنید
+        self.assertEqual(response.status_code, 302)  # انتظار داریم به صفحه دیگری هدایت شود
+
+    def test_password_change(self):
+        """Test if the password can be changed successfully."""
+        self.staff.set_password('newpassword')
+        self.staff.save()
+        self.assertTrue(self.staff.check_password('newpassword'))
+        self.assertFalse(self.staff.check_password('testpassword'))
+
+    def test_role_assignment(self):
+        """Test if the role is assigned correctly on creation."""
+        self.assertEqual(self.staff.role, "S") 
+        manager = Staff.objects.create_superuser(
+            phone_number="09876543210",
+            password="superpassword"
+        )
+        self.assertEqual(manager.role, "M")  
+
+    def test_invalid_phone_number(self):
+        """Test creating a staff member with an invalid phone number."""
+        staff = Staff(
+            phone_number='invalid_phone',
+            password='testpass',
+            first_name='Invalid',
+            last_name='Phone'
+        )
+        with self.assertRaises(ValidationError):
+            staff.full_clean()  # باید خطای اعتبارسنجی ایجاد کند
