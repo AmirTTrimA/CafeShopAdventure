@@ -23,7 +23,7 @@ class Cafe(models.Model):
     number_of_tables = models.PositiveIntegerField(default=1)
     opening_time = models.TimeField()
     closing_time = models.TimeField()
-    created_at = models.TimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.name}"
