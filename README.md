@@ -141,9 +141,14 @@ Important Notes:
 If you encounter any issues while logging in or using the application, please refer to the user guide or project documentation for assistance.
 Ensure regular backups of your database and data to maintain the application's performance and security.
 
-### Example Screenshots (optional)
-![Home](assets\photo_2024-11-08_00-15-05.jpg)
-![Menu](assets\photo_2024-11-08_00-15-05 (2).jpg)
+### Example Screenshots
+#### Menu Screen
+![Home](D:\test\New folder\CafeShopAdventure\assets\photo_2024-11-08_00-15-05.jpg)
+*This image shows the home screen of the application, providing an overview of the dashboard.*
+
+Menu Screen
+![Menu](D:\test\New folder\CafeShopAdventure\assets\photo_2024-11-08_00-15-05 (2).jpg)
+*This image displays the menu of the application, showcasing various options for order and inventory management.*
 ---
 
 ## Project Structure
