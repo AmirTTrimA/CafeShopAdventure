@@ -147,7 +147,7 @@ Ensure regular backups of your database and data to maintain the application's p
 *This image shows the home screen of the application, providing an overview of the dashboard.*
 
 #### Menu Screen
-![Menu](assets/photo_2024-11-08_00-15-05 (2).jpg)
+![Menu](assets/photo_2024-11-08_00-15-05(2).jpg)
 *This image displays the menu of the application, showcasing various options for order and inventory management.*
 
 
