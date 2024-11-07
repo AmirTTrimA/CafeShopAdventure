@@ -142,8 +142,8 @@ If you encounter any issues while logging in or using the application, please re
 Ensure regular backups of your database and data to maintain the application's performance and security.
 
 ### Example Screenshots (optional)
-*Add screenshots here for better understanding, if available.*
-
+![Home](assets\photo_2024-11-08_00-15-05.jpg)
+![Menu](assets\photo_2024-11-08_00-15-05 (2).jpg)
 ---
 
 ## Project Structure
@@ -190,6 +190,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Amir TTrimA - [YourEmail@example.com](mailto:YourEmail@example.com)
+Amir TTrimA - [amirtehrani19@gmail.com](mailto:amirtehrani19@gmail.com)
 
 Project Link: [https://github.com/AmirTTrimA/CafeShopAdventure](https://github.com/AmirTTrimA/CafeShopAdventure)
