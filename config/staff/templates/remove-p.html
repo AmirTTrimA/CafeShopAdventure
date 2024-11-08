@@ -18,18 +18,22 @@
                         <h4>Remove Product Form</h4>
                         <form class="form-group" method="post">
                             {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6">
                             <label for ="Product Name">Product Name:</label>
                             <select name="Product Name" class="form-control">
                                 {%for pro in product%}
                                 <option value="{{pro.name}}" >{{pro.name}}</option>
                                 {%endfor%}
-                            </select>
+                            </select></div>
+                            <div class="col-md-6">
                             <label for ="Product cat">Product Category:</label>
                             <select name="Product cat" class="form-control">
                                     {%for cat in cats%}
                                     <option value="{{cat.id}}" >{{cat.name}}</option>
                                     {%endfor%}
                                 </select>
+                            </div></div>
                                 <div class="button">
                                     <button type="submit">Submit</button>
                                 </div>
