@@ -155,25 +155,25 @@ Ensure regular backups of your database and data to maintain the application's p
 
 An overview of the main project structure:
 
-CafeShopAdventure/
-├── .venv/               # Virtual environment for Python dependencies
-├── config/              
-│   ├── analytics/       # Analytical models and views for reporting
-│   ├── cafe/            # Cafe-specific models and business logic
-│   ├── config/          # Django project configuration and settings
-│   ├── customer/        # Customer-related models, views, and templates
-│   ├── menu/            # Menu and inventory-related models and views
-│   ├── order/           # Order processing and management
-│   ├── staff/           # Staff and manager-related views, reports, and permissions
-│   ├── static/          # Static files like JavaScript, CSS, and images
-│   ├── templates/       # HTML templates for the project
-│   ├── db.sqlite3       # SQLite database file
-│   └── manage.py        # Django command-line utility
-├── .gitignore           # Git ignore file to exclude unnecessary files
-├── erd.sql              # SQL file for Entity Relationship Diagram (ERD)
-├── LICENSE              # License file for the project
-├── README.md            # Project's README file
-└── requirements.txt     # List of dependencies for the project
+CafeShopAdventure/  
+├── .venv/               # Virtual environment for Python dependencies  
+├── config/  
+│   ├── analytics/       # Analytical models and views for reporting  
+│   ├── cafe/            # Cafe-specific models and business logic  
+│   ├── config/          # Django project configuration and settings  
+│   ├── customer/        # Customer-related models, views, and templates  
+│   ├── menu/            # Menu and inventory-related models and views  
+│   ├── order/           # Order processing and management  
+│   ├── staff/           # Staff and manager-related views, reports, and permissions  
+│   ├── static/          # Static files like JavaScript, CSS, and images  
+│   ├── templates/       # HTML templates for the project  
+│   ├── db.sqlite3       # SQLite database file  
+│   └── manage.py        # Django command-line utility  
+├── .gitignore           # Git ignore file to exclude unnecessary files  
+├── erd.sql              # SQL file for Entity Relationship Diagram (ERD)  
+├── LICENSE              # License file for the project  
+├── README.md            # Project's README file  
+└── requirements.txt     # List of dependencies for the project  
 
 ---
 
@@ -195,6 +195,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Amir TTrimA - [amirtehrani19@gmail.com](mailto:amirtehrani19@gmail.com)
+AmirTTrimA - [Owner's Email](mailto:100289963+AmirTTrimA@users.noreply.github.com)
 
 Project Link: [https://github.com/AmirTTrimA/CafeShopAdventure](https://github.com/AmirTTrimA/CafeShopAdventure)
