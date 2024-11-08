@@ -1,29 +1,36 @@
 {% extends 'base.html' %}
 
 {% block title %}Sale Analysis{% endblock %}
+{% block h1 %}Sale Analysis{% endblock %}
+{% block h1staff %}Sale Analysis{% endblock %}
+
 
 {% block login %}logout{% endblock %}
 {% block content %}
 {% load static %}
 
 
-
-    <h1>Sale Analysis</h1>
+<section id="filter-ord">
+    <div class="container">
+        <div class="row form">
+            <div class="col-md-12">
+    <h4>Sale Analysis</h4>
     <form method="post" id="filter-form" >
         {% csrf_token %}
         {{ form.filter_type }}
-        <button type="submit">Filter</button>
+       <div class="button"> <button type="submit">Filter</button></div>
     </form>
 
 {% if orders.total_sales_cost %}
-<table>
-    <thead>
+<div class="table-responsive-sm">
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
         <tr>
             <th>name</th>
             <th>number of sales</th>
             <th>total cost</th>
         </tr>
-    </thead>
+        </thead>
     <tbody>
         {%for item in orders.sales_data%}
         <tr>
@@ -38,20 +45,22 @@
             <td>{{orders.total_sales_cost.total_sales_cost}}</td>
         </tr>
     </tbody>
-</table>
+    </table>
+</div>
 
 
 {% elif orders.daily_total_sales %}
 {% for date in orders.daily_sortbydate %}
-    <h5>{{date}}</h5>
-    <table>
-        <thead>
+    <h4>{{date}}</h4>
+    <div class="table-responsive-sm">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
             <tr>
                 <th>name</th>
                 <th>number of sales</th>
                 <th>total cost</th>
             </tr>
-        </thead>
+            </thead>
     {%for item in orders.daily_product_sales%}
         {% if item.date == date%}
             <tbody>
@@ -63,11 +72,13 @@
             </tbody>
         {%endif%}
         {%endfor%}
-</table>
+        </table>
+    </div>
 {%endfor%}
-<h5>Final report</h5>
-<table>
-    <thead>
+<h4>Final report</h4>
+<div class="table-responsive-sm">
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
         <tr>
             <th>date</th>
             <th>total_items</th>
@@ -83,12 +94,14 @@
         </tr>
         {%endfor%}
     </tbody>
-</table>
+    </table>
+</div>
 
 {% else %}
-<h2>Top Products</h2>
-    <table>
-        <thead>
+<h4>Top Products</h4>
+<div class="table-responsive-sm">
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
             <tr>
                 <th>Product Name</th>
                 <th>Total Orders</th>
@@ -103,7 +116,13 @@
             {% endfor %}
         </tbody>
     </table>
+    </div>
 {% endif %}
     <div>{{massage}}</div>
+</div>
+</div>
+</div>
+</div>
+</section>
 
 {% endblock %}

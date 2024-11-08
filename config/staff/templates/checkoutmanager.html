@@ -3,6 +3,7 @@
 {% block title %}Staff panel{% endblock %}
 {% block login %}login{% endblock %}
 {% block h1staff %}Checkout{% endblock %}
+{% block h1 %}Checkout{% endblock %}
 {% block content %}
 {% load static %}
 
@@ -22,7 +23,7 @@
             </form>
             </div>
         </div>
-
+    </div>
 
 <section id="staff-checkout">
     <div class="container">
@@ -58,7 +59,7 @@
                                 <td>
                                     <form method="POST" action="{% url 'update_order_status' order.id %}">
                                         {% csrf_token %}
-                                        <select name="status" onchange="this.form.submit()">
+                                        <select class="form-control" name="status" onchange="this.form.submit()">
                                             <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
                                             <option value="Processing" {% if order.status == 'Processing' %}selected{% endif %}>Processing</option>
                                             <option value="Completed" {% if order.status == 'Completed' %}selected{% endif %}>Completed</option>
@@ -66,10 +67,11 @@
                                         </select>
                                     </form>
 
-                                    <td><div>{{ order.staff.first_name }} {{ order.staff.last_name }}</div>
+                                    <td>
+                                        <!-- <div>{{ order.staff.first_name }} {{ order.staff.last_name }}</div> -->
                                         <form method="POST" action="{% url 'update_staff' order.id %}">
                                             {% csrf_token %}
-                                            <select name="staff" onchange="this.form.submit()">
+                                            <select class="form-control" name="staff" onchange="this.form.submit()">
                                                 {%for staff in staffs%}
                                                 <option value="{{staff.staff_id}}">{{staff.first_name}} {{staff.last_name}}</option>
                                                 {%endfor%}
@@ -84,7 +86,9 @@
                                     <form method="post" action="{% url 'order_details' order.id %}">
                                         {% csrf_token %}
                                         <input type="hidden" name="item_id" value="{{ order.id }}">
-                                        <button type="submit">Details</button>
+                                        <div class="button">
+                                            <button type="submit">Details</button>
+                                        </div>
                                     </form>
                                 </td>
                             </tr>

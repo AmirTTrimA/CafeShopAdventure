@@ -15,8 +15,9 @@
             </div>
         </div>
 
-<h1 class="st-h">Order Details for Order #{{ order.id }}</h1>
+
     <div class="container">
+        <h4>Order Details for Order #{{ order.id }}</h4>
         <div class="table-responsive-sm">
             <table class="table table-bordered table-hover">
                 <thead class="thead-dark">
@@ -31,16 +32,20 @@
                     <tr>
                         <td>{{ item.item.name }}</td>
                         <td>
-                            <form method="POST" action="{% url 'update_order_item' item.id %}">
-                                {% csrf_token %}
-                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" required>
-                                <button type="submit" class="btn btn-primary">Update</button>
+                            <form class="order_details" method="POST" action="{% url 'update_order_item' item.id %}">
+                                <div class="row">
+                                <div class="col-md-8">
+                                    {% csrf_token %}
+                                    <input type="number" name="quantity" class="form-control" value="{{ item.quantity }}" min="1" required>
+                                </div>
+                                <div id="as" class="col-md-3 button"><button type="submit" class="btn btn-primary ">Update</button></div>
+                            </div>
                             </form>
                         </td>
                         <td>
-                            <form method="POST" action="{% url 'remove_order_item' item.id %}">
+                            <form class="order_details" method="POST" action="{% url 'remove_order_item' item.id %}">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-danger">Remove</button>
+                                <div id="as2" class="button"><button type="submit" class="btn btn-danger">Remove</button></div>
                             </form>
                         </td>
                     </tr>
@@ -50,16 +55,23 @@
             <div class="container">
                 <form method="POST" action="{% url 'add_order_item' orders.id %}">
                     {% csrf_token %}
-                    <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6 form-group">
                         <label for="product_id">Add Item:</label>
                         <select name="product_id" class="form-control">
                             {% for product in products %}
                                 <option value="{{ product.id }}">{{ product.name }}</option>
                             {% endfor %}
                         </select>
-                        <input type="number" name="quantity" value="1" min="1" required class="form-control mt-2">
-                        <button type="submit" class="btn btn-success mt-2">Add Item</button>
                     </div>
+                    <div class="col-md-6 form-group">
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" name="quantity" value="1" min="1" required class="form-control">
+                    </div>
+                    <div class="button">
+                    <button type="submit" class="btn btn-success mt-2">Add Item</button>
+                </div>
+                </div>
                 </form>
             </div>
         </div>

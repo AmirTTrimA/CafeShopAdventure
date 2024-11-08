@@ -19,19 +19,18 @@
                         <form class="form-group" method="post">
                             {% csrf_token %}
                             {{ form.as_p }}
-                            <div class="form-group">
-                                <label for ="Product">Select Product:</label>
-                                <select name="Product" class="form-control">
-                                    {%for item in items%}
-                                    <option value="{{item.name}}">{{item.name}}</option>
-                                    {%endfor%}
-                                    <!-- <option selected value="0">Espresso</option>
-                                    <option value="1">Americano</option>
-                                    <option value="2">Cappuccino</option>
-                                    <option value="3">Black Tea</option>
-                                    <option value="4">Cookies (Chocolate Chip, Oatmeal Raisin)</option> -->
-                                </select>
-                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for ="Product">Select Product:</label>
+                                        <select name="Product" class="form-control">
+                                            {%for item in items%}
+                                            <option value="{{item.name}}">{{item.name}}</option>
+                                            {%endfor%}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
                             <div class="form-group">
                                 <label for ="Product cat">Product Category:</label>
                                 <select name="Product cat" class="form-control">
@@ -44,15 +43,25 @@
                                     <option value="3">Breakfast Items</option>
                                     <option value="4">Snacks</option> -->
                                 </select>
-                            </div>
+                            </div></div>
+                            <div class="col-md-4">
                             <label for ="Product Name">Product Name:</label>
                             <input name="Prodcut Name" type="text" class="form-control" placeholder="Product Name" />
-                            <label for ="Product description">Product Description:</label>
-                            <input name ="Product description" type="text" class="form-control" placeholder="Description" />
-                            <label for ="Product Price">Product Price:</label>
-                            <input name ="Product Price"type="text" class="form-control" placeholder="Price" />
-                            <label for ="Product Point">Product Point:</label>
-                            <input name ="Product Point"type="text" class="form-control" placeholder="Point" />
+                            </div></div>
+
+                            <div class="row">
+                            <div class="col-md-4">
+                                <label for ="Product description">Product Description:</label>
+                                <input name ="Product description" type="text" class="form-control" placeholder="Description" />
+                            </div>
+                            <div class="col-md-4">
+                                <label for ="Product Price">Product Price:</label>
+                                <input name ="Product Price"type="text" class="form-control" placeholder="Price" />
+                            </div>
+                            <div class="col-md-4">
+                                <label for ="Product Point">Product Point:</label>
+                                <input name ="Product Point"type="text" class="form-control" placeholder="Point" />
+                            </div></div>
                             <label for ="Product Image">Product Image:</label>
                             <input name ="Product Image" type="file" class="form-control" placeholder="Upload Image" />
                             <div class="button">
