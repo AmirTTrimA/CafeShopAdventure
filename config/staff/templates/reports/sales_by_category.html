@@ -1,17 +1,24 @@
 {% extends "base.html" %}
 {% block title %}Sales by Category{% endblock %}
+{% block h1 %}Sales by Category{% endblock %}
+{% block h1staff %}Sales by Category{% endblock %}
 {% load static %}
 
 {% block content %}
-    <h2>Sales by Category</h2>
+<section id="add-product">
+    <div class="container">
+        <div class="row form">
+            <div class="col-md-12">
+            <h4>Sales by Category</h4>
 
     <form method="get" action="{% url 'sales_by_category' %}">
-        <button type="submit">Refresh</button>
+        <div class="button"><button type="submit">Refresh</button></div>
     </form>
 
     {% if sales %}
-        <table>
-            <thead>
+    <div class="table-responsive-sm">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
                 <tr>
                     <th>Category Name</th>
                     <th>Total Sales</th>
@@ -25,8 +32,12 @@
                     </tr>
                 {% endfor %}
             </tbody>
-        </table>
+        </table></div>
     {% else %}
         <p>No sales data available for categories.</p>
     {% endif %}
+    <div>
+    </div>
+</div>
+</section>
 {% endblock %}

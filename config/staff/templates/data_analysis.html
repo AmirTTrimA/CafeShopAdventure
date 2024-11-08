@@ -20,51 +20,54 @@
                 </div>
                 
             </form>
-            </div></div>
-
+            
 {% if orders.year %}
-<table>
-    <thead>
-        <tr>
-            <th></th>
-            <th>female</th>
-            <th>man</th>
-            <th>Uncertain</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-        <td>Under 20 years</td>
-        <td>{{orders.under_20_Uncertain}}</td>
-        <td>{{orders.between_20_and_40_Uncertain}}</td>
-        <td>{{orders.over_40_Uncertain}}</td>
-        </tr>
-        <tr>
-        <td>Between 20 and 40 years</td>
-        <td>{{orders.under_20_females}}</td>
-        <td>{{orders.between_20_and_40_females}}</td>
-        <td>{{orders.over_40_females}}</td>
-        </tr>
-        <tr>
-        <td>Over 40 years old</td>
-        <td>{{orders.under_20_males}}</td>
-        <td>{{orders.between_20_and_40_males}}</td>
-        <td>{{orders.over_40_males}}</td>
-        </tr>
-    </tbody>
-</table>
+
+            <div class="table-responsive-sm">
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th></th>
+                        <th>female</th>
+                        <th>man</th>
+                        <th>Uncertain</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                    <td>Under 20 years</td>
+                    <td>{{orders.under_20_Uncertain}}</td>
+                    <td>{{orders.between_20_and_40_Uncertain}}</td>
+                    <td>{{orders.over_40_Uncertain}}</td>
+                    </tr>
+                    <tr>
+                    <td>Between 20 and 40 years</td>
+                    <td>{{orders.under_20_females}}</td>
+                    <td>{{orders.between_20_and_40_females}}</td>
+                    <td>{{orders.over_40_females}}</td>
+                    </tr>
+                    <tr>
+                    <td>Over 40 years old</td>
+                    <td>{{orders.under_20_males}}</td>
+                    <td>{{orders.between_20_and_40_males}}</td>
+                    <td>{{orders.over_40_males}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
     
 {%elif orders.most_frequent_per_day%}
-    <table>
-        <thead>
+            <div class="table-responsive-sm">
+            <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
             <tr>
                 <th>days of the week</th>
                 <th>Total Orders</th>
                 <th>peak hours</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             {% for day, data in orders.most_frequent_per_day.items %}
                 <tr>
                     <td>{{ day }}</td> <!-- Display the day of the week -->
@@ -72,11 +75,13 @@
                     <td>{{ data.hour }}</td> <!-- Accessing count -->
                 </tr>
             {% endfor %}
-        </tbody>
-    </table>
-
-    <table>
-        <thead>
+            </tbody>
+            </table>
+            </div>
+   
+    <div class="table-responsive-sm">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
             <tr>
                 <th>total_orders_month</th>
                 <th>orders_in_peak_hours</th>
@@ -90,12 +95,14 @@
                 <td>{{ orders.overall_most_frequent_hour.hour }}</td> <!-- Accessing hour -->
             </tr>
         </tbody>
-        </table>
+        </table></div>
 
 {% else %}
 <h4>Top Products</h4>
-    <table class="data-analy">
-        <thead>
+<div class="table-responsive-sm">
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+
             <tr>
                 <th>Product Name</th>
                 <th>Total Orders</th>
@@ -109,9 +116,11 @@
                 </tr>
             {% endfor %}
         </tbody>
-    </table>
+    </table></div>
 {% endif %}
     <div>{{massage}}</div>
-</div></div>
+
+</div>
+</section>
 
 {% endblock %}

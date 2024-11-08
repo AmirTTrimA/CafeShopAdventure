@@ -1,16 +1,23 @@
 {% extends "base.html" %}
 {% block title %}Sales by Time of Day{% endblock %}
+{% block h1 %}Sales by Time of Day{% endblock %}
+{% block h1staff %}Sales by Time of Day{% endblock %}
 {% load static %}
 
 {% block content %}
-    <h2>Sales by Time of Day</h2>
+<section id="add-product">
+    <div class="container">
+        <div class="row form">
+            <div class="col-md-12">
+            <h4>Sales by Time of Day</h4>
 
     <form method="get" action="{% url 'sales_by_time_of_day' %}">
-        <button type="submit">Refresh</button>
+        <div class="button"><button type="submit">Refresh</button></div>
     </form>
 
-    <table>
-        <thead>
+    <div class="table-responsive-sm">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
             <tr>
                 <th>Time of Day</th>
                 <th>Total Sales</th>
@@ -26,9 +33,11 @@
                 <td>{{ afternoon_sales.total_sales|default:"0" }}</td>
             </tr>
         </tbody>
-    </table>
+    </table></div>
 
     {% if not morning_sales.total_sales and not afternoon_sales.total_sales %}
         <p>No sales data available for this time of day.</p>
     {% endif %}
+</div></div></div>
+</section>
 {% endblock %}

@@ -58,7 +58,7 @@
                                 <td>
                                     <form method="POST" action="{% url 'update_order_status' order.id %}">
                                         {% csrf_token %}
-                                        <select name="status" onchange="this.form.submit()">
+                                        <select class="form-control" name="status" onchange="this.form.submit()">
                                             <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
                                             <option value="Processing" {% if order.status == 'Processing' %}selected{% endif %}>Processing</option>
                                             <option value="Completed" {% if order.status == 'Completed' %}selected{% endif %}>Completed</option>
@@ -75,7 +75,8 @@
                                     <form method="post" action="{% url 'order_details' order.id %}">
                                         {% csrf_token %}
                                         <input type="hidden" name="item_id" value="{{ order.id }}">
-                                        <button type="submit">Details</button>
+                                        <div class="button">
+                                        <button type="submit">Details</button></div>
                                     </form>
                                 </td>
                             </tr>

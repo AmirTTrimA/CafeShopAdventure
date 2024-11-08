@@ -77,9 +77,11 @@ td,th {
     text-align: center;
 
 }
-select.form-control {
+select.form-control, input.form-control {
     border-radius: 20px;
+    text-align: center;
 }
+
 #reservations p{
     color:#fff
 }
@@ -1330,7 +1332,7 @@ span.quantity {
     width: 440px;
     margin: 0 auto;
 }
-.form-group label {
+#reservations .form-group label {
     color: #fff;
 }
 span.required {
@@ -1606,7 +1608,7 @@ span.required {
     display: inline-block;
     width: 30px;
     height: 30px;
-    padding: 2px 9px;
+    padding: 6px;
     background: #BC9B5D;
     color: #353535;
     border-radius: 20px;
@@ -1701,11 +1703,11 @@ span.required {
     background: #f2f2f2;
 }
 
-#checkout .button {
+#checkout .button , .login-form .button {
     text-align: right;
 }
 
-#checkout .button button {
+#checkout .button button ,.login-form .button button{
     margin-top: 15px;
     padding: 9px 30px;
     border: none;
@@ -1715,7 +1717,7 @@ span.required {
     cursor: pointer;
 }
 
-#checkout .button button:hover {
+#checkout .button button:hover ,.login-form .button button:hover{
     color: #BC9B5D;
     background: #353535;
 }
@@ -1818,6 +1820,9 @@ span.required {
     max-height: 30px;
 } */
 
+#filter-ord .table th, #filter-ord .table td{
+    vertical-align: middle;
+}
 /* ================================================= */
 /* ------------------- Login Area ------------------ */
 /* ================================================= */
@@ -1859,16 +1864,13 @@ span.required {
     -moz-transform: translateY(-50%);
     -webkit-transform: translateY(-50%);
     transform: translateY(-50%);
-}
-
-#login .login-form {
     color: #0D180B;
     font-weight: 400;
     margin-bottom: 26px;
 }
 
 #login .login-form input,
-#login .login-form textarea {
+#login .login-form textarea ,#id_role{
     font-size: 16px;
     padding: 10px 14px;
     border: none;
@@ -2159,13 +2161,13 @@ table.data-analy {
     border-color: #353535;
 }
 
-#add-product .button {
+#add-product .button, #filter-ord .button {
     width: 100%;
     text-align: right;
     margin:15px;
 }
 
-#add-product .button button, #filter-form .button button {
+#add-product .button button, #filter-form .button button, #filter-ord .button button {
     margin-right: 15px;
     padding: 9px 30px;
     border: none;
@@ -2180,4 +2182,38 @@ table.data-analy {
     background: #353535;
 }
 
-
+form{
+    margin-bottom: 0;
+}
+div#as, div#as2{
+    margin: 0 !important;
+    text-align: center !important;
+}
+.btn-danger {
+    border-color: #bc645d !important;
+    background: #bc645d !important;
+}
+.btn-primary {
+    border-color: #92bc5d !important;
+    background: #92bc5d !important;
+}
+input.form-control {
+    text-align: center;
+}
+.login-form input ,#id_role{
+    width: 65%;
+    text-align: center;
+    font-size: 14px !important;
+}   
+.login-form label {
+    width: 25%;
+    margin-left: 5%;
+}
+.login-form h4 {
+    padding: 10px 0 0 20px;
+    border-top: 3px solid #353535;
+    margin-top: 15px;
+}
+input.loform {
+    width: 100%;
+}

@@ -61,8 +61,8 @@
 
 
 <!--staff and manager Header Start -->       
-
-{% if user.is_superuser %}
+{% with excluded_paths='/'|add:'/about/'|add:'/contact/'|add:'/menu/'|add:'/customer/checkout/'|add:'/cart/' %}
+{% if user.is_superuser and request.path not in excluded_paths %}
 <h1 class="st-h">{% block h1 %}{% endblock %}</h1>
 <h3 class="st-h" > Welcome {{user.first_name}} {{user.last_name}} to manager Panel!</h3>
 <div class="st-panel">
@@ -85,13 +85,8 @@
                 <li><a class="dropdown-item" href="{% url 'remove-c' %}">Remove Category</a></li>
             </ul>
         </li>
-        <!-- <li ><a href="{% url 'add-product' %}">Add Product</a></li> -->
-        <!-- <li><a href="{% url 'edit-product' %}">Edit Product</a></li> -->
-        <!-- <li><a href="{% url 'add-category' %}">Add Category</a></li> -->
         {% comment %} <li><a href="{% url 'data_analysis' %}">Data Analysis</a></li>
         <li><a href="{% url 'sale_analysis' %}">sale-analisis</a></li> {% endcomment %}
-        <!-- <li><a href="{% url 'remove-p' %}">Remove product</a></li> -->
-        <!-- <li><a href="{% url 'remove-c' %}">Remove Category</a></li> -->
         <li class="menu-has-children">
             <a class="dropdown-toggle" href="#" data-toggle="dropdown">Report</a>
             <ul class="dropdown-menu">
@@ -120,7 +115,7 @@
 
 {% else %}
 <!--staff Header Start --> 
-{% if user.is_authenticated %}
+{% if user.is_authenticated and request.path not in excluded_paths  %}
     <h1 class="st-h">{% block h1staff %}{% endblock %}</h1>
     <h3 class="st-h" > Welcome {{user.first_name}} {{user.last_name}} to Staff Panel!</h3>
 <div class="st-panel">
@@ -140,6 +135,7 @@
 {% endif %}
 
 {% endif %}
+{% endwith %}
 <!--staff and manager Header end -->
 
 
