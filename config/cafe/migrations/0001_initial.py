@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -28,9 +27,9 @@ class Migration(migrations.Migration):
                 ),
                 ("name", models.CharField(max_length=100)),
                 ("address", models.CharField(max_length=255)),
-                ("opening_time", models.TimeField()),
-                ("closing_time", models.TimeField()),
-                ("created_at", models.TimeField()),
+                ("opening_time", models.DateTimeField()),
+                ("closing_time", models.DateTimeField()),
+                ("created_at", models.DateTimeField()),
                 (
                     "owner",
                     models.ForeignKey(
