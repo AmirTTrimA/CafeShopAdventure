@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Sales by Customer{% endblock %}
+{% load static %}
+
+{% block content %}
+<section id="add-product">
+    <div class="container">
+        <div class="row form">
+            <div class="col-md-12">
+            <h4>Sales by Customer (Phone Number)</h4>
+
+    <form method="post" action="{% url 'sales_by_customer' %}">
+    {% csrf_token %}
+        <label for="phone_number">Customer Phone Number:</label>
+        <input class="form-control" type="text" id="phone_number" name="phone_number" placeholder="09123456789" required>
+        <div class="button"><button type="submit">Search</button></div>
+    </form>
+
+    {% if orders %}
+        <h4>Order History for Customer: {{ phone_number }}</h4>
+        <div class="table-responsive-sm">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Order ID</th>
+                    <th>Order Date</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td>{{ order.order_date|date:"Y-m-d H:i" }}</td>
+                        <td>{{ order.total_price }}</td>
+                        <td>{{ order.status }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table></div>
+    {% elif phone_number %}
+        <p>No orders found for the entered phone number.</p>
+    {% endif %}
+</div></div></div>
+</section>
+{% endblock %}

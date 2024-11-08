@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}Edit Product{% endblock %}
+{% block h1 %}Edit Product{% endblock %}
+{% block h1staff %}Edit Product{% endblock %}
+{% block login %}logout{% endblock %}
+
+{% block content %}
+{% load static %}
+
+        <!-- Add Product Section Start -->
+        <section id="add-product">
+            <div class="container">
+                <header class="section-header">
+                </header>
+                <div class="row form">
+                    <div class="col-md-12">
+                        <h4>Edit Product Form</h4>
+                        
+                        <form class="form-group" method="post">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for ="Product">Select Product:</label>
+                                        <select name="Product" class="form-control">
+                                            {%for item in items%}
+                                            <option value="{{item.name}}">{{item.name}}</option>
+                                            {%endfor%}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                            <div class="form-group">
+                                <label for ="Product cat">Product Category:</label>
+                                <select name="Product cat" class="form-control">
+                                    {%for cat in cats%}
+                                    <option value={{cat.id}}>{{cat.name}}</option>
+                                    {%endfor%}
+                                    <!-- <option selected value="0">Coffee</option>
+                                    <option value="1">Teas</option>
+                                    <option value="2">Pastries</option>
+                                    <option value="3">Breakfast Items</option>
+                                    <option value="4">Snacks</option> -->
+                                </select>
+                            </div></div>
+                            <div class="col-md-4">
+                            <label for ="Product Name">Product Name:</label>
+                            <input name="Prodcut Name" type="text" class="form-control" placeholder="Product Name" />
+                            </div></div>
+
+                            <div class="row">
+                            <div class="col-md-4">
+                                <label for ="Product description">Product Description:</label>
+                                <input name ="Product description" type="text" class="form-control" placeholder="Description" />
+                            </div>
+                            <div class="col-md-4">
+                                <label for ="Product Price">Product Price:</label>
+                                <input name ="Product Price"type="text" class="form-control" placeholder="Price" />
+                            </div>
+                            <div class="col-md-4">
+                                <label for ="Product Point">Product Point:</label>
+                                <input name ="Product Point"type="text" class="form-control" placeholder="Point" />
+                            </div></div>
+                            <label for ="Product Image">Product Image:</label>
+                            <input name ="Product Image" type="file" class="form-control" placeholder="Upload Image" />
+                            <div class="button">
+                                <button type="submit">Submit</button>
+                            </div>
+                        </form>
+
+                        <!-- <div class="form-group">
+                            <label for ="Product description">Product Description:</label>
+                            <input name ="Product description" type="text" class="form-control" placeholder="Description" />
+                        </div>
+                        <div class="form-group">
+                            <label for ="Product Price">Product Price:</label>
+                            <input name ="Product Price"type="text" class="form-control" placeholder="Price" />
+                        </div>
+                        <div class="form-group">
+                            <label for ="Product Image">Product Image:</label>
+                            <input name ="Product Image" type="file" class="form-control" placeholder="Upload Image" />
+                        </div> -->
+
+                        
+                        <div>{{massage}}</div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+        <div>{{massage}}</div>
+        <!-- Add Product Section End -->
+         
+{% endblock %}
+
+

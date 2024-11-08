@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}search{% endblock %}
+{% block login %}login{% endblock %}
+
+{% block content %}
+{% load static %}
+
+        <!-- Menu Section Start -->
+        <section id="food-menu">
+          <div class="container">
+              <header class="section-header">
+                <h3><a href="#">your search result</a></h3>
+              </header>
+            <div class="row">
+     {% if menu_items %}
+     {%for item in menu_items%}
+              <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="single-menu">
+                  <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
+                  <div>${{item.price}}</div>
+                    <h4><a href="{% url 'product' item.pk %}">{{item.name}}</a></h4>
+                    <span class="quantity"><input type="text" value="1" /></span>
+                    <a href="{% url 'add_to_cart' item.pk %}"><i class="fas fa-shopping-cart"></i> </a>
+                </div>
+              </div>
+      {% endfor %}
+      {% else %}
+    <p>No items found.</p>
+{% endif %}
+            </div>
+          </div>
+        </section>
+<!-- Menu Section End-->
+{% endblock %}
+

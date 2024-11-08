@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Status{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<h1 class="st-h">Customer Order Status</h1>
+<div class="st-panel">
+    {% comment %} <li><a href="{% url 'customer_checkout' %}">Order Status</a></li> {% endcomment %}
+</div>
+
+<!-- Customer Order Status Section Start -->
+<section id="customer-checkout">
+    <div class="container">
+        <header class="section-header">
+            <h3>Your Order Status</h3>
+        </header>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive-sm">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Order Number</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Table Number</th>
+                                <th scope="col">Phone Number</th>
+                                <th scope="col">Status</th>
+                                {% comment %} <th scope="col">Details</th> {% endcomment %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% if orders %}
+                            {% for order in orders %}
+                            <tr>
+    <th scope="row">{{ order.id }}</th>
+    <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+    <td>{{ order.table_number }}</td>
+    <td>
+        {% if order.customer %}
+            {{ order.customer.phone_number }}
+        {% else %}
+            Guest
+        {% endif %}
+    </td>
+    <td>{{ order.status }}</td>
+    {% comment %} <td><a href="{% url 'order_details' order.id %}">View Details</a></td> {% endcomment %}
+</tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center">No orders available for this customer.</td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Customer Order Status Section End -->
+
+{% endblock %}

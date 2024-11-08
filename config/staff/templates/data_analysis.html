@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Data Analysis{% endblock %}
+{% block h1 %}Data Analysis{% endblock %}
+{% block h1staff %}Data Analysis{% endblock %}
+{% block login %}logout{% endblock %}
+
+{% block content %}
+{% load static %}
+<section id="add-product">
+    <div class="container">
+        <div class="row form">
+            <div class="col-md-12">
+            <h4>Data Analysis</h4>
+            <form method="post" id="filter-form" >
+                {% csrf_token %}
+                {{ form.filter_type }}
+                <div class="button">
+                    <button type="submit">Filter</button>
+                </div>
+                
+            </form>
+            
+{% if orders.year %}
+
+            <div class="table-responsive-sm">
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th></th>
+                        <th>female</th>
+                        <th>man</th>
+                        <th>Uncertain</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                    <td>Under 20 years</td>
+                    <td>{{orders.under_20_Uncertain}}</td>
+                    <td>{{orders.between_20_and_40_Uncertain}}</td>
+                    <td>{{orders.over_40_Uncertain}}</td>
+                    </tr>
+                    <tr>
+                    <td>Between 20 and 40 years</td>
+                    <td>{{orders.under_20_females}}</td>
+                    <td>{{orders.between_20_and_40_females}}</td>
+                    <td>{{orders.over_40_females}}</td>
+                    </tr>
+                    <tr>
+                    <td>Over 40 years old</td>
+                    <td>{{orders.under_20_males}}</td>
+                    <td>{{orders.between_20_and_40_males}}</td>
+                    <td>{{orders.over_40_males}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+    
+{%elif orders.most_frequent_per_day%}
+            <div class="table-responsive-sm">
+            <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+            <tr>
+                <th>days of the week</th>
+                <th>Total Orders</th>
+                <th>peak hours</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for day, data in orders.most_frequent_per_day.items %}
+                <tr>
+                    <td>{{ day }}</td> <!-- Display the day of the week -->
+                    <td>{{ data.count }}</td> <!-- Accessing hour -->
+                    <td>{{ data.hour }}</td> <!-- Accessing count -->
+                </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+            </div>
+   
+    <div class="table-responsive-sm">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+            <tr>
+                <th>total_orders_month</th>
+                <th>orders_in_peak_hours</th>
+                <th>hour</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ orders.overall_most_frequent_hour.total_orders_month }}</td> <!-- Display total orders for the month -->
+                <td>{{ orders.overall_most_frequent_hour.total_orders }}</td> <!-- Accessing total orders -->
+                <td>{{ orders.overall_most_frequent_hour.hour }}</td> <!-- Accessing hour -->
+            </tr>
+        </tbody>
+        </table></div>
+
+{% else %}
+<h4>Top Products</h4>
+<div class="table-responsive-sm">
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+
+            <tr>
+                <th>Product Name</th>
+                <th>Total Orders</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.item__name }}</td>
+                    <td>{{ order.total_orders }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table></div>
+{% endif %}
+    <div>{{massage}}</div>
+
+</div>
+</section>
+
+{% endblock %}

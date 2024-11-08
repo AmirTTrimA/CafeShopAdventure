@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Sale Analysis{% endblock %}
+{% block h1 %}Sale Analysis{% endblock %}
+{% block h1staff %}Sale Analysis{% endblock %}
+
+
+{% block login %}logout{% endblock %}
+{% block content %}
+{% load static %}
+
+
+<section id="filter-ord">
+    <div class="container">
+        <div class="row form">
+            <div class="col-md-12">
+    <h4>Sale Analysis</h4>
+    <form method="post" id="filter-form" >
+        {% csrf_token %}
+        {{ form.filter_type }}
+       <div class="button"> <button type="submit">Filter</button></div>
+    </form>
+
+{% if orders.total_sales_cost %}
+<div class="table-responsive-sm">
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <th>name</th>
+            <th>number of sales</th>
+            <th>total cost</th>
+        </tr>
+        </thead>
+    <tbody>
+        {%for item in orders.sales_data%}
+        <tr>
+            <td>{{item.item__name}}</td>
+            <td>{{item.total_quantity}}</td>
+            <td>{{item.total_cost}}</td>
+        </tr>
+        {%endfor%}
+        <tr>
+            <td>total sum</td>
+            <td>{{orders.total_sales_cost.total_sales_count}}</td>
+            <td>{{orders.total_sales_cost.total_sales_cost}}</td>
+        </tr>
+    </tbody>
+    </table>
+</div>
+
+
+{% elif orders.daily_total_sales %}
+{% for date in orders.daily_sortbydate %}
+    <h4>{{date}}</h4>
+    <div class="table-responsive-sm">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+            <tr>
+                <th>name</th>
+                <th>number of sales</th>
+                <th>total cost</th>
+            </tr>
+            </thead>
+    {%for item in orders.daily_product_sales%}
+        {% if item.date == date%}
+            <tbody>
+                <tr>
+                    <td>{{item.item__name}}</td>
+                    <td>{{item.total_quantity}}</td>
+                    <td>{{item.total_sales}}</td>
+                </tr>
+            </tbody>
+        {%endif%}
+        {%endfor%}
+        </table>
+    </div>
+{%endfor%}
+<h4>Final report</h4>
+<div class="table-responsive-sm">
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <th>date</th>
+            <th>total_items</th>
+            <th>total_sales</th>
+        </tr>
+    </thead>
+    <tbody>
+        {%for item in orders.daily_total_sales%}
+        <tr>
+            <td>{{item.date}}</td>
+            <td>{{item.total_items}}</td>
+            <td>{{item.total_sales}}</td>
+        </tr>
+        {%endfor%}
+    </tbody>
+    </table>
+</div>
+
+{% else %}
+<h4>Top Products</h4>
+<div class="table-responsive-sm">
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Product Name</th>
+                <th>Total Orders</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.item__name }}</td>
+                    <td>{{ order.total_orders }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+{% endif %}
+    <div>{{massage}}</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+{% endblock %}

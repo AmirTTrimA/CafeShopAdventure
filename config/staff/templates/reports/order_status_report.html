@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Order Status Report{% endblock %}
+{% block h1 %}Order Status Report{% endblock %}
+{% block h1staff %}Order Status Report{% endblock %}
+{% load static %}
+
+{% block content %}
+<section id="add-product">
+    <div class="container">
+        <div class="row form">
+            <div class="col-md-12">
+            <h4>Order Status Report</h4>
+
+    <form method="get" action="{% url 'order_status_report' %}">
+        <label for="date">Select Date:</label>
+        <input class="form-control" type="date" id="date" name="date" value="{{ date }}">
+        <div class="button"><button type="submit">Generate Report</button></div>
+    </form>
+
+    {% if orders %}
+        <h4>Order Status for {{ date }}</h4>
+        <div class="table-responsive-sm">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Status</th>
+                    <th>Total Orders</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>{{ order.status }}</td>
+                        <td>{{ order.total }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table></div>
+    {% else %}
+        <p>No orders found for the selected date.</p>
+    {% endif %}
+</div></div></div>
+</section>
+{% endblock %}

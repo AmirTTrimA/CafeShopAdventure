@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% load static %}
+        
+        <!-- Reservations Section Start -->
+        <section id="reservations">
+            <div class="container">
+                <header class="section-header">
+                        <div class="container">
+                            <h3>Welcome to Maktab CoffeeShop</h3>
+                            <p>At Maktab CoffeeShop, we believe that a great cup of coffee can change your day. Nestled in the heart of Tehran, our café is more than just a place to grab a drink; it’s a community hub where friends gather, ideas flourish, and moments are shared.</p>
+                        </div>
+                </header>
+            </div>
+        </section>
+        <!-- Reservations Section End -->
+
+        <!-- About Section Start-->
+        <section id="about">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="about-col-left"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="about-col-right">
+                            <header class="section-header">
+                                <h3>What We Offer</h3>
+                            </header>
+                            {% comment %} <ul class="icon">
+                                <li><a href="https://www.twitter.com" class="fab fa-twitter"></a></li>
+                                <li><a href="https://www.facebook.com" class="fab fa-facebook"></a></li>
+                                <li><a href="https://www.pinterest.com" class="fab fa-pinterest"></a></li> {% endcomment %}
+                                <!-- <li><a href="#" class="fab fa-google-plus"></a></li> -->
+                            </ul>
+                            <p>
+                                We take pride in our diverse menu, featuring a wide range of specialty coffees, teas, and freshly baked pastries. Whether you’re in the mood for a classic espresso, a creamy latte, or a refreshing iced tea, we have something to satisfy every palate. Our baristas are trained to provide you with the best experience, and they are always happy to recommend their favorites.
+                            </p>
+                            <a class="btn" href="{% url 'about' %}">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- About Section End-->
+
+        <!-- Menu Section Start -->
+        <section id="food-menu">
+            <div class="container">
+                
+                <header class="section-header">
+                    <h3><a href="{% url 'menu' %}">delicious Food Menu</a></h3>
+                </header>
+
+                <div class="row">
+                    {%for item in menu_items%}
+                    <div class="col-sm-6 col-md-4 col-lg-3">
+                        <div class="single-menu">
+                        <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
+                        <div>${{item.price}}</div>
+                        <h4><a href="{% url 'product' item.pk %}">{{item.name}}</a></h4>
+                        <span class="quantity"><input type="text" value="0" data-item-id="{{ item.pk }}"/></span>
+                        <a href="#" onclick="addToCart({{ item.pk }}); return false;">
+                            <i class="fas fa-shopping-cart"></i> </a>
+                        </div>
+                    </div>
+                    {%endfor%}
+                </div>
+                
+            <div class="single-menu"><a href="{% url 'menu' %}">See More</a></div>
+            </div>
+        </section>
+        <!-- Menu Section End-->
+
+        <!-- Team Section Start -->
+        <!-- <section id="team">
+            <div class="container">
+                <div class="section-header">
+                    <h3>Meet Our Chef</h3>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6 col-md-3">
+                        <div class="single-team">
+                            <img src="{% static 'img/team-1.jpg' %}" alt="">
+                            <h4>Don Dennis</h4>
+                            <ul class="icon">
+                                <li><a href="#" class="fa fa-twitter"></a></li>
+                                <li><a href="#" class="fa fa-facebook"></a></li>
+                                <li><a href="#" class="fa fa-google-plus"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-md-3">
+                        <div class="single-team">
+                            <img src="{% static 'img/team-2.jpg' %}" alt="">
+                            <h4>Mary Tejeda</h4>
+                            <ul class="icon">
+                                <li><a href="#" class="fa fa-twitter"></a></li>
+                                <li><a href="#" class="fa fa-facebook"></a></li>
+                                <li><a href="#" class="fa fa-google-plus"></a></li>
+                            </ul>
+                        </div>                    
+                    </div>
+
+                    <div class="col-sm-6 col-md-3">
+                        <div class="single-team">
+                            <img src="{% static 'img/team-3.jpg' %}" alt="">
+                            <h4>Scott Williams</h4>
+                            <ul class="icon">
+                                <li><a href="#" class="fa fa-twitter"></a></li>
+                                <li><a href="#" class="fa fa-facebook"></a></li>
+                                <li><a href="#" class="fa fa-google-plus"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-md-3">
+                        <div class="single-team">
+                            <img src="{% static 'img/team-4.jpg' %}" alt="">
+                            <h4>Mary Hall</h4>
+                            <ul class="icon">
+                                <li><a href="#" class="fa fa-twitter"></a></li>
+                                <li><a href="#" class="fa fa-facebook"></a></li>
+                                <li><a href="#" class="fa fa-google-plus"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> -->
+        <!-- Team Section End -->
+
+        <!-- Testimonials Section Start -->
+        <section id="testimonials" class="section-bg wow fadeInUp">
+            <div class="container">
+                <div class="section-header">
+                    <h3>Our Food Lovers</h3>
+                </div>
+
+                <div class="owl-carousel testimonials-carousel">
+                    <div class="row testimonial-item">
+                        <div class="col-sm-4">
+                            <div class="img">
+                                <img src="{% static 'img/team-1.jpg' %}" class="testimonial-img" alt="">
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="testimonial-content">
+                                <div class="content">
+                                    <h4>AmirReza Tehrani</h4>
+                                    <h5>VIP Client</h5>
+                                    <p>
+                                        <i class="fa fa-quote-left"></i>
+                                        I absolutely love this café! The atmosphere is cozy and inviting, making it the perfect spot to relax with a book or catch up with friends. Their cappuccinos are the best I've ever had, and the pastries are always fresh and delicious. Highly recommend!<i class="fa fa-quote-right"></i>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row testimonial-item">
+                        <div class="col-sm-4">
+                            <div class="img">
+                                <img src="{% static 'img/testimonial-2.jpg' %}" class="testimonial-img" alt="">
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="testimonial-content">
+                                <div class="content">
+                                    <h4>Fateme Noormohammadi</h4>
+                                    <h5>Regular Client</h5>
+                                    <p>
+                                        <i class="fa fa-quote-left"></i>
+                                        This café has a charming vibe, but I found the service to be a bit slow during peak hours. The coffee was good, but not exceptional. I did enjoy the avocado toast, which was beautifully presented. I might give it another try during a quieter time.                                        <i class="fa fa-quote-right"></i>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row testimonial-item">
+                        <div class="col-sm-4">
+                            <div class="img">
+                                <img src="{% static 'img/team-2.jpg' %}" class="testimonial-img" alt="">
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="testimonial-content">
+                                <div class="content">
+                                    <h4>Nima Nemaei</h4>
+                                    <h5>VIP Client</h5>
+                                    <p>
+                                        <i class="fa fa-quote-left"></i>
+                                        I had a wonderful experience at this café! The staff was incredibly friendly and attentive. I tried their signature latte and a slice of carrot cake, both of which were fantastic. It's a great place to work or meet friends. I’ll definitely be coming back!                                        <i class="fa fa-quote-right"></i>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Testimonials Section End -->
+
+        <!-- Contact Section Start -->
+
+        <!-- Contact Section End -->
+
+{% endblock %}       

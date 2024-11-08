@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Top-Selling Items{% endblock %}
+{% block h1 %}Top-Selling Items{% endblock %}
+{% block h1staff %}Top-Selling Items{% endblock %}
+{% load static %}
+
+{% block content %}
+<section id="add-product">
+    <div class="container">
+        <div class="row form">
+            <div class="col-md-12">
+            <h4>Top-Selling Items</h4>
+
+    <form method="post">
+    {% csrf_token %}
+    <div class="row">
+    <div class="col-md-6">
+        <label for="start_date">Start Date:</label>
+        <input class="form-control" type="date" name="start_date" id="start_date">
+    </div>
+        <div class="col-md-6">
+        <label for="end_date">End Date:</label>
+        <input class="form-control" type="date" name="end_date" id="end_date">
+    </div></div>
+        <div class="button"><button type="submit">Filter</button></div>
+    </form>
+
+    {% if top_items %}
+    <div class="table-responsive-sm">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Item Name</th>
+                    <th>Total Sales</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in top_items %}
+                    <tr>
+                        <td>{{ item.item__name }}</td>
+                        <td>{{ item.total_sales }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table></div>
+    {% elif request.GET.start_date or request.GET.end_date %}
+        <p>No sales data found for the selected date range.</p>
+    {% endif %}
+    </div></div></div></section>
+{% endblock %}

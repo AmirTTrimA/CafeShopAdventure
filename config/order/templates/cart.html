@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}Cart{% endblock %}
+
+{% block content %}
+{% load static %}
+{% load custom_filters %}  <!-- Load your custom filters here -->
+
+<!-- Cart Section Start -->
+<section id="cart">
+    <div class="container">
+        <header class="section-header">
+            <h3>Cart</h3>
+        </header>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive-sm">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Menu</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Total</th>
+                                <th scope="col">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item_id, item in cart.items %}
+                            <tr>
+                                <th scope="row">{{ item.name }}</th>
+                                <td>${{ item.price }}</td>
+                                <td>
+                                    <div class="quantity">
+                                        <input type="text" value="{{ item.quantity }}" readonly>
+                                    </div>
+                                </td>
+                                <td>${{ item.total|floatformat:2 }}</td>
+                                <td><a href="{% url 'remove_from_cart' item_id %}"><i class="fas fa-trash"></i></a></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5">Your cart is empty.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Total</th>
+                                <th scope="col">-</th>
+                                <th scope="col">-</th>
+                                <th scope="col">${{ total_price }}</th>
+                                <th scope="col">-</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Cart Section End -->
+
+<!-- Reservations Section Start -->
+<section id="reservations">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <form method="POST" action="{% url 'submit_order' %}">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="control-group col-sm-4">
+                            <div class="form-group">
+                                <label for="table_number">Table Number (required)<span class="required">*</span>:</label>
+                                <div class="input-group" id="num" data-target-input="nearest">
+                                    <input name="table_number" type="text" class="form-control" placeholder="exp: 12" required />
+                                </div>
+                                {% if form.table_number.errors %}
+                                    <div class="alert alert-danger mt-2">
+                                        {{ form.table_number.errors|join:", " }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="control-group col-sm-4">
+                            <div class="form-group">
+                                <label for="phone_number">Phone Number:</label>
+                                <div class="input-group" id="num" data-target-input="nearest">
+                                    <input name="phone_number" type="text" class="form-control" placeholder="09120001234" />
+                                </div>
+                                {% if form.phone_number.errors %}
+                                    <div class="alert alert-danger mt-2">
+                                        {{ form.phone_number.errors|join:", " }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="control-group col-sm-4 button">
+                            <button type="submit" class="btn btn-block btn-book">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+</section>
+<!-- Reservations Section End -->
+{% endblock %}

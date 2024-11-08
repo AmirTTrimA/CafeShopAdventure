@@ -1,0 +1,52 @@
+{% extends 'base.html' %} 
+{% block title %}Menu{% endblock %} 
+{% block content%}
+{% comment %} {% block login %}login{% endblock %} {% endcomment %}
+{% load static %}
+
+<!-- Menu Section Start -->
+<section id="food-menu">
+  <div class="container">
+    <header class="section-header">
+      <h3><a href="{% url 'menu' %}">delicious Food Menu</a></h3>
+    </header>
+    <div class="menu-cat">
+      <a href="{% url 'menu' %}">All</a>
+      {%for cat in cat_item%}
+      <a href="{% url 'menu_by_category' cat.id %}">{{cat.name}}</a>
+      {%endfor%}
+    </div>
+
+    <div class="row">
+      {%for item in menu_items%}
+      <div class="col-sm-6 col-md-4 col-lg-3">
+        <div class="single-menu">
+          <img class="img-fluid" src="{% static 'img/menu-9.jpg' %}" />
+          <div>${{item.price}}</div>
+          <h4><a href="{% url 'product' item.pk %}">{{item.name}}</a></h4>
+          <span class="quantity"><input type="text" value="0" data-item-id="{{ item.pk }}"/></span>
+          <a href="#" onclick="addToCart({{ item.pk }}); return false;">
+            <i class="fas fa-shopping-cart"></i>
+          </a>
+        </div>
+      </div>
+      {%endfor%}
+    </div>
+  </div>
+</section>
+
+<section>
+    {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+</section>
+
+<script src="{% static 'js/cart.js' %}"></script>
+
+<!-- Menu Section End-->
+
+{% endblock %}

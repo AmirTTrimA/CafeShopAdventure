@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Product{% endblock %}
+{% block login %}login{% endblock %}
+
+{% block content %}
+{% load static %}
+
+        <!-- About Section Start-->
+        <section id="product" style="background: #ffffff;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="product-col-left"><img src="{% static 'img/menu-9.jpg' %}"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="product-col-right">
+                            <header class="section-header">
+                                <h3>{{ product.name }}</h3>
+                                <p class="price">category: {{ product.category }}</p>
+                            </header>
+
+                            <p>
+                                {{ product.description }}
+                            </p>
+                            <p class="price">
+                                point: {{ product.points }}
+                            </p>
+                            <p class="price">
+                               Price: ${{ product.price }} 
+                            </p>
+                            <span class="quantity"><input type="text" value="0" data-item-id="{{ product.pk }}"/></span>
+                                <a href="#" onclick="addToCart({{ product.pk }}); return false;">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+<section>
+    {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+</section>
+        
+<script src="{% static 'js/cart.js' %}"></script>
+
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Search Customer{% endblock %}
+{% load static %}
+{% block content %}
+    <h2>Search Customer by Phone Number</h2>
+
+    <form method="get" action="{% url 'search_customer' %}">
+        <label for="phone_number">Customer Phone Number:</label>
+        <input type="text" id="phone_number" name="phone_number" placeholder="09123456789" required>
+        <button type="submits">Search</button>
+    </form>
+
+    {% if customers %}
+        <h3>Search Results:</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Phone Number</th>
+                    <th>Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in customers %}
+                    <tr>
+                        <td>{{ customer.first_name }}</td>
+                        <td>{{ customer.last_name }}</td>
+                        <td>{{ customer.phone_number }}</td>
+                        <td>{{ customer.points }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% elif request.GET.phone_number %}
+        <p>No customer found with the entered phone number.</p>
+    {% endif %}
+{% endblock %}

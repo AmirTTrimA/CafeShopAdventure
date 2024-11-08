@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Sales by Employee{% endblock %}
+{% block h1 %}Sales by Employee{% endblock %}
+{% block h1staff %}Sales by Employee{% endblock %}
+{% load static %}
+
+{% block content %}
+<section id="add-product">
+    <div class="container">
+        <div class="row form">
+            <div class="col-md-12">
+            <h4>Sales by Employee</h4>
+
+    <form method="get" action="{% url 'sales_by_employee_report' %}">
+        <div class="button"><button type="submit">Refresh</button></div>
+    </form>
+
+    {% if employee_sales %}
+    <div class="table-responsive-sm">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Employee Name</th>
+                    <th>Total Sales</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in employee_sales %}
+                    <tr>
+                        <td>{{ sale.staff__first_name }} {{ sale.staff__last_name }}</td>
+                        <td>{{ sale.total_sales }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table></div>
+    {% else %}
+        <p>No sales data available for employees.</p>
+    {% endif %}
+</div></div></div>
+</section>
+{% endblock %}

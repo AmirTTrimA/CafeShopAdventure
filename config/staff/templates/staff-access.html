@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}staff-access{% endblock %}
+{% block h1 %}staff-access{% endblock %}
+{% block login %}login{% endblock %}
+
+{% block content %}
+{% load static %}
+
+        <!-- staff-access start -->
+        <section id="login">
+            <div class="container">
+                <div class="section-header">
+                </div>
+
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <div class="login-col-1">
+                            <div class="login-form">
+                               
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        {{form.as_p}}
+                                    <div class="button"><button type="submit">Register</button></div>
+                                </form>
+                                <h4>Staff List</h4>
+                                <ul>
+                                {% for staff in staff_list %}
+                                    <li>*{{ staff.first_name }} {{ staff.last_name }}* role : {{ staff.role }}</li>
+                                {% empty %}
+                                    <li>No staff registered yet.</li>
+                                {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+            </div>
+        </section>
+        <!-- staff-access End -->
+
+{% endblock %}

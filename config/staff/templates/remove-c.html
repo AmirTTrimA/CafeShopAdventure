@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Remove Category{% endblock %}
+{% block h1 %}Remove Category{% endblock %}
+{% block login %}logout{% endblock %}
+
+{% block content %}
+{% load static %}
+
+        <!-- Add Product Section Start -->
+        <section id="add-product">
+            <div class="container">
+                <header class="section-header">
+                </header>
+                <div class="row form">
+
+                    <div class="col-md-12">
+
+                        <h4>Remove a Category</h4>
+                        <form class="form-group" method="post">
+                            {% csrf_token %}
+                            <label for ="Category Name">Category Name</label>
+                            <input name="Category Name" type="text" class="form-control" placeholder="Category Name" />
+                            <div class="button">
+                                <button type="submit">Submit</button>
+                            </div>
+                        </form>
+ 
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div>{{massage}}</div>
+        <!-- Add Product Section End -->
+
+{% endblock %}
+

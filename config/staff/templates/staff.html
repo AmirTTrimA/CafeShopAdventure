@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Staff panel{% endblock %}
+{% block login %}login{% endblock %}
+{% block h1 %}Staff panel{% endblock %}
+{% block h1staff %}Staff panel{% endblock %}
+{% block content %}
+{% load static %}
+
+    <!-- Cart Section Start -->
+    <section id="staff-cart">
+      <div class="container">
+        <header class="section-header">
+          {% comment %} <h3 class="st-ti">Sales Analytics<span>(last month)</span></h3> {% endcomment %}
+          <h3 class="st-ti">Ha Ha You Don't Have Access To Analytics</h3>
+        </header>
+        {% comment %} <div class="row">
+          <div class="col-md-12">
+            <div class="table-responsive-sm">
+              <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col">Item</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">ICED LATTE MACCHIATO</th>
+                    <td>$10</td>
+                    <td>100</td>
+                    <td>$1000</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">PANINI</th>
+                    <td>$15</td>
+                    <td>30</td>
+                    <td>$450</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Cappuccino</th>
+                    <td>$20</td>
+                    <td>15</td>
+                    <td>$300</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container">
+        <header class="section-header">
+          <h3 class="st-ti st-customer">
+            customers Analytics<span>(last month)</span>
+          </h3>
+        </header>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="table-responsive-sm">
+              <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col">Phone Number</th>
+                    <th scope="col">No. of Orders</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Reward(%)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">09123456789</th>
+                    <td>100</td>
+                    <td>$1000</td>
+                    <td>98%</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">09378901234</th>
+                    <td>30</td>
+                    <td>$450</td>
+                    <td>100%</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">09356789999</th>
+                    <td>15</td>
+                    <td>$300</td>
+                    <td>88%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div> {% endcomment %}
+      </div>
+    </section>
+    <!-- Cart Section End -->
+
+    {% endblock %}
+    

@@ -1,0 +1,211 @@
+{% load static %}
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}{% endblock %}</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="" name="keywords">
+        <meta content="" name="description">
+
+        <!-- Favicons -->
+        <link href="{% static 'img/favicon.ico' %}" rel="icon">
+        <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600|Pacifico" rel="stylesheet"> 
+
+        <!-- Bootstrap CSS File -->
+        <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+        <!-- Libraries CSS Files -->
+        <!-- <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet"> -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <link href="{% static 'vendor/animate/animate.min.css' %}" rel="stylesheet">
+        <link href="{% static 'vendor/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+        <link href="{% static 'vendor/tempusdominus/css/tempusdominus-bootstrap-4.min.css' %}" rel="stylesheet" />
+
+        <!-- Main Stylesheet File -->
+        <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    </head>
+
+    <body>
+
+        <!-- Header Start -->
+        <header id="header">
+
+            <div class="container"> 
+                <img src="{% static 'img/rb_49164.png' %}" />
+                <span class="search-container">
+                    <form method="GET" action="{% url 'search' %}">
+                        <input type="text" name="q" placeholder="Search..." />
+                        <button type="submit"><i class="fa fa-search"></i></button>
+                    </form>
+                </span>
+                <nav id="nav-menu-container">
+                    <ul class="nav-menu">
+                        <li class="menu-active"><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="{% url 'menu' %}">Menu</a></li>
+                        <li><a href="{% url 'cart' %}">Cart</a></li>
+                        <li><a href="{% url 'about' %}">About</a></li>
+                        <li><a href="{% url 'contact' %}">Contact</a></li>
+                        <li><a href="{% url 'customer_checkout' %}">Order Status</a></li>
+                        <!-- <li><a class="log" href="{% url 'login' %}">{% block login %}Login{% endblock %}
+                        </a>/<a class="log" href="{% url 'logout' %}">Logout</a></li> -->
+                    </ul>
+                </nav>
+            
+            </div>
+        </header>
+        
+        <!-- Header End -->
+
+
+<!--staff and manager Header Start -->       
+{% with excluded_paths='/'|add:'/about/'|add:'/contact/'|add:'/menu/'|add:'/customer/checkout/'|add:'/cart/' %}
+{% if user.is_superuser and request.path not in excluded_paths %}
+<h1 class="st-h">{% block h1 %}{% endblock %}</h1>
+<h3 class="st-h" > Welcome {{user.first_name}} {{user.last_name}} to manager Panel!</h3>
+<div class="st-panel">
+        <li><a href="{% url 'manager' %}">Manager Dashboard</a></li>
+        <li><a href="{% url 'staff-access' %}">Staff Access</a></li>
+        <li><a href="{% url 'manager_checkout' %}">Checkout</a></li>
+        <li class="menu-has-children">
+            <a class="dropdown-toggle" href="#" data-toggle="dropdown">Product</a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'add-product' %}">Add Product</a></li>
+                <li><a class="dropdown-item" href="{% url 'edit-product' %}">Edit Product</a></li>
+                <li><a class="dropdown-item" href="{% url 'remove-p' %}">Remove product</a></li>
+            </ul>
+        </li>
+        <li class="menu-has-children">
+            <a class="dropdown-toggle" href="#" data-toggle="dropdown">Category</a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'add-category' %}">Add Category</a></li>
+                {% comment %} <li><a class="dropdown-item" href="#">Edit Category</a></li> {% endcomment %}
+                <li><a class="dropdown-item" href="{% url 'remove-c' %}">Remove Category</a></li>
+            </ul>
+        </li>
+        {% comment %} <li><a href="{% url 'data_analysis' %}">Data Analysis</a></li>
+        <li><a href="{% url 'sale_analysis' %}">sale-analisis</a></li> {% endcomment %}
+        <li class="menu-has-children">
+            <a class="dropdown-toggle" href="#" data-toggle="dropdown">Report</a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'sale_analysis' %}">Sale Analysis</a></li>
+                <li><a class="dropdown-item" href="{% url 'data_analysis' %}">Data Analysis</a></li>
+                <li><a class="dropdown-item" href="{% url 'top_selling_items' %}">Top Selling Items</a></li>
+                <li><a class="dropdown-item" href="{% url 'sales_by_category' %}">Sales By Category</a></li>
+                <li><a class="dropdown-item" href="{% url 'sales_by_customer' %}">Sales By Customer</a></li>
+                <li><a class="dropdown-item" href="{% url 'sales_by_time_of_day' %}">Sales By Time Of Day</a></li>
+                <li><a class="dropdown-item" href="{% url 'order_status_report' %}">Order Status Report</a></li>
+                <li><a class="dropdown-item" href="{% url 'sales_by_employee_report' %}">Sales By Employee</a></li>
+                <li><a class="dropdown-item" href="{% url 'customer_order_history_report' %}">Customer Order History</a></li>
+            </ul>
+        </li>
+        <li class="menu-has-children">
+            <a class="dropdown-toggle" href="#" data-toggle="dropdown">Export</a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'export_orders' %}">Download Order Detail</a></li>
+                <li><a class="dropdown-item" href="{% url 'export_customers' %}">Download Customer Detail</a></li>
+                <li><a class="dropdown-item" href="{% url 'export_staff' %}">Download Staff Detail</a></li>
+                <li><a class="dropdown-item" href="{% url 'export_menu_items' %}">Download Menu Detail</a></li>
+            </ul>
+        </li>
+        <li></a>/<a class="log" href="{% url 'logout' %}">Logout</a></li></li>
+</div>
+
+{% else %}
+<!--staff Header Start --> 
+{% if user.is_authenticated and request.path not in excluded_paths  %}
+    <h1 class="st-h">{% block h1staff %}{% endblock %}</h1>
+    <h3 class="st-h" > Welcome {{user.first_name}} {{user.last_name}} to Staff Panel!</h3>
+<div class="st-panel">
+        <li><a href="{% url 'staff' %}">Staff Dashboard</a></li>
+        <li><a href="{% url 'staff_checkout' %}">Checkout</a></li>
+        <li class="menu-has-children">
+            <a class="dropdown-toggle" href="#" data-toggle="dropdown">Product</a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'add-product' %}">Add Product</a></li>
+                <li><a class="dropdown-item" href="{% url 'edit-product' %}">Edit Product</a></li>
+                <li><a class="dropdown-item" href="{% url 'remove-p' %}">Remove product</a></li>
+            </ul>
+        </li>
+        <li></a>/<a class="log" href="{% url 'logout' %}">Logout</a></li></li>
+
+</div>
+{% endif %}
+
+{% endif %}
+{% endwith %}
+<!--staff and manager Header end -->
+
+
+
+{% block content %} {% endblock %}
+
+        <!-- Footer Start -->
+        <footer id="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <h4 class="foot_acs"><a href="contact{% url 'contact' %}">Quich access</a></h4>
+                        <ul class="nav-menu">
+                            <li ><a href="{% url 'home' %}">Home</a></li>
+                            <li><a href="{% url 'menu' %}">Menu</a></li>
+                            <li><a href="{% url 'cart' %}">Cart</a></li>
+                            <!-- <li><a href="{% url 'login' %}">Login</a></li> -->
+                            <li><a href="{% url 'about' %}">About</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4">
+
+                        <div class="copyright">
+                            <img src="{% static 'img/rb_49164.png' %}" />
+                            {% comment %} <p>&copy; Copyright <a href="">Maktab CoffeeShop</a>. All Rights Reserved</p> {% endcomment %}
+                            <a href="">Maktab CoffeeShop</a>
+                            
+                            <p>Designed By <a href="#">group3</a></p>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                            <h4><a href="{% url 'contact' %}">Contact Us</a></h4>    
+                            <ul class="contact-info">
+                                <li>
+                                    <strong>Phone:</strong> 
+                                    <a href="tel:+989033446968" class="phone-link">Our Phone Number</a>
+                                </li>
+                                <li>
+                                    <strong>Email:</strong> 
+                                    <a href="mailto:100289963+AmirTTrimA@users.noreply.github.com" class="email-link">Our Email</a>
+                                </li>
+                            </ul>
+                        </section>
+                        
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Footer end -->
+
+        <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+
+        <!-- JavaScript Libraries -->
+        <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'vendor/jquery/jquery-migrate.min.js' %}"></script>
+        <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'vendor/easing/easing.min.js' %}"></script>
+        <script src="{% static 'vendor/stickyjs/sticky.js' %}"></script>
+        <script src="{% static 'vendor/superfish/hoverIntent.js' %}"></script>
+        <script src="{% static 'vendor/superfish/superfish.min.js' %}"></script>
+        <script src="{% static 'vendor/owlcarousel/owl.carousel.min.js' %}"></script>
+        <script src="{% static 'vendor/tempusdominus/js/moment.min.js' %}"></script>
+        <script src="{% static 'vendor/tempusdominus/js/moment-timezone.min.js' %}"></script>
+        <script src="{% static 'vendor/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+
+        <!-- Main Javascript File -->
+        <script src="{% static 'js/main.js' %}"></script>
+
+    </body>
+</html>
+
+
+
